@@ -59,28 +59,35 @@ something done.
    evidence. Run `/tests` first if the project needs a stack-native unit test
    runner added or normalized. See the Testing section of `coding-standards.md`
    for the gate.
-6. **Try manually (optional)** - Run `/try` when you want a human walkthrough:
+6. **Mechanical guardrails** - Local hooks and CI call
+   `scripts/guardrails/Invoke-BlueprintGuardrails.ps1` against the current diff.
+   These checks look for commits on protected branches, app changes without an
+   active spec, placeholder overview drift, missing external review evidence in
+   strict mode, misleading agent claims, workflow changes, and early prop-drilling
+   signals. Markdown review files are evidence only; the script compares them to
+   git state.
+7. **Try manually (optional)** - Run `/try` when you want a human walkthrough:
    what to start, where to go, what to click or run, what to expect, and what
    would count as wrong. `/check` proves behavior from the agent side; `/try`
    gives you the manual review path.
-7. **Audit (optional)** - Run `/audit` when you want a read-only code quality pass
+8. **Audit (optional)** - Run `/audit` when you want a read-only code quality pass
    before closing a feature or after a larger automated run. It checks for
    duplication, dead code, missing tests for logic, standards drift, and
    maintainability risks. Fixes still happen through `/implement` or `/fix`.
-8. **Iterate** - If it doesn't work or needs changes, re-prompt or hand-edit and
+9. **Iterate** - If it doesn't work or needs changes, re-prompt or hand-edit and
    re-test; repeat until it works, before moving on.
-9. **Checkpoint (optional)** - after an approved step `/implement` offers a quick
+10. **Checkpoint (optional)** - after an approved step `/implement` offers a quick
    choice (continue / commit a checkpoint / walk me through it / stop here) as a
    selectable popup, or in plain text when there's a lot to read first so it doesn't
    cover what you're reading. Checkpoints are optional cheap rollback points; "walk
    me through it" gives a deeper code explanation and loops back; `/complete` makes
    the real feature-level commit. Build and tests must pass before any commit.
-10. **Log** - `/complete` archives the spec to `blueprint/history/features/NN-name.md` (or
+11. **Log** - `/complete` archives the spec to `blueprint/history/features/NN-name.md` (or
    `blueprint/history/fixes/`), checks the feature off in `blueprint/build-plan.md`, and
    resets `blueprint/context/current-feature.md` to its stub.
-11. **Feature commit** - `/complete` stages everything on the branch (step work
+12. **Feature commit** - `/complete` stages everything on the branch (step work
    plus the logging changes) into one conventional feature commit.
-12. **Squash-merge** - `/complete` squash-merges the branch to main (explicit yes)
+13. **Squash-merge** - `/complete` squash-merges the branch to main (explicit yes)
     and deletes it, so the feature lands as one commit. Then it must ask
     separately before pushing main; merge approval does not approve a push.
 
@@ -138,3 +145,23 @@ Review AI-generated code periodically, especially for:
 - Performance (unnecessary re-renders, N+1 queries)
 - Logic errors (edge cases)
 - Patterns (matches existing codebase?)
+
+## Mechanical Guardrails
+
+The Blueprint includes optional local hooks and a CI workflow that enforce the
+diff-level workflow:
+
+- Install hooks with `pwsh scripts/guardrails/Install-GitHooks.ps1`.
+- Run the same checks locally with
+  `pwsh scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode ci`.
+- Generate an external AI review with
+  `pwsh scripts/guardrails/Request-ExternalAiReview.ps1` after setting
+  `BLUEPRINT_AI_REVIEW_CMD`.
+- CI sets `BLUEPRINT_REQUIRE_EXTERNAL_AI_REVIEW=1`, so pull requests need
+  `blueprint/reviews/current-diff-review.md` to contain a real review rather than
+  the placeholder.
+
+These scripts are intentionally diff-based. They do not trust the current chat.
+They compare review artifacts and agent claims against git state so shortcuts,
+hallucinated "tests passed" claims, scope drift, and unreviewed workflow changes
+show up before merge.

@@ -1,0 +1,53 @@
+name: Blueprint Guardrails
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  guardrails:
+    name: Diff, drift, and review gates
+    runs-on: ubuntu-latest
+    env:
+      BLUEPRINT_REQUIRE_EXTERNAL_AI_REVIEW: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Blueprint guardrails
+        shell: pwsh
+        run: |
+          ./scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode ci -BaseRef origin/${{ github.base_ref }} -Strict
+
+      - name: Check Markdown links for core Blueprint files
+        shell: pwsh
+        run: |
+          $required = @(
+            "AGENTS.md",
+            "blueprint/context/ai-interaction.md",
+            "blueprint/context/coding-standards.md",
+            "blueprint/guardrails/config.json",
+            "scripts/guardrails/Invoke-BlueprintGuardrails.ps1"
+          )
+          foreach ($file in $required) {
+            if (-not (Test-Path $file)) {
+              throw "Missing required Blueprint file: $file"
+            }
+          }
+
+  shellcheck-hooks:
+    name: Hook smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate hook templates are shell scripts
+        run: |
+          sh -n scripts/guardrails/hooks/pre-commit
+          sh -n scripts/guardrails/hooks/pre-push

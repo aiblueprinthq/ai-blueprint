@@ -74,11 +74,17 @@ Work through the spec's build steps in order, one at a time. For each step:
    focused test then, or note why not. When a step's done-when is behavioral (a
    click, a download, a flow across screens), run `/check` to prove it against the
    running app rather than eyeballing it.
-5. **Iterate until it works.** If it fails or the user wants changes, revise the
+5. **Run guardrails for risky diffs.** If the step touches source, workflow,
+   planning, or review files, run
+   `pwsh scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode ci` when the
+   script exists. Treat failures as real blockers. Warnings about external review
+   mean the PR will need another AI or human review artifact before strict CI
+   passes.
+6. **Iterate until it works.** If it fails or the user wants changes, revise the
    step (re-prompt or hand-edit the code), show the updated diff, and re-test.
    Repeat until it works and the user approves. Nothing is committed until the
    user is happy with the step.
-6. **Mark it done, then prompt to move on.** Once the step is approved, check that
+7. **Mark it done, then prompt to move on.** Once the step is approved, check that
    step off (`- [x]`) in `blueprint/context/current-feature.md` so progress survives a context
    clear. Then offer a short choice, noting that checkpoints are optional since
    `/complete` makes the real feature-level commit. Use the current tool's short

@@ -78,6 +78,9 @@ For a standard Next.js project. Change or remove if you're using something else.
 - Build: `npm run build`
 - Production server: `npm run start`
 - Lint: `npm run lint`
+- Install guardrail hooks: `pwsh scripts/guardrails/Install-GitHooks.ps1`
+- Run guardrails locally: `pwsh scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode ci`
+- Request external AI review: `pwsh scripts/guardrails/Request-ExternalAiReview.ps1`
 
 Testing is opt-in. If this project does not already have a unit test runner, run
 `/tests` or `$tests` to add one and update this section with the real test

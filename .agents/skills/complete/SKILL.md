@@ -68,6 +68,16 @@ Finish with a concise **How to try it** note for the completed feature. If the
 manual path is more than a couple of steps, tell the user to run `/try latest`;
 that command can read the archived feature after `current-feature.md` is reset.
 
+## Pull request guardrails
+
+If the project uses pull requests, make the PR description explain why the change
+is needed, what scope was intended, what commands proved it, and where the
+external review lives. Use `.github/pull_request_template.md` when present.
+
+Before merge, strict CI may require `blueprint/reviews/current-diff-review.md` to
+contain an external AI or human review of the current diff. Treat a placeholder
+or missing review as a blocker, not a paperwork issue.
+
 ## Rules
 
 - The feature is the unit of history: one squashed feature commit on main, even if

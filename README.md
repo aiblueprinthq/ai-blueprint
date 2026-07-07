@@ -171,6 +171,61 @@ In this repo, **the build loop** means:
 The loop is the control system. The AI can keep iterating, but only inside the
 current spec, with observable checks and review gates.
 
+## Mechanical guardrails
+
+The Blueprint ships with a scriptable enforcement layer in addition to the
+Markdown workflow. The goal is to catch problems that process instructions alone
+cannot reliably stop: architecture drift, hallucinated status claims, misleading
+summaries, unreviewed workflow edits, skipped verification, and shortcuts that a
+single agent session may take when it is trying to finish quickly.
+
+This layer is intentionally diff-based. It reads Git state first, then compares
+review files and agent claims against the actual changed files. Markdown remains
+useful as context and review evidence, but the checks do not trust the current
+chat or a self-reported "tests passed" line.
+
+| Layer | What it enforces |
+| ---- | ---- |
+| Local hooks | `pre-commit` and `pre-push` call the same guardrail runner against the current diff. |
+| CI | `.github/workflows/blueprint-guardrails.yml` runs strict diff checks on pull requests. |
+| External review | `BLUEPRINT_AI_REVIEW_CMD` can call another AI reviewer and write `blueprint/reviews/current-diff-review.md`. |
+| Claim checks | Optional `blueprint/reviews/agent-claims.md` is compared with the real changed files. |
+| PR template | Pull requests must explain why the change is needed, what drift was checked, and where review evidence lives. |
+
+The guardrails are designed to fail on objective problems and warn on heuristic
+signals:
+
+- **Blocks** - protected branch commits, source changes without an active spec,
+  source changes before the overview exists, placeholder external review in
+  strict CI, and claims that contradict the diff.
+- **Warnings** - workflow-file changes that need adapter symmetry review,
+  missing external review in local mode, and possible prop drilling.
+- **Strict CI** - turns the external review requirement into a hard PR gate and
+  can promote architecture heuristics to blockers.
+
+Install the local hooks:
+
+```powershell
+pwsh scripts/guardrails/Install-GitHooks.ps1
+```
+
+Run the guardrails manually:
+
+```powershell
+pwsh scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode ci
+```
+
+Generate an external review after configuring a reviewer command:
+
+```powershell
+$env:BLUEPRINT_AI_REVIEW_CMD = "your-reviewer-command"
+pwsh scripts/guardrails/Request-ExternalAiReview.ps1
+```
+
+The reviewer command receives the generated prompt file path as its first
+argument and writes Markdown to stdout. In CI, setting
+`BLUEPRINT_REQUIRE_EXTERNAL_AI_REVIEW=1` makes that review artifact a hard gate.
+
 The diagram shows the whole workflow. `/overview` happens after planning and only
 re-runs when the plans change; the repeating loop starts at `/feature`.
 

@@ -1,0 +1,35 @@
+{
+  "protectedBranches": ["main", "master"],
+  "externalReview": {
+    "artifact": "blueprint/reviews/current-diff-review.md",
+    "commandEnv": "BLUEPRINT_AI_REVIEW_CMD",
+    "strictEnv": "BLUEPRINT_REQUIRE_EXTERNAL_AI_REVIEW"
+  },
+  "claimReport": {
+    "artifact": "blueprint/reviews/agent-claims.md"
+  },
+  "propDrilling": {
+    "maxPropsOnComponent": 8,
+    "repeatedPropThreshold": 3,
+    "failInStrictMode": true
+  },
+  "sourcePathPrefixes": [
+    "app/",
+    "src/",
+    "components/",
+    "pages/",
+    "lib/",
+    "server/",
+    "client/",
+    "api/",
+    "prisma/",
+    "db/"
+  ],
+  "workflowPathPrefixes": [
+    ".agents/",
+    ".claude/",
+    "blueprint/",
+    ".github/workflows/",
+    "scripts/guardrails/"
+  ]
+}

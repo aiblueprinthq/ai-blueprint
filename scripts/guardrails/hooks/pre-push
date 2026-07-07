@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+if command -v pwsh >/dev/null 2>&1; then
+  pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode pre-push
+elif command -v powershell >/dev/null 2>&1; then
+  powershell -NoProfile -ExecutionPolicy Bypass -File scripts/guardrails/Invoke-BlueprintGuardrails.ps1 -Mode pre-push
+else
+  echo "Blueprint guardrails require PowerShell. Install PowerShell or run scripts/guardrails/Invoke-BlueprintGuardrails.ps1 manually."
+  exit 1
+fi
