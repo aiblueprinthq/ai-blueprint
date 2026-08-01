@@ -7,7 +7,25 @@ const claudeSkillsRoot = path.join(repoRoot, ".claude", "skills");
 const requiredPaths = [
   "AGENTS.md",
   "CLAUDE.md",
+  "CHANGELOG.md",
+  "CODE_OF_CONDUCT.md",
+  "CONTRIBUTING.md",
+  "LICENSE",
   "README.md",
+  "SECURITY.md",
+  "SUPPORT.md",
+  ".github/ISSUE_TEMPLATE/bug_report.yml",
+  ".github/ISSUE_TEMPLATE/config.yml",
+  ".github/ISSUE_TEMPLATE/feature_request.yml",
+  ".github/ISSUE_TEMPLATE/question.yml",
+  ".github/PULL_REQUEST_TEMPLATE.md",
+  ".github/release.yml",
+  ".github/workflows/publish.yml",
+  ".github/workflows/validate.yml",
+  "assets/mark-dark.svg",
+  "assets/mark-light.svg",
+  "assets/social-preview.png",
+  "assets/social-preview.svg",
   "blueprint/build-plan.md",
   "blueprint/project-plan.md",
   "blueprint/context/ai-interaction.md",
@@ -19,6 +37,7 @@ const requiredPaths = [
   "blueprint/history/fixes/README.md",
   "blueprint/history/rollbacks/README.md",
   "packages/create-ai-blueprint/bin/create-ai-blueprint.js",
+  "packages/create-ai-blueprint/LICENSE",
   "packages/create-ai-blueprint/lib/update.js",
   "packages/create-ai-blueprint/package.json"
 ];
@@ -47,6 +66,7 @@ async function main() {
   await validateSkillMetadata(skills);
   await validateCommandInventories(skills);
   await validateVerificationContract();
+  await validateRepositoryPolish();
   const importCount = await validateClaudeImports();
   const referenceCount = await validateSkillReferences(codexFiles);
   await validatePackageMetadata();
@@ -270,7 +290,14 @@ async function validatePackageMetadata() {
   const metadata = JSON.parse(
     await fs.readFile(path.join(packageRoot, "package.json"), "utf8")
   );
-  const requiredFiles = ["bin/", "lib/", "template/", "README.md", "package.json"];
+  const requiredFiles = [
+    "bin/",
+    "lib/",
+    "template/",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ];
   const requiredScripts = ["test", "prepare-template", "prepack", "postpack"];
 
   if (metadata.bin?.["create-ai-blueprint"] !== "bin/create-ai-blueprint.js") {
@@ -289,10 +316,75 @@ async function validatePackageMetadata() {
     }
   }
 
+  if (metadata.license !== "MIT") {
+    throw new Error("Package license must be MIT");
+  }
+
+  if (metadata.homepage !== "https://ai-blueprint.dev") {
+    throw new Error("Package homepage must point to the official site");
+  }
+
+  if (metadata.author !== "Brad Traversy") {
+    throw new Error("Package author metadata is missing");
+  }
+
+  for (const keyword of [
+    "ai-coding",
+    "claude-code",
+    "context-engineering",
+    "spec-driven-development"
+  ]) {
+    if (!metadata.keywords?.includes(keyword)) {
+      throw new Error(`Package keyword is missing: ${keyword}`);
+    }
+  }
+
   const binStats = await fs.stat(path.join(packageRoot, "bin", "create-ai-blueprint.js"));
 
   if (process.platform !== "win32" && (binStats.mode & 0o111) === 0) {
     throw new Error("Installer CLI is not executable");
+  }
+}
+
+async function validateRepositoryPolish() {
+  const [rootLicense, packageLicense, packageMetadata, changelog, publishWorkflow] =
+    await Promise.all([
+      fs.readFile(path.join(repoRoot, "LICENSE")),
+      fs.readFile(path.join(repoRoot, "packages", "create-ai-blueprint", "LICENSE")),
+      fs.readFile(
+        path.join(repoRoot, "packages", "create-ai-blueprint", "package.json"),
+        "utf8"
+      ),
+      fs.readFile(path.join(repoRoot, "CHANGELOG.md"), "utf8"),
+      fs.readFile(path.join(repoRoot, ".github", "workflows", "publish.yml"), "utf8")
+    ]);
+
+  if (!rootLicense.equals(packageLicense)) {
+    throw new Error("Root and npm package license files differ");
+  }
+
+  const version = JSON.parse(packageMetadata).version;
+
+  if (!changelog.includes(`## [${version}]`)) {
+    throw new Error(`CHANGELOG.md does not include package version ${version}`);
+  }
+
+  if (!publishWorkflow.includes("gh release create")) {
+    throw new Error("Publish workflow does not create a GitHub release");
+  }
+
+  const preview = await fs.readFile(path.join(repoRoot, "assets", "social-preview.png"));
+
+  if (preview.length >= 1_000_000) {
+    throw new Error("Social preview must remain under 1 MB");
+  }
+
+  if (
+    preview.toString("ascii", 1, 4) !== "PNG" ||
+    preview.readUInt32BE(16) !== 1280 ||
+    preview.readUInt32BE(20) !== 640
+  ) {
+    throw new Error("Social preview must be a 1280x640 PNG");
   }
 }
 

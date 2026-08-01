@@ -2,6 +2,18 @@
 
 Install AI Blueprint into an already scaffolded app.
 
+[![npm version](https://img.shields.io/npm/v/create-ai-blueprint?style=flat-square&color=155eef)](https://www.npmjs.com/package/create-ai-blueprint)
+[![Validate Blueprint](https://github.com/bradtraversy/ai-blueprint/actions/workflows/validate.yml/badge.svg)](https://github.com/bradtraversy/ai-blueprint/actions/workflows/validate.yml)
+[![MIT license](https://img.shields.io/npm/l/create-ai-blueprint?style=flat-square&color=155eef)](LICENSE)
+
+[Official site](https://ai-blueprint.dev) |
+[Documentation](https://ai-blueprint.dev/docs/) |
+[Repository](https://github.com/bradtraversy/ai-blueprint) |
+[Changelog](https://github.com/bradtraversy/ai-blueprint/blob/main/CHANGELOG.md)
+
+Requires Node.js 18 or newer. Run the installer from an application that has
+already been scaffolded and initialized as a Git repository.
+
 ```bash
 npx create-ai-blueprint@latest
 ```
@@ -41,6 +53,14 @@ gates.
 
 If you install the Blueprint while Claude Code is already open in the project,
 restart Claude Code in that folder so the newly added project skills appear.
+
+## Tool support
+
+| Tool | Installed adapter | Invocation |
+| --- | --- | --- |
+| Codex | `.agents/skills/` | `$feature`, `$implement`, or plain language |
+| Claude Code | `.claude/skills/` | `/feature`, `/implement`, and other slash commands |
+| Other tools | `AGENTS.md` plus readable skill files | Ask the agent to follow the matching `SKILL.md` |
 
 ## Options
 
@@ -90,3 +110,19 @@ stored under `blueprint/.state/backups/` and ignored by git.
 The first update of a legacy install creates the manifest. Files that already
 match the current package are adopted automatically. Differing files remain
 conflicts so local changes are not lost.
+
+## Help and contributing
+
+- Read the [full documentation](https://ai-blueprint.dev/docs/).
+- Report reproducible problems through the repository's
+  [issue forms](https://github.com/bradtraversy/ai-blueprint/issues/new/choose).
+- Follow the repository's
+  [security policy](https://github.com/bradtraversy/ai-blueprint/security/policy)
+  for private vulnerability reports.
+- Read the
+  [contribution guide](https://github.com/bradtraversy/ai-blueprint/blob/main/CONTRIBUTING.md)
+  before opening a pull request.
+
+## License
+
+MIT

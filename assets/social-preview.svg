@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">AI Blueprint</title>
+  <desc id="desc">Build with AI, stay in control.</desc>
+  <rect width="1280" height="640" fill="#f5f6f3"/>
+  <g stroke="#155eef" stroke-opacity=".1">
+    <path d="M0 80h1280M0 160h1280M0 240h1280M0 320h1280M0 400h1280M0 480h1280M0 560h1280M80 0v640M160 0v640M240 0v640M320 0v640M400 0v640M480 0v640M560 0v640M640 0v640M720 0v640M800 0v640M880 0v640M960 0v640M1040 0v640M1120 0v640M1200 0v640"/>
+  </g>
+  <path fill="#155eef" d="M96 88h88L139 228H96zM220 88h15v140h-60z"/>
+  <text x="96" y="372" fill="#121817" font-family="Inter,Arial,sans-serif" font-size="88" font-weight="700" letter-spacing="-4">Build with AI.</text>
+  <text x="96" y="472" fill="#155eef" font-family="Inter,Arial,sans-serif" font-size="88" font-weight="700" letter-spacing="-4">Stay in control.</text>
+  <text x="100" y="546" fill="#45504d" font-family="IBM Plex Mono,monospace" font-size="24">AI BLUEPRINT / FILE-BACKED DEVELOPMENT WORKFLOW</text>
+</svg>

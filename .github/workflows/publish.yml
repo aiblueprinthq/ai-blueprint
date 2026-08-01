@@ -8,10 +8,12 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   publish:
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -31,5 +33,29 @@ jobs:
         if: github.ref_type == 'tag'
         run: node -e "const v = require('./packages/create-ai-blueprint/package.json').version; const t = process.env.GITHUB_REF_NAME; if (t !== 'v' + v) { console.error('Tag ' + t + ' does not match package version ' + v); process.exit(1); }"
       - name: Publish to npm
-        run: npm publish
+        run: |
+          package_version=$(node -p "require('./package.json').version")
+          if npm view "create-ai-blueprint@$package_version" version >/dev/null 2>&1; then
+            echo "create-ai-blueprint@$package_version is already published."
+          else
+            npm publish
+          fi
         working-directory: packages/create-ai-blueprint
+
+  release:
+    if: github.ref_type == 'tag'
+    needs: publish
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub release
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "GitHub release $GITHUB_REF_NAME already exists."
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+          fi

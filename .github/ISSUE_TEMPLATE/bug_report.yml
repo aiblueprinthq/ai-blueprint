@@ -1,0 +1,78 @@
+name: Bug report
+description: Report a reproducible problem with the installer or workflow.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Remove credentials, private code, and personal data from every field and attachment.
+  - type: checkboxes
+    id: before-submitting
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues for this problem.
+          required: true
+        - label: I confirmed the problem on the latest published version when practical.
+          required: true
+        - label: I removed secrets and private repository content from this report.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: AI Blueprint version
+      description: Run `npm view create-ai-blueprint version` or check `blueprint/.state/manifest.json`.
+      placeholder: 0.6.0
+    validations:
+      required: true
+  - type: dropdown
+    id: adapter
+    attributes:
+      label: Adapter
+      options:
+        - Codex
+        - Claude Code
+        - Both adapters
+        - Other or manual SKILL.md usage
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the operating system, Node.js version, and AI coding tool version.
+      placeholder: Ubuntu 24.04, Node.js 22.17.0, Codex desktop
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the problem and its effect.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest sequence that reliably reproduces the problem.
+      placeholder: |
+        1. Scaffold a project with...
+        2. Run...
+        3. Invoke...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Sanitized output
+      description: Paste relevant errors or logs after removing secrets and private data.
+      render: shell

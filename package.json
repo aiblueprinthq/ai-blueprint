@@ -2,6 +2,7 @@
   "name": "ai-blueprint-maintainer",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "description": "Maintainer validation commands for AI Blueprint.",
   "scripts": {
     "check": "node scripts/check-blueprint.js",

@@ -1,13 +1,38 @@
-# AI Blueprint
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/mark-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/mark-light.svg">
+    <img src="assets/mark-light.svg" alt="AI Blueprint" width="64" height="64">
+  </picture>
+</p>
 
-A starter and repeatable workflow for building real software with an AI assistant,
-**without vibe coding**.
+<h1 align="center">AI Blueprint</h1>
 
-[Official site](https://ai-blueprint.dev) | [Documentation](https://ai-blueprint.dev/docs/)
+<p align="center"><strong>A file-backed, spec-driven workflow for building real software with AI while staying in control.</strong></p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/create-ai-blueprint"><img src="https://img.shields.io/npm/v/create-ai-blueprint?style=flat-square&color=155eef" alt="npm version"></a>
+  <a href="https://github.com/bradtraversy/ai-blueprint/actions/workflows/validate.yml"><img src="https://github.com/bradtraversy/ai-blueprint/actions/workflows/validate.yml/badge.svg" alt="Validate Blueprint"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/bradtraversy/ai-blueprint?style=flat-square&color=155eef" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="https://ai-blueprint.dev">Official site</a> |
+  <a href="https://ai-blueprint.dev/docs/">Documentation</a> |
+  <a href="https://www.npmjs.com/package/create-ai-blueprint">npm</a> |
+  <a href="https://github.com/bradtraversy/ai-blueprint/releases">Releases</a> |
+  <a href="CHANGELOG.md">Changelog</a>
+</p>
 
 You provide two short planning docs. The AI turns them into project context,
 feature specs, and build steps. You build one feature at a time, review every
 spec before code exists, and review every diff before it lands.
+
+Install it inside an already scaffolded Git repository:
+
+```bash
+npx create-ai-blueprint@latest
+```
 
 ## What this is
 
@@ -42,9 +67,38 @@ helping you write.
 | Tool adapters | Codex uses `.agents/skills`; Claude Code uses `.claude/skills`. |
 | Optional visibility | Commit the workflow files for portability, or keep them local with `.gitignore`. |
 
+## Contents
+
+- [What this is](#what-this-is)
+- [Quick start](#quick-start)
+- [Tool support](#tool-support)
+- [The AI workflow](#the-ai-workflow)
+- [See it in action](#see-it-in-action)
+- [Visual overview](#visual-overview)
+- [The two files you own](#the-two-files-you-own)
+- [What gets generated](#what-gets-generated)
+- [Using the workflow](#using-the-workflow)
+- [Command reference](#command-reference)
+- [Automatic GitHub checks](#automatic-github-checks)
+- [Testing](#testing)
+- [Code quality audits](#code-quality-audits)
+- [Manual try guides](#manual-try-guides)
+- [Deployment readiness](#deployment-readiness)
+- [Picking up where you left off](#picking-up-where-you-left-off)
+- [File map](#file-map)
+- [Support and contributing](#support-and-contributing)
+- [License](#license)
+- [Notes](#notes)
+
 ## Quick start
 
 Scaffold the app first, then install the Blueprint.
+
+Prerequisites:
+
+- Node.js 18 or newer
+- an application scaffolded with the stack of your choice
+- a Git repository for that application
 
 > [!IMPORTANT]
 > Scaffold your app first, then install the Blueprint. Do not run a framework
@@ -101,7 +155,9 @@ In Codex, invoke it as `$onboard`. In Claude Code, invoke it as `/onboard`.
 [blueprint/context/ai-interaction.md](blueprint/context/ai-interaction.md). Adjust
 anything `/onboard` flagged or anything that does not match how you want to work.
 If something feels off, run `/doctor`; it is a read-only health check for the
-Blueprint setup.
+Blueprint setup. If the app has logic worth testing but no unit test runner, run
+`/tests` now. It is a one-time setup step; future implementation work uses the
+configured test command automatically.
 
 **5. Plan the app.** Fill in the two files you own:
 
@@ -130,11 +186,12 @@ at a time:
 /feature
 /implement
 /check
+/audit current
 /complete
 ```
 
-That loop specs the next feature, builds it, proves it works, then archives and
-merges it.
+That loop specs the next feature, builds it, proves the behavior, reviews the
+changed code, then archives and merges it.
 
 In Codex, invoke the same steps as skills (`$overview`, `$feature`, `$implement`,
 `$check`, `$complete`) or ask naturally, such as "run the overview." In Claude
@@ -181,20 +238,32 @@ Backups are stored under `blueprint/.state/backups/` and ignored by git.
 Older installs without a manifest can use the same command. Matching files are
 adopted into the manifest, while differing managed files are treated as conflicts.
 
+## Tool support
+
+| Tool | Support | Invocation |
+| --- | --- | --- |
+| Codex | Native project skills in `.agents/skills/` | `$feature`, `$implement`, or plain language |
+| Claude Code | Native project skills in `.claude/skills/` | `/feature`, `/implement`, and other slash commands |
+| Other AGENTS.md-aware tools | Shared project instructions plus readable skill files | Ask the agent to follow the matching `SKILL.md` |
+
+Install one adapter or both. The workflow state under `blueprint/` stays
+tool-independent, so a project can move between supported agents without moving
+its plan or history back into chat.
+
 ## The AI workflow
 
 AI loops are popular because the assistant can plan, act, check the result, and
 iterate. This blueprint turns that idea into a project workflow with human review
 gates and a written history.
 
-The core build loop is:
+The recommended build loop is:
 
 ```text
-/feature -> review spec -> /implement -> /check -> /complete
+/feature -> review spec -> /implement -> /check -> /audit current -> /complete
 ```
 
-Use `/try` when you want a manual review path, `/audit` when you want a read-only
-code quality pass before closing the work, and `/release` after a completed
+Use `/try` when you want a manual review path. Use a broader `/audit` scope when
+you want to look beyond the current feature. Run `/release` after a completed
 feature or milestone when you want Render or Vercel deployment prep.
 
 For unplanned bugs or small changes, use the fix loop:
@@ -217,11 +286,35 @@ In this repo, **the build loop** means:
   dependency risk, and writes a guarded reversal spec.
 - **`/implement`** builds the current spec one reviewed step at a time.
 - **`/check`** runs the real app and proves the done-whens.
+- **`/audit current`** reviews the complete feature-branch delta and records
+  actionable findings before the work closes.
 - **`/complete`** archives the spec, commits the finished work, and merges with
   your approval.
 
 The loop is the control system. The AI can keep iterating, but only inside the
 current spec, with observable checks and review gates.
+
+## See it in action
+
+The workflow makes each handoff visible instead of hiding it inside one long AI
+conversation:
+
+```text
+You: Run the next feature.
+AI:  Wrote blueprint/context/current-feature.md and stopped for review.
+
+You: The spec looks good. Implement step 1.
+AI:  Built step 1, ran its checks, and returned the diff for review.
+
+You: Run the check.
+AI:  Verified each done-when and reported the evidence.
+
+You: Audit the current feature.
+AI:  Reviewed the branch delta and recorded any actionable findings.
+
+You: Complete it.
+AI:  Ran the final gate, archived the spec, and asked before merging.
+```
 
 ## Visual overview
 
@@ -309,10 +402,12 @@ Then repeat the build loop for each feature:
 4. Run **`/check`** when you want an outside proof pass against the real app.
 5. Run **`/try`** when you want the manual review path: where to go, what to
    click or run, and what to expect.
-6. Run **`/complete`** when the feature is done. It archives the spec, checks off
+6. Run **`/audit current`** to review the complete feature-branch delta before
+   closing the work. Resolve or explicitly disposition its findings first.
+7. Run **`/complete`** when the feature is done. It archives the spec, checks off
    the build plan, commits the finished work, and squash-merges with your
    go-ahead. After the merge, it must ask separately before pushing main.
-7. Optionally run **`/release render`** or **`/release vercel`** when you want
+8. Optionally run **`/release render`** or **`/release vercel`** when you want
    local deployment config and a provider-specific readiness check.
 
 ### Fixes
@@ -691,6 +786,21 @@ local files.
 When editing shared workflow behavior, keep the matching files in `.agents/skills`
 and `.claude/skills` aligned. Tool-specific invocation text is fine, but the
 actual build loop should stay the same across both adapters.
+
+## Support and contributing
+
+- Read the [documentation](https://ai-blueprint.dev/docs/) for setup, command,
+  and troubleshooting guidance.
+- Follow [SUPPORT.md](SUPPORT.md) for usage questions, reproducible bugs, and
+  feature requests.
+- Follow [SECURITY.md](SECURITY.md) to report suspected vulnerabilities
+  privately.
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+- Review [CHANGELOG.md](CHANGELOG.md) for published package history.
+
+## License
+
+AI Blueprint is available under the [MIT License](LICENSE).
 
 ## Notes
 

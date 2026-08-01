@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AI Blueprint documentation
+    url: https://ai-blueprint.dev/docs/
+    about: Check the guides and command reference before opening an issue.
+  - name: Security vulnerability
+    url: https://github.com/bradtraversy/ai-blueprint/security/advisories/new
+    about: Report suspected vulnerabilities privately. Do not open a public issue.

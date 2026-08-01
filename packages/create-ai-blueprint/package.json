@@ -1,9 +1,10 @@
 {
   "name": "create-ai-blueprint",
   "version": "0.6.0",
-  "description": "Install AI Blueprint into a scaffolded app.",
+  "description": "Install a file-backed, spec-driven AI development workflow into a scaffolded app.",
   "license": "MIT",
-  "homepage": "https://github.com/bradtraversy/ai-blueprint#readme",
+  "author": "Brad Traversy",
+  "homepage": "https://ai-blueprint.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bradtraversy/ai-blueprint.git",
@@ -14,10 +15,14 @@
   },
   "keywords": [
     "ai",
+    "ai-coding",
     "blueprint",
     "codex",
     "claude",
+    "claude-code",
     "agent",
+    "context-engineering",
+    "spec-driven-development",
     "workflow",
     "scaffold"
   ],
@@ -36,6 +41,7 @@
     "lib/",
     "template/",
     "README.md",
+    "LICENSE",
     "package.json"
   ],
   "publishConfig": {
