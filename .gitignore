@@ -1,2 +1,3 @@
 node_modules/
+packages/create-ai-blueprint/dist/
 scripts/e2e/runs/

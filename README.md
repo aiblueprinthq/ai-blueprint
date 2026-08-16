@@ -96,7 +96,7 @@ Scaffold the app first, then install the Blueprint.
 
 Prerequisites:
 
-- Node.js 18 or newer
+- Node.js 24 or newer
 - an application scaffolded with the stack of your choice
 - a Git repository for that application
 

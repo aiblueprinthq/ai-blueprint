@@ -43,7 +43,7 @@ body:
     attributes:
       label: Environment
       description: Include the operating system, Node.js version, and AI coding tool version.
-      placeholder: Ubuntu 24.04, Node.js 22.17.0, Codex desktop
+      placeholder: Ubuntu 24.04, Node.js 24.x, Codex desktop
     validations:
       required: true
   - type: textarea

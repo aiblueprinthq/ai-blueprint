@@ -4,15 +4,22 @@
   "private": true,
   "license": "MIT",
   "description": "Maintainer validation commands for AI Blueprint.",
+  "type": "module",
   "scripts": {
-    "check": "node scripts/check-blueprint.js",
-    "check:static": "node scripts/validate-blueprint.js",
+    "check": "npm run typecheck && tsx scripts/check-blueprint.ts",
+    "check:static": "tsx scripts/validate-blueprint.ts",
     "test": "npm --prefix packages/create-ai-blueprint test",
-    "test:routing": "node --test scripts/evals/routing.test.js && node scripts/evals/routing.js --min-rank1 90",
-    "test:package": "node scripts/smoke-package.js",
-    "test:e2e": "node scripts/e2e/run.js"
+    "test:routing": "tsx --test scripts/evals/routing.test.ts && tsx scripts/evals/routing.ts --min-rank1 90",
+    "test:package": "tsx scripts/smoke-package.ts",
+    "test:e2e": "tsx scripts/e2e/run.ts",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^6.0.2"
   }
 }

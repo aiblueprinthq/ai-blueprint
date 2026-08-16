@@ -21,8 +21,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           registry-url: https://registry.npmjs.org
+      - name: Install dependencies
+        run: npm ci
       - name: Update npm for trusted publishing
         run: |
           npm install -g npm@latest
@@ -34,7 +36,7 @@ jobs:
         run: node -e "const v = require('./packages/create-ai-blueprint/package.json').version; const t = process.env.GITHUB_REF_NAME; if (t !== 'v' + v) { console.error('Tag ' + t + ' does not match package version ' + v); process.exit(1); }"
       - name: Publish to npm
         run: |
-          package_version=$(node -p "require('./package.json').version")
+          package_version=$(node -p "require('./packages/create-ai-blueprint/package.json').version")
           if npm view "create-ai-blueprint@$package_version" version >/dev/null 2>&1; then
             echo "create-ai-blueprint@$package_version is already published."
           else

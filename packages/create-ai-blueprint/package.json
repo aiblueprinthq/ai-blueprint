@@ -4,6 +4,7 @@
   "description": "Install a file-backed, spec-driven AI development workflow into a scaffolded app.",
   "license": "MIT",
   "author": "Brad Traversy",
+  "type": "module",
   "homepage": "https://ai-blueprint.dev",
   "repository": {
     "type": "git",
@@ -27,18 +28,18 @@
     "scaffold"
   ],
   "bin": {
-    "create-ai-blueprint": "bin/create-ai-blueprint.js"
+    "create-ai-blueprint": "dist/bin/create-ai-blueprint.js"
   },
   "scripts": {
-    "test": "node --test",
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test test/update.test.ts",
     "check:pack": "npm pack --dry-run",
-    "prepare-template": "node scripts/prepare-template.js",
-    "prepack": "node scripts/prepare-template.js",
-    "postpack": "node scripts/clean-template.js"
+    "prepare-template": "tsx scripts/prepare-template.ts",
+    "prepack": "npm run build && npm run prepare-template",
+    "postpack": "tsx scripts/clean-template.ts"
   },
   "files": [
-    "bin/",
-    "lib/",
+    "dist/",
     "template/",
     "README.md",
     "LICENSE",
@@ -48,6 +49,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
   }
 }

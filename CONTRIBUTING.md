@@ -1,7 +1,7 @@
 # Contributing
 
 AI Blueprint ships workflow files and a dependency-free Node.js installer. The
-repository validation gate requires Node.js 18 or newer and does not require an
+repository validation gate requires Node.js 24 or newer and does not require an
 install step.
 
 ## Before you start

@@ -96,10 +96,34 @@ same way if the file is missing (an older install):
 
     _No findings recorded. `/audit` appends findings here when it finds them._
 
-Then reset `blueprint/context/current-feature.md` to its current stub ("nothing
-in progress"), including `/rollback` alongside `/feature` and `/fix`. Don't
-commit yet; the next step makes one work commit covering the code and these doc
-changes. The archive is the build history.
+After archiving resolved findings, replace both context files with the canonical
+stubs below. Do not paraphrase either file, retain closed findings, or substitute
+an abbreviated "no work" stub. Before committing, read both files and confirm
+they exactly match these contents:
+
+    # Current Feature
+
+    > **Generated file.** Holds the one feature, fix, or rollback being built right now. Run
+    > `/feature <number-or-name>` to spec a build-plan feature, or `/fix "<bug>"` for
+    > an ad-hoc fix. Use `/rollback <completed-feature>` to plan a safe reversal.
+    > Build one thing at a time; `/complete` archives it under
+    > `blueprint/history/` and resets this file.
+
+    _Nothing in progress. Run `/feature`, `/fix`, or `/rollback` to start._
+
+    # Findings
+
+    > **Generated file.** The findings ledger: review findings raised by `/audit`
+    > against the work in progress, each with a durable ID, severity (P0-P3), and
+    > status. `/implement` marks repaired findings `fixed`, a later `/audit` pass
+    > moves them to `closed`, and `/complete` refuses to merge while any P0 or P1
+    > finding is `open` or `fixed`, then archives resolved findings with the work
+    > and resets this file.
+
+    _No findings recorded. `/audit` appends findings here when it finds them._
+
+Do not commit yet; the next step makes one work commit covering the code and
+these documentation changes. The archive is the build history.
 
 **Discard consumed prototypes.** If this feature built the look from `prototypes/`
 - its Design reference pointed there and an early step ported `prototypes/theme.css`
