@@ -16,6 +16,9 @@ published `create-ai-blueprint` package.
   isolating root causes, and handing confirmed repairs to `/fix` or `/implement`.
 - Added focused `quality`, `security`, `performance`, and `tests` lenses to
   `/audit` and `$audit`, independently selectable from the audit scope.
+- Added the optional `/discovery` and `$discovery` workflow for developing
+  detailed project plans through a deep, adaptive conversation, with full draft
+  review and explicit approval before either user-owned plan is written.
 
 ### Changed
 
@@ -24,6 +27,9 @@ published `create-ai-blueprint` package.
 - Expanded npm metadata and repository validation for the public trust surface.
 - Added routing evaluations to the automatic repository gate while keeping all
   maintainer evaluation files out of the published package.
+- Clarified that users may write plans directly or develop them through any AI
+  conversation, and that `/discovery` never changes the existing manual path or
+  becomes a prerequisite for `/overview`.
 
 ## [0.6.0] - 2026-07-26
 

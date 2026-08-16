@@ -24,9 +24,10 @@
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
-You provide two short planning docs. The AI turns them into project context,
-feature specs, and build steps. You build one feature at a time, review every
-spec before code exists, and review every diff before it lands.
+You provide two planning docs, with as much product depth as the project needs.
+The AI turns them into project context, feature specs, and build steps. You
+build one feature at a time, review every spec before code exists, and review
+every diff before it lands.
 
 Install it inside an already scaffolded Git repository:
 
@@ -164,10 +165,18 @@ configured test command automatically.
 - [blueprint/project-plan.md](blueprint/project-plan.md)
 - [blueprint/build-plan.md](blueprint/build-plan.md)
 
-The project plan can be rough notes. The build plan should become a numbered
-checkbox list because the build loop uses checked and unchecked items to know
-what is next. If your first pass is just bullets, `/overview` will flag that and
-can propose a cleaned-up checkbox version before generating context.
+The project plan can be rough notes or a detailed product plan with rationale,
+constraints, examples, edge cases, and exclusions. The build plan should remain
+a numbered, high-level checkbox list because the build loop uses checked and
+unchecked items to know what is next. If your first pass is just bullets,
+`/overview` will flag that and can propose a cleaned-up checkbox version before
+generating context.
+
+You can write these plans directly or develop them through any AI conversation.
+If you want a structured, deep planning conversation, run `/discovery` or
+`$discovery` after onboarding. It asks adaptive questions over as many turns as
+needed, shows complete plan drafts for review, and writes only after explicit
+approval. It is optional and never replaces or weakens the direct planning path.
 
 **6. Generate the overview once.** This checks the two planning docs, helps shape
 the build plan if needed, then turns them into
@@ -326,10 +335,11 @@ AI:  Ran the final gate, archived the spec, and asked before merging.
 ## Visual overview
 
 The diagram shows the fresh-project workflow. `/overview` happens after planning
-and only re-runs when the plans change. The repeating loop starts at `/feature`
-or `/fix`, then moves through implementation, proof, manual review, audit,
-completion, and history. For an existing codebase, use `/adopt` instead of
-`/onboard`.
+and only re-runs when the plans change. Planning can be done directly, through
+any AI conversation, or with the optional `/discovery` skill. The repeating loop
+starts at `/feature` or `/fix`, then moves through implementation, proof, manual
+review, audit, completion, and history. For an existing codebase, use `/adopt`
+instead of `/onboard`.
 
 ![AI Blueprint fresh-project workflow](assets/ai-blueprint-workflow.png)
 
@@ -337,12 +347,13 @@ completion, and history. For an existing codebase, use `/adopt` instead of
 
 | File | What it is |
 | ---- | ---------- |
-| [blueprint/project-plan.md](blueprint/project-plan.md) | The **what and why**: problem, users, features, data, tech, monetization, and UI/UX. Answer each section in a line or two. |
+| [blueprint/project-plan.md](blueprint/project-plan.md) | The **what and why**: problem, users, features, data, tech, monetization, and UI/UX. Use as much detail as the project needs. |
 | [blueprint/build-plan.md](blueprint/build-plan.md) | The **ordered feature list**: one line per feature, in rough build order. No deep detail here. |
 
-These two files are the inputs you maintain. Draft them yourself or with the AI.
-Your job is to decide and own what goes in them. The AI can help with wording,
-expansion, and tradeoffs.
+These two files are the inputs you maintain. Draft them yourself, develop them
+through any AI conversation, or optionally run `/discovery` for a guided deep
+planning session. Your job is to decide and own what goes in them. The AI can
+help with wording, expansion, and tradeoffs, but `/discovery` is never required.
 
 The build plan is a living roadmap, not a frozen record of the initial MVP. Keep
 completed items checked and add new unchecked features as the project grows.
@@ -361,8 +372,8 @@ any necessary project-plan edits, and its placement. After you approve the plan
 change, it refreshes the overview and continues by writing the feature spec.
 
 > [!TIP]
-> Keep these files short and decisive. The overview step will turn them into more
-> concrete project context.
+> Keep the build plan concise and trackable. The project plan can be as detailed
+> as needed to preserve the decisions that should guide later feature work.
 
 ## What gets generated
 
@@ -385,7 +396,8 @@ the skill tells you to.
 
 ## Using the workflow
 
-After `/onboard` and after filling in the two planning docs, run `/overview`. It
+After `/onboard` and after filling in the two planning docs directly, through any
+AI conversation, or with the optional `/discovery` skill, run `/overview`. It
 checks that the plans are usable, proposes a normalized checkbox build plan if
 needed, distills the docs into `blueprint/context/project-overview.md`, and
 reports contradictions or gaps under **Open questions**. Answer those questions
@@ -459,6 +471,7 @@ features.
 | Skill | Run it | Does |
 | ----- | ------ | ---- |
 | **/onboard** | once, after installing into a fresh or early project | Detects the stack, updates commands and conventions, reports existing checks, points to optional `/ci` setup, asks whether Blueprint workflow files should be committed or kept local-only, checks `.gitignore`, and tells you what to fill in before `/overview`. |
+| **/discovery** | optionally, before writing or revising the plans | Runs a deep, adaptive planning conversation over as many turns as needed, then shows detailed `project-plan.md` and high-level `build-plan.md` drafts and writes them only after explicit approval. Direct plan writing remains fully supported. |
 | **/doctor** | any time, especially after `/onboard` or when setup feels off | Runs a read-only health check for Blueprint files, adapters, commands, optional verification and CI alignment, root README placement, ignore rules, planning readiness, overview freshness, workflow drift, and git state. |
 | **/adopt** | once, for an existing codebase | Surveys the repo, protects the project README, reports existing checks, points to optional `/ci` setup, and generates the planning docs and coding standards from what already exists. |
 | **/overview** | after writing or editing the plans | Checks plan quality, normalizes rough build-plan bullets when approved, and generates `blueprint/context/project-overview.md`. |
@@ -716,6 +729,7 @@ step in `current-feature.md`.
 │       ├── adopt/             ($adopt: bootstrap from an existing codebase)
 │       ├── doctor/            ($doctor: read-only Blueprint health check)
 │       ├── onboard/           ($onboard: finish fresh-project setup)
+│       ├── discovery/         ($discovery: optional deep project planning)
 │       ├── overview/          ($overview: plans to project-overview.md)
 │       ├── brief/             ($brief: preview a build-plan feature)
 │       ├── feature/           ($feature: build-plan item to current-feature.md)
@@ -737,6 +751,7 @@ step in `current-feature.md`.
 │       ├── adopt/             (/adopt: bootstrap from an existing codebase)
 │       ├── doctor/            (/doctor: read-only Blueprint health check)
 │       ├── onboard/           (/onboard: finish fresh-project setup)
+│       ├── discovery/         (/discovery: optional deep project planning)
 │       ├── overview/          (/overview: plans to project-overview.md)
 │       ├── brief/             (/brief: preview a build-plan feature)
 │       ├── feature/           (/feature: build-plan item to current-feature.md)
@@ -850,11 +865,11 @@ between tools.
 
 Use the native invocation style for your tool:
 
-- Codex: `$onboard`, `$doctor`, `$adopt`, `$overview`, `$brief`, `$feature`,
+- Codex: `$onboard`, `$discovery`, `$doctor`, `$adopt`, `$overview`, `$brief`, `$feature`,
   `$debug`, `$fix`, `$tests`, `$ci`, `$implement`, `$check`, `$try`, `$audit`, `$rollback`, `$complete`,
   `$release`, `$prototype`, `$status`, or plain language like "run the overview."
   Autopilot: `$autopilot`.
-- Claude Code: `/onboard`, `/doctor`, `/adopt`, `/overview`, `/brief`,
+- Claude Code: `/onboard`, `/discovery`, `/doctor`, `/adopt`, `/overview`, `/brief`,
   `/feature`, `/debug`, `/fix`, `/tests`, `/ci`, `/implement`, `/check`, `/try`, `/audit`, `/rollback`,
   `/complete`, `/release`, `/prototype`, `/status`. Autopilot: `/autopilot`.
 - Other tools: ask the agent to follow the matching `SKILL.md`.

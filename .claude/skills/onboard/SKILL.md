@@ -220,6 +220,12 @@ Stop with a concise onboarding report:
   - `blueprint/project-plan.md`
   - `blueprint/build-plan.md`
 
+Make the direct path clear: the user can write or develop those files through
+any conversation, then run `/overview`. Also mention `/discovery` or `$discovery`
+as an optional deep planning conversation for users who want guided help. Do not
+start it, make it a prerequisite, or imply that directly written plans are less
+complete.
+
 End with the next command:
 
 ```text
@@ -235,6 +241,8 @@ $overview
 ## Rules
 
 - Setup files are fair game; planning docs are user-owned.
+- `/discovery` is optional and never runs as part of onboarding. The direct
+  plan-writing path must remain fully supported.
 - Never overwrite real `project-plan.md` or `build-plan.md` content.
 - Never run scaffolders or install dependencies unless the user explicitly asks.
 - Reflect the stack that exists, not the stack the default Blueprint mentions.

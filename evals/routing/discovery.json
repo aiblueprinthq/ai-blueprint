@@ -1,0 +1,12 @@
+{
+  "skill": "discovery",
+  "positive": [
+    { "prompt": "Run /discovery before I write my Blueprint plans", "top_k": 1 },
+    { "prompt": "Guide me through a deep planning interview for this new product before drafting project-plan.md", "top_k": 3 },
+    { "prompt": "Help me develop detailed project and build plans through a long adaptive conversation", "top_k": 3 }
+  ],
+  "negative": [
+    { "prompt": "I already wrote detailed plans directly; run /overview now", "owner": "overview" },
+    { "prompt": "Run /onboard after I overlay Blueprint onto this new app", "owner": "onboard" }
+  ]
+}

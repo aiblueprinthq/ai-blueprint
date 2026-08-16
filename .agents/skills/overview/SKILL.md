@@ -13,11 +13,12 @@ Where this sits in the workflow:
                           written by you)                      session)
 
 You provide two files: `blueprint/project-plan.md` (what & why) and
-`blueprint/build-plan.md` (the ordered feature list), drafted by you or with
-the AI's help; what matters is that you own their content. Everything else in the
-workflow is generated from those two. This skill is the first generation step: it
-distills both plans into `blueprint/context/project-overview.md`, the single doc
-project instructions load at the start of every session.
+`blueprint/build-plan.md` (the ordered feature list), drafted directly, through
+any AI conversation, or with the optional `/discovery` skill. What matters is
+that you own their content. `/discovery` is never required. Everything else in
+the workflow is generated from those two. This skill is the first generation
+step: it distills both plans into `blueprint/context/project-overview.md`, the
+single doc project instructions load at the start of every session.
 
 ## Input
 
@@ -127,6 +128,8 @@ not modify the main app code.
 - **Plans are user-owned.** Do not silently rewrite `project-plan.md` or
   `build-plan.md`. Propose normalized plan text and stop for approval unless the
   user explicitly asked you to clean up the plans.
+- **Discovery is not a gate.** Never require `/discovery` or treat directly
+  written plans as lower quality because the skill was not used.
 - **Build plan must be trackable.** Prefer a numbered checkbox list. If the build
   plan is raw bullets, or still a stub while `project-plan.md` lists the features,
   normalize it and write the reconciled checklist back into `build-plan.md` before

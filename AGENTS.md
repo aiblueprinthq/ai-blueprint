@@ -44,6 +44,7 @@ adapter folders so Codex and Claude Code stay aligned.
 Core skills:
 
 - `onboard` - tune commands, standards, visibility, ignore rules, and tool adapters after overlaying the Blueprint onto a freshly scaffolded or early project
+- `discovery` - optional deep, multi-turn planning conversation that drafts the two user-owned plans only after review and approval; direct plan writing remains fully supported
 - `doctor` - read-only Blueprint health check for setup, adapters, plans, overview freshness, and workflow drift
 - `adopt` - bootstrap the Blueprint into an existing brownfield app with shipped features
 - `overview` - distill the two planning docs into `blueprint/context/project-overview.md`
@@ -63,11 +64,13 @@ Core skills:
 - `prototype` - optional, pre-build static mockups to lock the look
 - `status` - read-only progress summary, workflow drift warning, and suggested next action
 
-In Codex, invoke these as skills (`$onboard`, `$overview`, `$feature`,
+In Codex, invoke these as skills (`$onboard`, `$discovery`, `$overview`, `$feature`,
 `$implement`, and so on) or ask naturally, such as "run the overview." In Claude
-Code, use the slash commands (`/onboard`, `/overview`, `/feature`, and so on). In
-tools without native skills, follow the matching `SKILL.md` manually. The
-conventions in `blueprint/context/` apply however a step is invoked.
+Code, use the slash commands (`/onboard`, `/discovery`, `/overview`, `/feature`,
+and so on). In tools without native skills, follow the matching `SKILL.md`
+manually. The conventions in `blueprint/context/` apply however a step is
+invoked. `/discovery` is never required: users may write detailed plans directly
+or develop them through any conversation before running `/overview`.
 
 Optional explicit-only skill: `autopilot` can run one bounded spec/build/check
 and targeted-audit pass when directly invoked. It may create checkpoint commits

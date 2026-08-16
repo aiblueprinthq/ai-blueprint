@@ -201,7 +201,23 @@ async function validateVerificationContract(): Promise<void> {
   const requirements = new Map([
     [
       ".agents/skills/onboard/SKILL.md",
-      ["Run /ci or $ci when you want automatic GitHub checks."]
+      [
+        "Run /ci or $ci when you want automatic GitHub checks.",
+        "`/discovery` is optional and never runs as part of onboarding"
+      ]
+    ],
+    [
+      ".agents/skills/discovery/SKILL.md",
+      [
+        "This skill is always optional",
+        "Never start it automatically from `/onboard`",
+        "Do not write either file in the same response that first presents them",
+        "stop before generating `blueprint/context/project-overview.md`"
+      ]
+    ],
+    [
+      ".agents/skills/overview/SKILL.md",
+      ["Discovery is not a gate", "Never require `/discovery`"]
     ],
     [
       ".agents/skills/adopt/SKILL.md",

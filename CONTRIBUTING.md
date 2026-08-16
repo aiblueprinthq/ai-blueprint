@@ -1,8 +1,8 @@
 # Contributing
 
 AI Blueprint ships workflow files and a dependency-free Node.js installer. The
-repository validation gate requires Node.js 24 or newer and does not require an
-install step.
+repository validation gate requires Node.js 24 or newer and installed development
+dependencies before running `npm run check`.
 
 ## Before you start
 
@@ -71,6 +71,7 @@ scenario by name when changing a specific skill:
 ```bash
 E2E_ACCEPT_RISK=1 npm run test:e2e -- feature-gate
 E2E_ACCEPT_RISK=1 npm run test:e2e -- audit-lenses
+E2E_ACCEPT_RISK=1 npm run test:e2e -- discovery-optional
 ```
 
 The routing cases, evaluator, and live-agent scenarios are maintainer-only. The

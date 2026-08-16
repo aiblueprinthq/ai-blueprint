@@ -1,0 +1,4 @@
+interface:
+  display_name: "Discovery"
+  short_description: "Develop detailed project plans through conversation"
+  default_prompt: "Use $discovery to guide me through a deep planning conversation before drafting my Blueprint plans."

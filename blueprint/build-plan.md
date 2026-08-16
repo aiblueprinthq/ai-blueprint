@@ -1,6 +1,9 @@
 # Build Plan
 
-> One of the two planning docs you provide. Write it yourself or with the AI's help.
+> One of the two planning docs you provide. Write it directly, develop it through
+> any AI conversation, or optionally run `/discovery`. Keep the items high-level
+> even when `project-plan.md` is detailed; later `/feature` specs hold the depth
+> for each build item.
 
 The features that make up this project, high level and in rough build order, one
 line each, no detail (that comes per feature). Rough is fine at first, but before

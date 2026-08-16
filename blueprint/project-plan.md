@@ -1,13 +1,15 @@
 # Project Plan
 
-> One of the two planning docs you provide. Answer each section in a line or two
-> (a worksheet, not an essay). Draft it yourself or let the AI help you expand and
-> sharpen it; either way, the content is yours to direct. When it's filled in, run
-> `/overview` to generate the project overview from this plus `build-plan.md`.
+> One of the two planning docs you provide. Use as much detail as the project
+> needs, including rationale, constraints, examples, edge cases, and explicit
+> exclusions that should guide later feature work. Draft it directly, develop it
+> through any AI conversation, or optionally run `/discovery` for a guided deep
+> planning session. The content is always yours to direct. When it is filled in,
+> run `/overview` to generate the project overview from this plus `build-plan.md`.
 
 ## 1. Problem - What problem are we solving?
 
-Add the problem that this project solves and it's main purpose
+Add the problem that this project solves and its main purpose
 
 ## 2. Users - Who is this for?
 
