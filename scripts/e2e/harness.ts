@@ -249,8 +249,8 @@ function getAgentName(): AgentName {
   throw new Error(`Unsupported E2E_AGENT: ${configured}. Use "claude" or "copilot".`);
 }
 
-function getDefaultAdapterFlag(): "--both" | "--claude" {
-  return getAgentName() === "copilot" ? "--both" : "--claude";
+function getDefaultAdapterFlag(): "--all" | "--claude" {
+  return getAgentName() === "copilot" ? "--all" : "--claude";
 }
 
 function ensureAgentAvailable(): void {

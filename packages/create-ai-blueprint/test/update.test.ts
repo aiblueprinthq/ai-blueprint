@@ -5,18 +5,33 @@ import path from "node:path";
 import test, { type TestContext } from "node:test";
 
 import {
+  ADAPTER_PROMPT,
+  getTemplateEntries,
   getGlobalCliInstallCommand,
   isGlobalCliInstallConfirmed,
   parseArgs,
   shouldOfferGlobalCliInstall
 } from "../bin/create-ai-blueprint.js";
-import { CONTROL_DIR, MANIFEST_PATH, applyPreparedUpdate, prepareUpdate, readManifest, writeInstallManifest } from "../lib/update.js";
+import {
+  CONTROL_DIR,
+  MANIFEST_PATH,
+  adapterListFromMode,
+  applyPreparedUpdate,
+  prepareUpdate,
+  readManifest,
+  writeInstallManifest
+} from "../lib/update.js";
 
 test("parseArgs supports install and update modes", () => {
+  assert.equal(
+    ADAPTER_PROMPT,
+    "Install which adapter?\n1: Codex\n2: Claude Code\n3: GitHub Copilot\n4: all (default): "
+  );
   assert.equal(parseArgs([]).command, "install");
   assert.deepEqual(parseArgs(["update", "--dry-run"]), {
     adapter: null,
     command: "update",
+    deprecatedBoth: false,
     dryRun: true,
     force: false,
     help: false,
@@ -28,6 +43,7 @@ test("parseArgs supports install and update modes", () => {
   assert.deepEqual(parseArgs(["status", "--json", "--target", "./app"]), {
     adapter: null,
     command: "status",
+    deprecatedBoth: false,
     dryRun: false,
     force: false,
     help: false,
@@ -48,6 +64,32 @@ test("parseArgs supports install and update modes", () => {
     () => parseArgs(["--json"]),
     /--json is available only with the status command/
   );
+  assert.equal(parseArgs(["--copilot"]).adapter, "copilot");
+  assert.equal(parseArgs(["--all"]).adapter, "all");
+  assert.deepEqual(parseArgs(["--both"]), {
+    adapter: "all",
+    command: "install",
+    deprecatedBoth: true,
+    dryRun: false,
+    force: false,
+    help: false,
+    json: false,
+    target: null,
+    version: false,
+    yes: false
+  });
+});
+
+test("Copilot shares the .agents adapter files without managing Copilot instructions", () => {
+  assert.deepEqual(
+    getTemplateEntries("copilot").map((entry) => entry.target),
+    ["AGENTS.md", "blueprint", ".agents"]
+  );
+  assert.deepEqual(
+    getTemplateEntries("all").map((entry) => entry.target),
+    ["AGENTS.md", "blueprint", ".agents", "CLAUDE.md", ".claude"]
+  );
+  assert.deepEqual(adapterListFromMode("all"), ["codex", "claude", "copilot"]);
 });
 
 test("global CLI installation is offered only after an interactive install", () => {
@@ -111,6 +153,76 @@ test("new installs record only Blueprint-owned managed files", async (t) => {
     await fs.readFile(path.join(targetDir, "blueprint/build-plan.md"), "utf8"),
     "Project roadmap\n"
   );
+});
+
+test("Copilot manifests remain distinct from Codex when they share skills", async (t) => {
+  const workspace = await createWorkspace(t);
+  const templateRoot = path.join(workspace, "template");
+  const targetDir = path.join(workspace, "target");
+  const files = {
+    "blueprint/README.md": "Blueprint docs\n",
+    ".agents/skills/check/SKILL.md": "Check skill\n"
+  };
+
+  await writeFiles(templateRoot, files);
+  await writeFiles(targetDir, files);
+  const manifest = await writeInstallManifest({
+    targetDir,
+    templateRoot,
+    version: "1.0.0",
+    adapter: "copilot"
+  });
+
+  assert.deepEqual(manifest.adapters, ["copilot"]);
+  assert.deepEqual(Object.keys(manifest.managedFiles), [
+    ".agents/skills/check/SKILL.md",
+    "blueprint/README.md"
+  ]);
+
+  const prepared = await prepareUpdate({
+    targetDir,
+    templateRoot,
+    version: "1.1.0"
+  });
+
+  assert.deepEqual(prepared.adapters, ["copilot"]);
+});
+
+test("updates preserve pre-Copilot Codex and Claude manifests", async (t) => {
+  const workspace = await createWorkspace(t);
+  const templateRoot = path.join(workspace, "template");
+  const targetDir = path.join(workspace, "target");
+  const files = {
+    "blueprint/README.md": "Blueprint docs\n",
+    ".agents/skills/check/SKILL.md": "Check skill\n",
+    ".claude/skills/check/SKILL.md": "Check skill\n"
+  };
+
+  await writeFiles(templateRoot, files);
+  await writeFiles(targetDir, files);
+  const allManifest = await writeInstallManifest({
+    targetDir,
+    templateRoot,
+    version: "1.0.0",
+    adapter: "all"
+  });
+  await fs.writeFile(
+    path.join(targetDir, MANIFEST_PATH),
+    `${JSON.stringify({ ...allManifest, adapters: ["claude", "codex"] }, null, 2)}\n`
+  );
+
+  const prepared = await prepareUpdate({
+    targetDir,
+    templateRoot,
+    version: "1.1.0"
+  });
+
+  assert.deepEqual(prepared.adapters, ["claude", "codex"]);
+  assert.deepEqual(prepared.desiredManifest.adapters, ["claude", "codex"]);
+
+  await applyPreparedUpdate(prepared);
+
+  assert.deepEqual((await readManifest(targetDir))?.adapters, ["claude", "codex"]);
 });
 
 test("update replaces unchanged managed files and preserves project files", async (t) => {

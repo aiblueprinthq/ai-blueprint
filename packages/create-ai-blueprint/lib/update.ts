@@ -5,8 +5,8 @@ import path from "node:path";
 const CONTROL_DIR = "blueprint/.state";
 const MANIFEST_PATH = `${CONTROL_DIR}/manifest.json`;
 const MANIFEST_SCHEMA_VERSION = 1;
-type Adapter = "codex" | "claude";
-type AdapterMode = Adapter | "both";
+type Adapter = "codex" | "claude" | "copilot";
+type AdapterMode = Adapter | "all";
 
 interface TemplateFile {
   source: string;
@@ -89,12 +89,13 @@ interface InstallManifestOptions {
 const MANAGED_ROOTS: Record<Adapter | "common", readonly string[]> = {
   common: ["blueprint/README.md"],
   codex: [".agents/skills"],
-  claude: [".claude/skills"]
+  claude: [".claude/skills"],
+  copilot: [".agents/skills"]
 };
 
 function adapterListFromMode(adapter: AdapterMode): Adapter[] {
-  if (adapter === "both") {
-    return ["codex", "claude"];
+  if (adapter === "all") {
+    return ["codex", "claude", "copilot"];
   }
 
   return [adapter];
@@ -196,7 +197,7 @@ async function readManifest(targetDir: string): Promise<Manifest | null> {
 }
 
 function validateManifest(manifest: unknown): asserts manifest is Manifest {
-  const validAdapters: readonly Adapter[] = ["codex", "claude"];
+  const validAdapters: readonly Adapter[] = ["codex", "claude", "copilot"];
   const validManagedFiles =
     isRecord(manifest) &&
     isRecord(manifest.managedFiles) &&
@@ -499,7 +500,11 @@ async function detectInstalledAdapters(
   targetDir: string,
   manifest: Manifest | null
 ): Promise<Adapter[]> {
-  const adapters = new Set<Adapter>(manifest?.adapters || []);
+  if (manifest) {
+    return [...manifest.adapters];
+  }
+
+  const adapters = new Set<Adapter>();
 
   if (await pathExists(targetPath(targetDir, ".agents/skills"))) {
     adapters.add("codex");

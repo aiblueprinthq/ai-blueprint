@@ -5,6 +5,16 @@ published `create-ai-blueprint` package.
 
 ## Unreleased
 
+### Added
+
+- Added GitHub Copilot support through the shared `AGENTS.md` and `.agents/skills/`
+  adapter files.
+
+### Changed
+
+- Added `--all` as the default installer mode. Kept `--both` as a deprecated
+  alias for `--all`.
+
 ## [0.9.1] - 2026-08-20
 
 ### Changed

@@ -65,7 +65,7 @@ helping you write.
 | Small diffs | Implementation happens one reviewed step at a time, with proof each step works. |
 | File-backed state | Plans, current work, and history live in markdown files, so context clears are survivable. |
 | Findings gate | `/audit` findings live in a ledger with durable IDs; open or unreviewed P0/P1 findings block `/complete`. |
-| Tool adapters | Codex uses `.agents/skills`; Claude Code uses `.claude/skills`. |
+| Tool adapters | Codex and GitHub Copilot use `.agents/skills`; Claude Code uses `.claude/skills`. |
 | Optional visibility | Commit the workflow files for portability, or keep them local with `.gitignore`. |
 
 ## Contents
@@ -284,9 +284,12 @@ The optional global `blueprint` command is status-only. Continue to use
 | --- | --- | --- |
 | Codex | Native project skills in `.agents/skills/` | `$feature`, `$implement`, or plain language |
 | Claude Code | Native project skills in `.claude/skills/` | `/feature`, `/implement`, and other slash commands |
+| GitHub Copilot | `AGENTS.md` and shared skills in `.agents/skills/` | Ask Copilot to run the matching skill |
 | Other AGENTS.md-aware tools | Shared project instructions plus readable skill files | Ask the agent to follow the matching `SKILL.md` |
 
-Install one adapter or both. The workflow state under `blueprint/` stays
+The installer defaults to all three adapters. Use `--codex`, `--claude`, or
+`--copilot` to install one adapter. `--both` remains as a deprecated alias for
+`--all` and prints a warning. The workflow state under `blueprint/` stays
 tool-independent, so a project can move between supported agents without moving
 its plan or history back into chat.
 
@@ -845,7 +848,7 @@ local files.
 
 When editing shared workflow behavior, keep the matching files in `.agents/skills`
 and `.claude/skills` aligned. Tool-specific invocation text is fine, but the
-actual build loop should stay the same across both adapters.
+actual build loop should stay the same across each adapter.
 
 ## Support and contributing
 
@@ -886,12 +889,13 @@ project plan. The `/prototype` helper can create throwaway static mockups in
 ### Works in other tools
 
 The blueprint is not Claude-specific. `AGENTS.md` is the cross-tool entry point,
-`.agents/skills` exposes the workflow to Codex, and `.claude/skills` exposes it
-to Claude Code.
+`.agents/skills` exposes the workflow to Codex and GitHub Copilot, and
+`.claude/skills` exposes it to Claude Code.
 
-You do not have to keep both adapters. For Codex-only work, keep `AGENTS.md`,
+You do not have to keep all adapters. For Codex-only work, keep `AGENTS.md`,
 `.agents/`, and `blueprint/`. For Claude Code-only work, keep `AGENTS.md`,
-`CLAUDE.md`, `.claude/`, and `blueprint/`. Keep both adapters if you switch
+`CLAUDE.md`, `.claude/`, and `blueprint/`. For GitHub Copilot-only work, keep
+`AGENTS.md`, `.agents/`, and `blueprint/`. Keep all adapters if you switch
 between tools.
 
 Use the native invocation style for your tool:
@@ -903,6 +907,8 @@ Use the native invocation style for your tool:
 - Claude Code: `/onboard`, `/discovery`, `/doctor`, `/adopt`, `/overview`, `/brief`,
   `/feature`, `/debug`, `/fix`, `/tests`, `/ci`, `/implement`, `/check`, `/try`, `/audit`, `/rollback`,
   `/complete`, `/release`, `/prototype`, `/status`. Autopilot: `/autopilot`.
+- GitHub Copilot: ask Copilot to run the matching skill or follow the local
+  `.agents/skills/<skill>/SKILL.md` file.
 - Other tools: ask the agent to follow the matching `SKILL.md`.
 
 ```text

@@ -3,9 +3,12 @@ import path from "node:path";
 
 import { findProjectRoot } from "./project-root.js";
 import { readManifest } from "./update.js";
+import type { Adapter } from "./update.js";
 
 const PROJECT_STATE_SCHEMA_VERSION = 1 as const;
-type ProjectAdapter = "codex" | "claude";
+type ProjectAdapter = Adapter;
+type LegacyFilesystemAdapter = Exclude<ProjectAdapter, "copilot">;
+const ADAPTER_ORDER: readonly ProjectAdapter[] = ["codex", "claude", "copilot"];
 
 interface ProjectWarning {
   code: "invalid_manifest";
@@ -25,7 +28,7 @@ interface ProjectMetadata {
   warnings: ProjectWarning[];
 }
 
-const ADAPTER_PATHS: Record<ProjectAdapter, string> = {
+const ADAPTER_PATHS: Record<LegacyFilesystemAdapter, string> = {
   codex: path.join(".agents", "skills"),
   claude: path.join(".claude", "skills")
 };
@@ -59,13 +62,20 @@ async function readProjectMetadata(
     },
     blueprint: {
       version: manifest?.version || null,
-      adapters: await detectAdapters(projectRoot)
+      adapters: await detectAdapters(projectRoot, manifest?.adapters)
     },
     warnings
   };
 }
 
-async function detectAdapters(projectRoot: string): Promise<ProjectAdapter[]> {
+async function detectAdapters(
+  projectRoot: string,
+  manifestAdapters?: readonly ProjectAdapter[]
+): Promise<ProjectAdapter[]> {
+  if (manifestAdapters) {
+    return ADAPTER_ORDER.filter((adapter) => manifestAdapters.includes(adapter));
+  }
+
   const adapters: ProjectAdapter[] = [];
 
   for (const adapter of ["codex", "claude"] as const) {
