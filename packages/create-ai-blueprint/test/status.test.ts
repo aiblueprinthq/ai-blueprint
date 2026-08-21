@@ -33,19 +33,6 @@ test("readProjectStatus reports active work, findings, Git, and the next step", 
     branch: "feature/status-command"
   });
 
-  test("readProjectStatus reports Copilot from the manifest", async (t) => {
-    const projectRoot = await createProject(t, {
-      currentWork: resetCurrentWork(),
-      findings: emptyFindings(),
-      branch: "feature/copilot-status",
-      adapters: ["copilot"]
-    });
-
-    const status = await readProjectStatus(projectRoot);
-
-    assert.deepEqual(status.blueprint.adapters, ["copilot"]);
-    assert.match(formatHumanStatus(status), /Adapters\s+copilot/);
-  });
   await fs.appendFile(path.join(projectRoot, "src.ts"), "export const dirty = true;\n");
 
   const status = await readProjectStatus(projectRoot);
@@ -81,6 +68,20 @@ test("readProjectStatus reports active work, findings, Git, and the next step", 
   });
   assert.equal(status.completion.state, "blocked");
   assert.deepEqual(status.warnings, []);
+});
+
+test("readProjectStatus reports Copilot from the manifest", async (t) => {
+  const projectRoot = await createProject(t, {
+    currentWork: resetCurrentWork(),
+    findings: emptyFindings(),
+    branch: "feature/copilot-status",
+    adapters: ["copilot"]
+  });
+
+  const status = await readProjectStatus(projectRoot);
+
+  assert.deepEqual(status.blueprint.adapters, ["copilot"]);
+  assert.match(formatHumanStatus(status), /Adapters\s+copilot/);
 });
 
 test("readProjectStatus selects overview before new feature work", async (t) => {
