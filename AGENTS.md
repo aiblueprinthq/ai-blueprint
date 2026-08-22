@@ -1,9 +1,9 @@
 # AGENTS.md
 
 Instructions for AI coding agents working in this project. This is the cross-tool
-entry point: Codex, Cursor, GitHub Copilot, Gemini CLI, Aider, Zed, Windsurf, and
-others read `AGENTS.md`. Claude Code reads `CLAUDE.md`, which imports this file, so
-there is a single source of truth.
+entry point: Codex, Cursor, GitHub Copilot, OpenCode, Gemini CLI, Aider, Zed,
+Windsurf, and others read `AGENTS.md`. Claude Code reads `CLAUDE.md`, which
+imports this file, so there is a single source of truth.
 
 ## What this is
 
@@ -34,14 +34,16 @@ exposed through tool-specific adapters:
 - Codex: `.agents/skills/<skill>/SKILL.md`
 - Claude Code: `.claude/skills/<skill>/SKILL.md`
 - GitHub Copilot: `AGENTS.md` plus `.agents/skills/<skill>/SKILL.md`
+- OpenCode: `AGENTS.md` plus `.opencode/skills/<skill>/SKILL.md`
 
-Unused adapters can be removed. Codex and GitHub Copilot share `.agents/`.
-Codex-only or Copilot-only projects can delete `CLAUDE.md` and `.claude/`.
-Claude Code-only projects can delete `.agents/`, but should keep `AGENTS.md`
-because `CLAUDE.md` imports it.
+Unused adapters can be removed. Codex and GitHub Copilot share `.agents/`;
+OpenCode gets its own `.opencode/`, though it also reads `.agents/skills` and
+`.claude/skills` natively. Codex-only or Copilot-only projects can delete
+`CLAUDE.md` and `.claude/`. Claude Code-only projects can delete `.agents/`, but
+should keep `AGENTS.md` because `CLAUDE.md` imports it.
 
 When changing shared workflow behavior, update the matching skill in both
-adapter folders so Codex, Claude Code, and GitHub Copilot stay aligned.
+adapter folders so Codex, Claude Code, GitHub Copilot, and OpenCode stay aligned.
 
 Core skills:
 

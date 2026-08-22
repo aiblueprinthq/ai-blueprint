@@ -5,6 +5,14 @@ published `create-ai-blueprint` package.
 
 ## Unreleased
 
+### Added
+
+- Added OpenCode as an explicit adapter. `--opencode` installs `AGENTS.md`,
+  `.opencode/`, and `blueprint/`, and `--all` now covers Codex, Claude Code,
+  GitHub Copilot, and OpenCode. The `.opencode/skills/` tree is mirrored from
+  the shared skills at pack time, so there is no third hand-edited copy to keep
+  in sync.
+
 ## [0.12.1] - 2026-08-21
 
 ### Fixed

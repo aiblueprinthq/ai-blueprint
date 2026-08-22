@@ -61,6 +61,7 @@ appear.
 | Codex | `.agents/skills/` | `$feature`, `$implement`, or plain language |
 | Claude Code | `.claude/skills/` | `/feature`, `/implement`, and other slash commands |
 | GitHub Copilot | `AGENTS.md` and `.agents/skills/` | Ask Copilot to run the matching skill |
+| OpenCode | `AGENTS.md` and `.opencode/skills/` | Ask OpenCode to run the matching skill |
 | Other tools | `AGENTS.md` plus readable skill files | Ask the agent to follow the matching `SKILL.md` |
 
 ## Options
@@ -69,6 +70,7 @@ appear.
 npx create-ai-blueprint@latest -- --codex
 npx create-ai-blueprint@latest -- --claude
 npx create-ai-blueprint@latest -- --copilot
+npx create-ai-blueprint@latest -- --opencode
 npx create-ai-blueprint@latest -- --all
 npx create-ai-blueprint@latest -- --both
 npx create-ai-blueprint@latest -- --force
@@ -80,7 +82,9 @@ The same flags work with `npm create ai-blueprint@latest -- ...`.
 The installer defaults to `--all`. `--both` remains as a deprecated alias for
 `--all` and prints a warning. GitHub Copilot uses `AGENTS.md` and the shared
 `.agents/skills/` files; the installer does not manage
-`.github/copilot-instructions.md`.
+`.github/copilot-instructions.md`. OpenCode gets its own `.opencode/skills/`
+tree, mirrored from the shared skills; it also reads `.agents/skills/` and
+`.claude/skills/` natively, so those adapters work in OpenCode too.
 
 Use `--force` to overwrite existing Blueprint files. Without `--force`, the
 installer asks before overwriting in an interactive terminal and exits in

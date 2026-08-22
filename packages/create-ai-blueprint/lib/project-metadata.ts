@@ -8,7 +8,7 @@ import type { Adapter } from "./update.js";
 const PROJECT_STATE_SCHEMA_VERSION = 1 as const;
 type ProjectAdapter = Adapter;
 type LegacyFilesystemAdapter = Exclude<ProjectAdapter, "copilot">;
-const ADAPTER_ORDER: readonly ProjectAdapter[] = ["codex", "claude", "copilot"];
+const ADAPTER_ORDER: readonly ProjectAdapter[] = ["codex", "claude", "copilot", "opencode"];
 
 interface ProjectWarning {
   code: "invalid_manifest";
@@ -30,7 +30,8 @@ interface ProjectMetadata {
 
 const ADAPTER_PATHS: Record<LegacyFilesystemAdapter, string> = {
   codex: path.join(".agents", "skills"),
-  claude: path.join(".claude", "skills")
+  claude: path.join(".claude", "skills"),
+  opencode: path.join(".opencode", "skills")
 };
 
 async function readProjectMetadata(
@@ -78,7 +79,7 @@ async function detectAdapters(
 
   const adapters: ProjectAdapter[] = [];
 
-  for (const adapter of ["codex", "claude"] as const) {
+  for (const adapter of ["codex", "claude", "opencode"] as const) {
     if (await isDirectory(path.join(projectRoot, ADAPTER_PATHS[adapter]))) {
       adapters.push(adapter);
     }
