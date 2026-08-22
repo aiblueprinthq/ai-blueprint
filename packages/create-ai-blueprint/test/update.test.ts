@@ -28,7 +28,7 @@ import {
 test("parseArgs supports install and update modes", () => {
   assert.equal(
     ADAPTER_PROMPT,
-    "Install which adapter?\n1: Codex\n2: Claude Code\n3: GitHub Copilot\n4: all (default): "
+    "Install which adapter?\n1: Codex\n2: Claude Code\n3: GitHub Copilot\n4: OpenCode\n5: all (default): "
   );
   assert.equal(parseArgs([]).command, "install");
   assert.deepEqual(parseArgs(["update", "--dry-run"]), {
@@ -108,6 +108,7 @@ test("parseArgs supports install and update modes", () => {
     /--json is available only with the status command/
   );
   assert.equal(parseArgs(["--copilot"]).adapter, "copilot");
+  assert.equal(parseArgs(["--opencode"]).adapter, "opencode");
   assert.equal(parseArgs(["--all"]).adapter, "all");
   assert.deepEqual(parseArgs(["--both"]), {
     adapter: "all",
@@ -132,9 +133,9 @@ test("Copilot shares the .agents adapter files without managing Copilot instruct
   );
   assert.deepEqual(
     getTemplateEntries("all").map((entry) => entry.target),
-    ["AGENTS.md", "blueprint", ".agents", "CLAUDE.md", ".claude"]
+    ["AGENTS.md", "blueprint", ".agents", "CLAUDE.md", ".claude", ".opencode"]
   );
-  assert.deepEqual(adapterListFromMode("all"), ["codex", "claude", "copilot"]);
+  assert.deepEqual(adapterListFromMode("all"), ["codex", "claude", "copilot", "opencode"]);
 });
 
 test("global CLI installation is offered after interactive installs and updates", () => {
@@ -260,13 +261,51 @@ test("Copilot manifests remain distinct from Codex when they share skills", asyn
   assert.deepEqual(prepared.adapters, ["copilot"]);
 });
 
+test("OpenCode installs its own skills tree and stays distinct in the manifest", async (t) => {
+  assert.deepEqual(getTemplateEntries("opencode").map((entry) => entry.target), [
+    "AGENTS.md",
+    "blueprint",
+    ".opencode"
+  ]);
+
+  const workspace = await createWorkspace(t);
+  const templateRoot = path.join(workspace, "template");
+  const targetDir = path.join(workspace, "target");
+  const files = {
+    ".opencode/skills/check/SKILL.md": "Check skill\n"
+  };
+
+  await writeFiles(templateRoot, files);
+  await writeFiles(targetDir, files);
+  const manifest = await writeInstallManifest({
+    targetDir,
+    templateRoot,
+    version: "1.0.0",
+    adapter: "opencode"
+  });
+
+  assert.deepEqual(manifest.adapters, ["opencode"]);
+  assert.deepEqual(Object.keys(manifest.managedFiles), [
+    ".opencode/skills/check/SKILL.md"
+  ]);
+
+  const prepared = await prepareUpdate({
+    targetDir,
+    templateRoot,
+    version: "1.1.0"
+  });
+
+  assert.deepEqual(prepared.adapters, ["opencode"]);
+});
+
 test("updates preserve pre-Copilot Codex and Claude manifests", async (t) => {
   const workspace = await createWorkspace(t);
   const templateRoot = path.join(workspace, "template");
   const targetDir = path.join(workspace, "target");
   const files = {
     ".agents/skills/check/SKILL.md": "Check skill\n",
-    ".claude/skills/check/SKILL.md": "Check skill\n"
+    ".claude/skills/check/SKILL.md": "Check skill\n",
+    ".opencode/skills/check/SKILL.md": "Check skill\n"
   };
 
   await writeFiles(templateRoot, files);

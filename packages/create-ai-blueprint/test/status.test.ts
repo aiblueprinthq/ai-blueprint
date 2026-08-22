@@ -239,7 +239,7 @@ test("shouldUseColor requires a TTY and respects NO_COLOR", () => {
 });
 
 interface ProjectOptions {
-  adapters?: readonly ("claude" | "codex" | "copilot")[];
+  adapters?: readonly ("claude" | "codex" | "copilot" | "opencode")[];
   currentWork: string;
   findings: string;
   branch: string;

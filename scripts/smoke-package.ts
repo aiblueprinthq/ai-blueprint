@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
 const packageRoot = path.join(repoRoot, "packages", "create-ai-blueprint");
 
-type Adapter = "codex" | "claude" | "copilot";
+type Adapter = "codex" | "claude" | "copilot" | "opencode";
 
 interface PackageManifest {
   schemaVersion: number;
@@ -19,12 +19,13 @@ interface PackageManifest {
 }
 
 const modes: Record<string, Adapter[]> = {
-  default: ["codex", "claude", "copilot"],
+  default: ["codex", "claude", "copilot", "opencode"],
   codex: ["codex"],
   claude: ["claude"],
   copilot: ["copilot"],
-  all: ["codex", "claude", "copilot"],
-  both: ["codex", "claude", "copilot"]
+  opencode: ["opencode"],
+  all: ["codex", "claude", "copilot", "opencode"],
+  both: ["codex", "claude", "copilot", "opencode"]
 };
 
 function getErrorCode(error: unknown): string | undefined {
@@ -52,7 +53,10 @@ function parseManifest(content: string): PackageManifest {
     !Array.isArray(manifest.adapters) ||
     !manifest.adapters.every(
       (adapter): adapter is Adapter =>
-        adapter === "codex" || adapter === "claude" || adapter === "copilot"
+        adapter === "codex" ||
+        adapter === "claude" ||
+        adapter === "copilot" ||
+        adapter === "opencode"
     ) ||
     typeof manifest.managedFiles !== "object" ||
     manifest.managedFiles === null ||
@@ -251,9 +255,17 @@ async function main(): Promise<void> {
       }
 
       if (
+        mode === "opencode" &&
+        (!installResult.stdout.includes("Ask OpenCode to run the onboard skill.") ||
+          installResult.stdout.includes("Claude Code:"))
+      ) {
+        throw new Error("opencode install did not print OpenCode-specific guidance");
+      }
+
+      if (
         (mode === "all" || mode === "both" || mode === "default") &&
         !installResult.stdout.includes(
-          "$onboard, /onboard, or ask Copilot to run the onboard skill."
+          "$onboard, /onboard, or ask Copilot or OpenCode to run the onboard skill."
         )
       ) {
         throw new Error(`${mode} install did not print all-adapter guidance`);
@@ -378,7 +390,7 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      "Packed installer passed for the default, Codex, Claude Code, GitHub Copilot, all, and both adapter modes."
+      "Packed installer passed for the default, Codex, Claude Code, GitHub Copilot, OpenCode, all, and both adapter modes."
     );
   } finally {
     await fs.rm(workspace, { recursive: true, force: true });
@@ -393,6 +405,7 @@ async function validateInstall(
   const expectsCodex = adapters.includes("codex");
   const expectsClaude = adapters.includes("claude");
   const expectsCopilot = adapters.includes("copilot");
+  const expectsOpencode = adapters.includes("opencode");
   const expectsSharedSkills = expectsCodex || expectsCopilot;
   const expectedPaths = [
     "AGENTS.md",
@@ -420,6 +433,14 @@ async function validateInstall(
     );
   }
 
+  if (expectsOpencode) {
+    expectedPaths.push(
+      ".opencode/skills/discovery/SKILL.md",
+      ".opencode/skills/onboard/SKILL.md",
+      ".opencode/skills/rollback/SKILL.md"
+    );
+  }
+
   for (const relativePath of expectedPaths) {
     await requirePath(path.join(targetDir, ...relativePath.split("/")));
   }
@@ -435,6 +456,10 @@ async function validateInstall(
   if (!expectsClaude) {
     await requireMissing(path.join(targetDir, ".claude"));
     await requireMissing(path.join(targetDir, "CLAUDE.md"));
+  }
+
+  if (!expectsOpencode) {
+    await requireMissing(path.join(targetDir, ".opencode"));
   }
 
   const manifest = parseManifest(
@@ -475,6 +500,14 @@ async function validateInstall(
     expectedManagedFiles.push(
       ...(await listFiles(path.join(targetDir, ".claude", "skills"))).map(
         (file) => `.claude/skills/${file}`
+      )
+    );
+  }
+
+  if (expectsOpencode) {
+    expectedManagedFiles.push(
+      ...(await listFiles(path.join(targetDir, ".opencode", "skills"))).map(
+        (file) => `.opencode/skills/${file}`
       )
     );
   }

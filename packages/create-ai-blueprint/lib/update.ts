@@ -5,7 +5,7 @@ import path from "node:path";
 const CONTROL_DIR = "blueprint/.state";
 const MANIFEST_PATH = `${CONTROL_DIR}/manifest.json`;
 const MANIFEST_SCHEMA_VERSION = 1;
-type Adapter = "codex" | "claude" | "copilot";
+type Adapter = "codex" | "claude" | "copilot" | "opencode";
 type AdapterMode = Adapter | "all";
 
 interface TemplateFile {
@@ -90,13 +90,14 @@ const MANAGED_ROOTS: Record<Adapter | "common", readonly string[]> = {
   common: [],
   codex: [".agents/skills"],
   claude: [".claude/skills"],
-  copilot: [".agents/skills"]
+  copilot: [".agents/skills"],
+  opencode: [".opencode/skills"]
 };
 const RETIRED_MANAGED_PATHS = new Set(["blueprint/README.md"]);
 
 function adapterListFromMode(adapter: AdapterMode): Adapter[] {
   if (adapter === "all") {
-    return ["codex", "claude", "copilot"];
+    return ["codex", "claude", "copilot", "opencode"];
   }
 
   return [adapter];
@@ -198,7 +199,7 @@ async function readManifest(targetDir: string): Promise<Manifest | null> {
 }
 
 function validateManifest(manifest: unknown): asserts manifest is Manifest {
-  const validAdapters: readonly Adapter[] = ["codex", "claude", "copilot"];
+  const validAdapters: readonly Adapter[] = ["codex", "claude", "copilot", "opencode"];
   const validManagedFiles =
     isRecord(manifest) &&
     isRecord(manifest.managedFiles) &&
@@ -519,7 +520,11 @@ async function detectInstalledAdapters(
     adapters.add("claude");
   }
 
-  return (["codex", "claude"] as const).filter((adapter) => adapters.has(adapter));
+  if (await pathExists(targetPath(targetDir, ".opencode/skills"))) {
+    adapters.add("opencode");
+  }
+
+  return (["codex", "claude", "opencode"] as const).filter((adapter) => adapters.has(adapter));
 }
 
 async function writeManifest(targetDir: string, manifest: Manifest): Promise<void> {

@@ -19,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(__dirname, "..", "..");
 const templateRoot = path.join(packageRoot, "template");
 const ADAPTER_PROMPT =
-  "Install which adapter?\n1: Codex\n2: Claude Code\n3: GitHub Copilot\n4: all (default): ";
+  "Install which adapter?\n1: Codex\n2: Claude Code\n3: GitHub Copilot\n4: OpenCode\n5: all (default): ";
 
 interface CliOptions {
   adapter: AdapterMode | null;
@@ -43,7 +43,7 @@ interface TemplateEntry {
 
 type GlobalCliAction = "install" | "update" | null;
 
-const adapterChoices = new Set<AdapterMode>(["all", "claude", "codex", "copilot"]);
+const adapterChoices = new Set<AdapterMode>(["all", "claude", "codex", "copilot", "opencode"]);
 
 async function runCli(
   args: readonly string[] = process.argv.slice(2),
@@ -259,7 +259,13 @@ function parseArgs(args: readonly string[]): CliOptions {
       continue;
     }
 
-    if (arg === "--all" || arg === "--claude" || arg === "--codex" || arg === "--copilot") {
+    if (
+      arg === "--all" ||
+      arg === "--claude" ||
+      arg === "--codex" ||
+      arg === "--copilot" ||
+      arg === "--opencode"
+    ) {
       modeFlags.push(arg.slice(2) as AdapterMode);
       continue;
     }
@@ -284,7 +290,7 @@ function parseArgs(args: readonly string[]): CliOptions {
 
   if (modeFlags.length > 1) {
     throw new Error(
-      "Choose only one adapter option: --codex, --claude, --copilot, --all, or --both."
+      "Choose only one adapter option: --codex, --claude, --copilot, --opencode, --all, or --both."
     );
   }
 
@@ -292,7 +298,7 @@ function parseArgs(args: readonly string[]): CliOptions {
 
   if (options.command === "update" && options.adapter) {
     throw new Error(
-      "Update detects the installed adapters. Do not pass --codex, --claude, --copilot, --all, or --both."
+      "Update detects the installed adapters. Do not pass --codex, --claude, --copilot, --opencode, --all, or --both."
     );
   }
 
@@ -344,7 +350,7 @@ async function resolveAdapter(options: CliOptions): Promise<AdapterMode> {
 
     const normalized = answer.trim().toLowerCase();
 
-    if (normalized === "" || normalized === "4" || normalized === "all") {
+    if (normalized === "" || normalized === "5" || normalized === "all") {
       return "all";
     }
 
@@ -364,7 +370,11 @@ async function resolveAdapter(options: CliOptions): Promise<AdapterMode> {
       return "copilot";
     }
 
-    throw new Error("Choose 1, 2, 3, or 4.");
+    if (normalized === "4" || normalized === "opencode" || normalized === "open code") {
+      return "opencode";
+    }
+
+    throw new Error("Choose 1, 2, 3, 4, or 5.");
   } finally {
     rl.close();
   }
@@ -387,6 +397,10 @@ function getTemplateEntries(adapter: AdapterMode): TemplateEntry[] {
   if (adapter === "all" || adapter === "claude") {
     entries.push({ source: "CLAUDE.md", target: "CLAUDE.md" });
     entries.push({ source: ".claude", target: ".claude" });
+  }
+
+  if (adapter === "all" || adapter === "opencode") {
+    entries.push({ source: ".opencode", target: ".opencode" });
   }
 
   return entries;
@@ -596,7 +610,11 @@ function getNextCommand(adapter: AdapterMode): string {
     return "Ask Copilot to run the onboard skill.";
   }
 
-  return "$onboard, /onboard, or ask Copilot to run the onboard skill.";
+  if (adapter === "opencode") {
+    return "Ask OpenCode to run the onboard skill.";
+  }
+
+  return "$onboard, /onboard, or ask Copilot or OpenCode to run the onboard skill.";
 }
 
 function printClaudeRestartNote(adapter: AdapterMode): void {
@@ -828,6 +846,7 @@ Usage:
   npx create-ai-blueprint@latest -- --codex
   npx create-ai-blueprint@latest -- --claude
   npx create-ai-blueprint@latest -- --copilot
+  npx create-ai-blueprint@latest -- --opencode
   npx create-ai-blueprint@latest -- --all
   npx create-ai-blueprint@latest -- --both
 
@@ -835,7 +854,8 @@ Options:
   --codex          Install AGENTS.md, .agents/, and blueprint/
   --claude         Install AGENTS.md, CLAUDE.md, .claude/, and blueprint/
   --copilot        Install AGENTS.md, .agents/, and blueprint/
-  --all            Install Codex, Claude Code, and GitHub Copilot adapters
+  --opencode       Install AGENTS.md, .opencode/, and blueprint/
+  --all            Install Codex, Claude Code, GitHub Copilot, and OpenCode adapters
   --both           Deprecated alias for --all
   --target, -t     Target directory, defaults to the current directory
   --force, -f      Install: overwrite matching files. Update: back up and replace managed conflicts

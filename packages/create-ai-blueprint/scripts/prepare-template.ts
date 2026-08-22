@@ -15,6 +15,16 @@ async function copyEntry(entry: string): Promise<void> {
   await fs.cp(source, target, { recursive: true });
 }
 
+// OpenCode reads .agents/skills natively, so its tree is mirrored rather than
+// kept as a third hand-edited copy that would drift from the other adapters.
+async function mirrorOpencodeSkills(): Promise<void> {
+  await fs.cp(
+    path.join(templateRoot, ".agents", "skills"),
+    path.join(templateRoot, ".opencode", "skills"),
+    { recursive: true }
+  );
+}
+
 async function main(): Promise<void> {
   await fs.rm(templateRoot, { recursive: true, force: true });
   await fs.mkdir(templateRoot, { recursive: true });
@@ -22,6 +32,8 @@ async function main(): Promise<void> {
   for (const entry of entries) {
     await copyEntry(entry);
   }
+
+  await mirrorOpencodeSkills();
 }
 
 main().catch((error: unknown) => {
