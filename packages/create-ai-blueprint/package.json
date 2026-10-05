@@ -1,6 +1,6 @@
 {
   "name": "create-ai-blueprint",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "description": "Install a file-backed, spec-driven AI development workflow into a scaffolded app.",
   "license": "MIT",
   "author": "Brad Traversy",

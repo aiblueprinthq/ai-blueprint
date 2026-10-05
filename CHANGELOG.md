@@ -3,6 +3,23 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [1.12.0] - 2026-10-05
+
+### Added
+
+- Added opt-in parallel work through isolated clones or Git worktrees, with one
+  active work item per checkout and `git.landing: "pull-request"` for protected
+  or shared repositories. Complete can now push the work branch and open a pull
+  request while preserving separate approval for the final squash merge.
+  Requested by [@draxx318](https://github.com/draxx318) in
+  [#23](https://github.com/aiblueprinthq/ai-blueprint/issues/23).
+
+### Fixed
+
+- Stopped Status from treating an intentionally non-next active feature as
+  drift when pull-request landing permits parallel feature branches. The serial
+  ordering warning remains in the default local-merge workflow.
+
 ## [1.11.0] - 2026-10-05
 
 ### Added
