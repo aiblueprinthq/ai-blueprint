@@ -197,9 +197,11 @@ Gather these, then summarize. Do not dump file contents.
      changes, warn that work is happening without an active spec.
    - Flag active spec on `main`, all spec steps checked but no completion, or a
      branch that does not match the configured feature, fix, or rollback prefix
-     for the spec type. For a feature, also flag a mismatch with the next
-     unchecked build-plan item. For a rollback, confirm its target is a checked item and do
-     not compare it to the next unchecked item.
+     for the spec type. For a feature using `git.landing: "local-merge"`, also
+     flag a mismatch with the next unchecked build-plan item. Pull-request
+     landing permits another unchecked feature because parallel branches can be
+     active. For a rollback, confirm its target is a checked item and do not
+     compare it to the next unchecked item.
 8. **Git**
    - Report current branch, clean vs dirty working tree, rough changed-file count,
      last commit subject, and whether the branch is ahead of upstream.

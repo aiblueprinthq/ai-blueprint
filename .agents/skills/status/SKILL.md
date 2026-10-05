@@ -78,9 +78,10 @@ state.
 8. **Progress drift** - flag active spec on `main`, a spec in progress but no
    branch matching the configured feature, fix, or rollback prefix, all spec steps checked but
    not completed, or disagreement between `build-plan.md` and
-   `current-feature.md`. A rollback legitimately targets a checked build-plan
-   item until `/complete` unchecks it, so do not compare it to the next unchecked
-   feature.
+   `current-feature.md`. With `git.landing: "pull-request"`, an active feature
+   may differ from the next unchecked item because parallel branches can be
+   active. A rollback legitimately targets a checked build-plan item until
+   `/complete` unchecks it, so do not compare it to the next unchecked feature.
 9. **Dashboard activity** - read `blueprint/.state/run.json` when it exists.
    Report the command, mode, status, progress, boundary, and safe resume command.
    A missing file simply means no activity has been recorded. Invalid activity

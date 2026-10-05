@@ -256,6 +256,46 @@ test("readProjectStatus uses configured branch prefixes", async (t) => {
   );
 });
 
+test("readProjectStatus permits parallel feature order only for pull-request landing", async (t) => {
+  for (const [landing, expectsMismatch] of [
+    ["local-merge", true],
+    ["pull-request", false]
+  ] as const) {
+    const projectRoot = await createProject(t, {
+      currentWork: `# Feature: Status command
+
+**From build-plan:** feature 2
+**Status:** in progress
+
+## Build steps
+
+- [ ] **Step 1 - Print status** - format the result.
+`,
+      findings: emptyFindings(),
+      branch: "feature/status-command"
+    });
+    await fs.writeFile(
+      path.join(projectRoot, "blueprint", "build-plan.md"),
+      `# Build Plan
+
+- [ ] 1. **Foundation** - establish the project
+- [ ] 2. **Status command** - show project state
+`
+    );
+    await fs.writeFile(
+      path.join(projectRoot, "blueprint", "config.json"),
+      `${JSON.stringify({ schemaVersion: 1, git: { landing } }, null, 2)}\n`
+    );
+
+    const status = await readProjectStatus(projectRoot);
+    const hasMismatch = status.warnings.some(
+      (warning) => warning.code === "current_work_build_plan_mismatch"
+    );
+
+    assert.equal(hasMismatch, expectsMismatch, landing);
+  }
+});
+
 test("readProjectStatus warns when project config is invalid", async (t) => {
   const projectRoot = await createProject(t, {
     currentWork: resetCurrentWork(),

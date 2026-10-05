@@ -1088,6 +1088,7 @@ function findDrift(
         message: `Active feature ${currentWork.buildPlanItem} is already checked in the build plan.`
       });
     } else if (
+      config.git.landing === "local-merge" &&
       buildPlan.nextItem?.id &&
       buildPlan.nextItem.id.toLowerCase() !== currentWork.buildPlanItem
     ) {
