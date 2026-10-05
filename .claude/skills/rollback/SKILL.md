@@ -47,7 +47,9 @@ state.
 Stop before writing when:
 
 - the directory is not a git repository
-- `current-feature.md` already holds active work
+- `current-feature.md` already holds active work. Never replace another worker's
+  active spec; parallel work uses one clone or Git worktree per work item, with
+  a separate branch in each checkout
 - the working tree is dirty, including unrelated untracked work
 - the current branch is not the local main or default branch
 - the target is not a checked build-plan feature with a matching archive

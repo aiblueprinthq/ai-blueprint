@@ -9,6 +9,7 @@ const PROJECT_CONFIG_SCHEMA_VERSION = 1 as const;
 
 type StepReviewPolicy = "every" | "feature";
 type CheckpointCommitPolicy = "disabled" | "enabled";
+type LandingPolicy = "local-merge" | "pull-request";
 type LogicTestPolicy = "required" | "when-configured";
 type UiEvidencePolicy = "required" | "when-available";
 type AuditGatePolicy = "always" | "manual" | "when-sensitive";
@@ -32,6 +33,7 @@ interface ProjectConfig {
     checkpointCommits: CheckpointCommitPolicy;
   };
   git: {
+    landing: LandingPolicy;
     featureBranchPrefix: string;
     fixBranchPrefix: string;
     rollbackBranchPrefix: string;
@@ -74,6 +76,7 @@ function createDefaultProjectConfig(): ProjectConfig {
       checkpointCommits: "disabled"
     },
     git: {
+      landing: "local-merge",
       featureBranchPrefix: "feature/",
       fixBranchPrefix: "fix/",
       rollbackBranchPrefix: "rollback/"
@@ -210,7 +213,12 @@ function parseProjectConfig(value: unknown): ProjectConfig {
   assertKnownKeys(workflow, ["stepReview", "checkpointCommits"], "workflow");
   assertKnownKeys(
     git,
-    ["featureBranchPrefix", "fixBranchPrefix", "rollbackBranchPrefix"],
+    [
+      "landing",
+      "featureBranchPrefix",
+      "fixBranchPrefix",
+      "rollbackBranchPrefix"
+    ],
     "git"
   );
   assertKnownKeys(verification, ["logicTests", "uiEvidence"], "verification");
@@ -249,6 +257,12 @@ function parseProjectConfig(value: unknown): ProjectConfig {
       )
     },
     git: {
+      landing: optionalEnum(
+        git.landing,
+        ["local-merge", "pull-request"],
+        defaults.git.landing,
+        "git.landing"
+      ),
       featureBranchPrefix: optionalBranchPrefix(
         git.featureBranchPrefix,
         defaults.git.featureBranchPrefix,
@@ -492,6 +506,7 @@ export type {
   CheckGatePolicy,
   IndependentReviewGatePolicy,
   IndependentReviewExecution,
+  LandingPolicy,
   LogicTestPolicy,
   ProjectConfig,
   ProjectConfigResult,

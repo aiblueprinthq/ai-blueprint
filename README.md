@@ -159,7 +159,8 @@ Each step has a narrow job:
 2. **Implement** builds the approved spec in small, visible steps.
 3. **Check** proves the acceptance criteria against the running application.
 4. **Audit** reviews the complete branch delta and records actionable findings.
-5. **Complete** runs the final gates, archives the work, and asks before merge.
+5. **Complete** runs the final gates, archives the work, and asks before the
+   configured local merge or pull-request landing.
 
 This is a teaching path, not a new gate policy. Audit, Check, and manual-guide
 gates still default to `manual`; independent review defaults to `when-sensitive`.
@@ -179,6 +180,42 @@ Other work enters the same control loop:
 
 Read [Core Workflow](https://ai-blueprint.dev/docs/core-workflow/) for the full
 lifecycle and command-specific behavior.
+
+## Parallel work
+
+Blueprint keeps one active work item per checkout. To work in parallel, give
+each developer or agent a separate clone or Git worktree with its own branch.
+Run the normal workflow inside each checkout. Do not run two active work items
+in the same working directory.
+
+Create the worktree on the branch Blueprint will record. For a planned item
+named `Export reports` with the default branch prefix:
+
+```bash
+git worktree add ../my-app-export-reports -b feature/export-reports main
+```
+
+Open the parallel AI session in that directory, then run `/feature "Export
+reports"` there. Worktree creation remains an explicit Git operation; Blueprint
+does not create or remove worktrees automatically.
+
+Solo projects need no configuration change. Repositories that land through pull
+requests can opt in through `blueprint/config.json`:
+
+```json
+"git": {
+  "landing": "pull-request"
+}
+```
+
+With that setting, `/complete` still runs the same gates and creates the same
+work commit. It then asks for approval to push the work branch and open a pull
+request. It never merges that request or enables auto-merge. The pull request
+must be squash-merged so one work item remains one default-branch commit.
+
+Parallel branches can still conflict in `blueprint/build-plan.md`; resolve that
+through the normal pull-request integration flow. Blueprint does not add
+per-item state folders or coordinate agents automatically.
 
 ## Live dashboard
 
@@ -239,7 +276,7 @@ and other adapters can run the named skill through plain language.
 | **/feature** | Turn one build-plan item into a spec for your approval. |
 | **/implement** | Build the approved spec, then offer a code walkthrough. |
 | **/check** | Verify real behavior against the spec. Use `/check guide` for a read-only manual walkthrough, or `/check guide latest` for completed work. |
-| **/complete** | Run final gates, archive the work, and request merge approval. |
+| **/complete** | Run final gates, archive the work, and request approval for local merge or pull-request landing. |
 
 ### Understand and review
 

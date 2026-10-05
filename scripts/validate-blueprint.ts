@@ -13,10 +13,10 @@ const codexSkillsRoot = path.join(repoRoot, ".agents", "skills");
 const claudeSkillsRoot = path.join(repoRoot, ".claude", "skills");
 const currentFeatureStub = `# Current Feature
 
-> **Generated file.** Holds the one feature, fix, or rollback being built right now. Run
+> **Generated file.** Holds the one feature, fix, or rollback being built in this checkout. Run
 > \`/feature <number-or-name>\` to spec a build-plan feature, or \`/fix "<bug>"\` for
 > an ad-hoc fix. Use \`/rollback <completed-feature>\` to plan a safe reversal.
-> Build one thing at a time; \`/complete\` archives it under
+> Build one thing at a time in this checkout; \`/complete\` archives it under
 > \`blueprint/history/\` and resets this file.
 
 _Nothing in progress. Run \`/feature\`, \`/fix\`, or \`/rollback\` to start._
@@ -26,7 +26,7 @@ const findingsStub = `# Findings
 > **Generated file.** The findings ledger: review findings raised by \`/audit\`
 > against the work in progress, each with a durable ID, severity (P0-P3), and
 > status. \`/implement\` marks repaired findings \`fixed\`, a later \`/audit\` pass
-> moves them to \`closed\`, and \`/complete\` refuses to merge while any P0 or P1
+> moves them to \`closed\`, and \`/complete\` refuses to land while any P0 or P1
 > finding is \`open\` or \`fixed\`, then archives resolved findings with the work
 > and resets this file.
 
@@ -637,6 +637,9 @@ async function validateVerificationContract(): Promise<void> {
         "the original `Spec snapshot` field when present",
         "Before requiring a real active spec",
         "reference/completion-recovery.md",
+        "git.landing",
+        "With `git.landing: \"pull-request\"`",
+        "Never merge the pull request",
         "NN-name--build-N.md",
         "12-build-2/F-03"
       ]
@@ -646,12 +649,14 @@ async function validateVerificationContract(): Promise<void> {
       [
         '"specBytes"',
         '"sourceTree"',
+        '"landing"',
         '"absentOptional"',
         "## Screen candidates read-only",
         "historical-build exclusion",
         "never allocate a new attempt on resume",
         "## Interrupted archival, before the work commit",
-        "## Work committed, awaiting merge",
+        "## Work committed, awaiting landing",
+        "## Pull request opened or merged",
         "## Merge already completed",
         "Never relabel the receipt as current",
         "hash-proven original archive prefix",

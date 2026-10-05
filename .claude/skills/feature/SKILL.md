@@ -22,7 +22,9 @@ Read `blueprint/config.json` only for settings that affect the spec. Invalid
 configuration stops mutating work and points to `/doctor`.
 
 Confirm that `blueprint/context/current-feature.md` is the empty stub. If it
-contains active work, stop and direct the user to resume or complete it.
+contains active work, stop and direct the user to resume or complete it. Never
+replace another worker's active spec. Parallel work uses one clone or Git
+worktree per work item, with a separate branch in each checkout.
 
 Resolve the target from `blueprint/build-plan.md`:
 
@@ -159,9 +161,11 @@ and digits with one hyphen and trim edge hyphens. For attempt N > 1, append
 `feature/export-reports--build-2`. The reserved double hyphen distinguishes the
 attempt from a title ending in `Build 2`. Before freezing the new spec, check the
 exact archive path and branch availability using `reference/build-history.md`.
-Stop on filesystem entries, existing refs, or prior Git use of that archive path;
-never auto-bump the attempt. Freeze both fields before review; completion and
-resume reuse them rather than allocating again.
+Stop on filesystem entries, disallowed refs, or prior Git use of that archive
+path; never auto-bump the attempt. The reference permits only one existing-ref
+case: the pristine current branch of a pre-created parallel worktree. Freeze both
+fields before review; completion and resume reuse them rather than allocating
+again.
 
 For visual replication, require an existing screenshot or reference. Store a
 provided image under `blueprint/reference/` and link it. If `prototypes/` exists,

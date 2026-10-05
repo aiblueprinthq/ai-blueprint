@@ -20,15 +20,20 @@ while a later attempt 2 titled `Export` uses `04-export--build-2.md`.
 Before freezing a new spec, check its exact planned archive path and branch.
 Require `lstat` to return `ENOENT` for the archive leaf; any existing entry,
 including a dangling symlink, blocks it. Present parents must be ordinary
-directories. Require a valid branch name and no existing or namespace-conflicting
-local branch ref (inspect `git for-each-ref refs/heads/`, including packed refs).
+directories. Require a valid branch name and no namespace-conflicting local
+branch ref (inspect `git for-each-ref refs/heads/`, including packed refs). An
+exact existing planned branch is allowed only when it is the current branch in
+this checkout, its `HEAD` equals the local default branch, and the working tree
+has no project changes. This is the pre-created worktree case. Any other exact
+existing branch blocks the new spec.
 Also require no prior use of the archive path in available Git history:
 
 ```bash
 git log --all --reflog --full-history --format=%H -- <planned-archive-path>
 ```
 
-Any result or inspection failure stops before spec review with the exact collision.
+Any disallowed ref, history result, or inspection failure stops before spec
+review with the exact collision.
 Do not auto-bump the attempt or rename reviewed work to avoid it. These checks
 apply to new specs; existing completion must run its recovery routing first so
 its own archive is reconciled rather than rejected. Preserve already-reviewed
@@ -37,10 +42,13 @@ legacy spec bytes, branch, and any proven recovery destination.
 A legacy rebuild can preserve a reviewed spec without this field. Its completion
 annotation must freeze the original `baseCommit`: resolve only prior builds and
 their completed reversals present at that base, derive `max(attempts) + 1`, and
-require the exact resulting archive path. For an integrated archive, its unique
-introducing commit's sole parent must equal that base. For unfinished completion,
-use Complete's phase proof. The path checks this derived attempt; it never supplies
-the number. Missing or ambiguous proof stops without rewriting the archived spec.
+require the exact resulting archive path. For an integrated local-merge archive,
+its unique introducing commit's sole parent must equal that base. For an
+integrated schema 2 `pull-request` archive, its unique squash commit must have one
+parent, that parent must descend from `baseCommit`, and the archive must be added
+unchanged there. For unfinished completion, use Complete's phase proof. The path
+checks this derived attempt; it never supplies the number. Missing or ambiguous
+proof stops without rewriting the archived spec.
 Settled history numbering and rollback selection do not require the annotation's
 historical `head` or `sourceTree`; actual completion recovery still requires them.
 

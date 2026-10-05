@@ -205,6 +205,10 @@ Gather these, then summarize. Do not dump file contents.
      last commit subject, and whether the branch is ahead of upstream.
    - If the directory is not a git repo, report that as a setup issue and keep
      going.
+   - When `git.landing` is `pull-request`, report the configured remote, resolved
+     remote default branch, and whether an authenticated hosting CLI or API is
+     available. Missing pull-request prerequisites need attention but do not make
+     the local Blueprint workflow unhealthy.
 
 ## Output
 

@@ -24,6 +24,7 @@ test("default config reviews sensitive work automatically", () => {
   assert.deepEqual(defaults.qualityGates.continuous, defaultGates);
   assert.equal(defaults.workflow.stepReview, "feature");
   assert.equal(defaults.workflow.checkpointCommits, "disabled");
+  assert.equal(defaults.git.landing, "local-merge");
   assert.equal(defaults.review.independentExecution, "automatic");
   assert.equal(defaults.continuous.finalIntegrationAudit, false);
 });
@@ -59,6 +60,7 @@ test("readProjectConfig merges partial project values over defaults", async (t) 
   await writeConfig(projectRoot, {
     schemaVersion: 1,
     git: {
+      landing: "pull-request",
       featureBranchPrefix: "feat/"
     },
     qualityGates: {
@@ -84,6 +86,7 @@ test("readProjectConfig merges partial project values over defaults", async (t) 
   assert.equal(result.state, "project");
   assert.equal(result.values.git.featureBranchPrefix, "feat/");
   assert.equal(result.values.git.fixBranchPrefix, "fix/");
+  assert.equal(result.values.git.landing, "pull-request");
   assert.equal(result.values.review.independentExecution, "automatic");
   assert.equal(result.values.qualityGates.regular.audit, "when-sensitive");
   assert.equal(result.values.qualityGates.regular.independentReview, "always");
@@ -184,6 +187,13 @@ test("readProjectConfig rejects unknown and invalid values", async (t) => {
       review: { independentExecution: "background" }
     }),
     /review\.independentExecution must be one of/
+  );
+  assert.throws(
+    () => parseProjectConfig({
+      schemaVersion: 1,
+      git: { landing: "direct-push" }
+    }),
+    /git\.landing must be one of/
   );
 });
 

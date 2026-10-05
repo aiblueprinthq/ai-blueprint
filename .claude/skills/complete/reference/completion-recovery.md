@@ -8,9 +8,12 @@ these transitions. Recovery grants no commit, merge, push, or cleanup approval.
 ## Prepare one recoverable archive
 
 After Complete's final gates pass, but before any logging edits, record the full
-work branch ref, `HEAD`, local default branch ref and its current commit. Require
-that default commit to be an ancestor of the work branch. Resolve refs locally;
-do not fetch. Capture the verified working tree in a temporary Git index:
+work branch ref, `HEAD`, local default branch ref, and configured `git.landing`.
+For `local-merge`, record the current local default commit as `baseCommit` and
+require it to be an ancestor of the work branch. For `pull-request`, record the
+merge base of the work branch and local default as `baseCommit`; require it to be
+an ancestor of both refs. Resolve refs locally and do not fetch during this
+capture. Capture the verified working tree in a temporary Git index:
 
 ```bash
 node --input-type=module -e '
@@ -48,8 +51,13 @@ UTF-8 **bytes**, not characters or lines. Append two LF bytes and this single-li
 JSON comment before any Findings, Independent review, or Manual try guide section:
 
 ```text
-<!-- blueprint:completion {"schemaVersion":1,"specBytes":123,"specSha256":"<64 hex>","branch":"refs/heads/feature/name","head":"<full SHA>","baseRef":"refs/heads/main","baseCommit":"<full SHA>","sourceTree":"<full tree SHA>","absentOptional":[]} -->
+<!-- blueprint:completion {"schemaVersion":2,"specBytes":123,"specSha256":"<64 hex>","branch":"refs/heads/feature/name","head":"<full SHA>","baseRef":"refs/heads/main","baseCommit":"<full SHA>","sourceTree":"<full tree SHA>","landing":"local-merge","absentOptional":[]} -->
 ```
+
+Schema 1 annotations remain valid legacy `local-merge` records. Schema 2 requires
+`landing` to be exactly `local-merge` or `pull-request`. Reject unknown versions,
+missing schema 2 landing values, or values that disagree with the active
+completion path.
 
 Use `Buffer.length` and SHA-256 over the exact file bytes. To recover, locate the
 unique annotation boundary and remove only the two inserted line breaks before
@@ -196,12 +204,15 @@ commit. Do not force-add ignored workflow files to make recovery pass.
 
 ## Interrupted archival, before the work commit
 
-Require the recorded work branch at the recorded `head`, the local default still
-at `baseCommit`, a complete matching archive, and only the validated partial or
-finished bookkeeping changes above. Reconcile archived and retained findings and
-review before changing anything. Do not duplicate sections or erase unresolved
-entries. If the archive is absent and live inputs are intact, use normal Complete;
-if both the archive and needed live input are missing, stop for recovery evidence.
+Require the recorded work branch at the recorded `head` and a complete matching
+archive. For local landing, require the local default still at `baseCommit`. For
+pull-request landing, require `baseCommit` remains an ancestor of the current
+local default and work branch; default-branch advancement is expected. Require
+only the validated partial or finished bookkeeping changes above. Reconcile
+archived and retained findings and review before changing anything. Do not
+duplicate sections or erase unresolved entries. If the archive is absent and
+live inputs are intact, use normal Complete; if both the archive and needed live
+input are missing, stop for recovery evidence.
 
 Read the recovered spec from a temporary file, preserving its exact bytes; do
 not overwrite the live stub merely to orient a fresh session. Repeat current-
@@ -216,21 +227,53 @@ Finish only the missing bookkeeping, with live resets last. Show the concrete
 remaining diff and proposed conventional work commit, obtain normal commit
 approval, and continue at Complete Step 2. This archive does not authorize Git.
 
-## Work committed, awaiting merge
+## Work committed, awaiting landing
 
 Require a clean recorded work branch at one unambiguous final work commit whose
-sole parent is recorded `head`, with the default still at `baseCommit`. Compare the complete work
-commit tree to `sourceTree` and require exactly the finished transformations above.
+sole parent is recorded `head`. For local landing, require the default still at
+`baseCommit`. For pull-request landing, require `baseCommit` remains an ancestor
+of the current local default and work branch. Compare the complete work commit
+tree to `sourceTree` and require exactly the finished transformations above.
 The tracked archive and final bookkeeping must be in that commit, not added later.
 For ignored evidence require the separate proof described above. Extra commits or
 post-commit drift stop for review, not another completion commit.
 
 Rerun current-session Verify and validate all required gates using the recovered
-spec and original receipt. Resume at Complete Step 3's merge approval. Never make
-a second work commit, reset evidence again, or treat earlier approval as covering
-new changes. Preserve the exact work commit SHA for merge verification.
+spec and original receipt. Resume at Complete Step 3's configured landing path.
+Never make a second work commit, reset evidence again, or treat earlier approval
+as covering new changes. Preserve the exact work commit SHA for landing
+verification.
+
+## Pull request opened or merged
+
+Use this phase only for a schema 2 `pull-request` annotation. Require the clean
+recorded work branch at its exact final work commit and the work-commit proof
+above. Use the authenticated hosting CLI or API to find exactly one pull request
+whose repository, base branch, head branch, and head commit match the recorded
+values. A branch name or archive alone is not enough.
+
+When the pull request is open, verify its current head is unchanged, report its
+URL and check state, and stop. Never update the branch, merge, enable auto-merge,
+or delete a branch during recovery without the separate approval required for
+that action.
+
+When the provider reports it merged, require squash-merge evidence: one merge
+result commit with one parent, the recorded `baseCommit` as an ancestor of that
+parent, and the exact archive added unchanged by that commit. Require the
+provider record to bind that result to the exact pull request and recorded work
+commit. Fetch the named remote read-only when needed to inspect the result, then
+require the remote default branch to contain it. Later default-branch commits are
+allowed. A merge commit, rebase merge, changed head, closed-unmerged request, or
+ambiguous provider result stops with the exact mismatch.
+
+Report the remote work complete. Fast-forward a clean local default checkout and
+delete local or remote work branches only with explicit approval. Never mutate a
+default branch checked out in another worktree, and never treat pull-request
+creation approval as cleanup approval.
 
 ## Merge already completed
+
+Use this phase only for schema 1 records and schema 2 `local-merge` records.
 
 Require a clean local default branch tip whose sole parent is the recorded
 `baseCommit`, and the complete finished tree and archive. If the work branch still

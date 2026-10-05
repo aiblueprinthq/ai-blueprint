@@ -133,9 +133,11 @@ enable checkpoint prompts by itself. The previous workflow uses
    `blueprint/context/review.md` to their stubs.
 11. **Feature commit** - `/complete` stages everything on the branch (step work
    plus the logging changes) into one conventional feature commit.
-12. **Squash-merge** - `/complete` squash-merges the branch to main (explicit yes)
-    and deletes it, so the feature lands as one commit. Then it must ask
-    separately before pushing main; merge approval does not approve a push.
+12. **Land** - `/complete` follows `git.landing`. The default local path asks to
+    squash-merge the branch and later asks separately before pushing the default
+    branch. The `pull-request` path asks once before pushing the work branch and
+    opening a pull request, then leaves provider review and squash merge to the
+    user. Neither path infers approval from configuration.
 13. **Release prep (optional)** - run `/release render` or `/release vercel`
     after a completed feature or milestone when you want local provider config,
     env var review, build/start checks, and a smoke-test path. `/release` must

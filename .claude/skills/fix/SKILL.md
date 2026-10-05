@@ -32,6 +32,8 @@ or with a description, for example `/fix F-03`. Pull the problem statement from
 that ledger entry. Use this form only between work items, when
 `current-feature.md` is the reset stub: this skill overwrites that file, so
 while a spec is active, repair its findings through `/implement` instead.
+Never replace another worker's active spec. Parallel work uses one clone or Git
+worktree per work item, with a separate branch in each checkout.
 
 ## Step 1 - write the fix spec
 

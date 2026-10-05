@@ -5,10 +5,10 @@ import type { Runner } from "../harness.js";
 const HEADER_PATTERN = /^### F-\d{2} \[P[0-3]\] (unverified|open|fixed|closed|accepted|invalid) - .+$/;
 const CURRENT_FEATURE_STUB = `# Current Feature
 
-> **Generated file.** Holds the one feature, fix, or rollback being built right now. Run
+> **Generated file.** Holds the one feature, fix, or rollback being built in this checkout. Run
 > \`/feature <number-or-name>\` to spec a build-plan feature, or \`/fix "<bug>"\` for
 > an ad-hoc fix. Use \`/rollback <completed-feature>\` to plan a safe reversal.
-> Build one thing at a time; \`/complete\` archives it under
+> Build one thing at a time in this checkout; \`/complete\` archives it under
 > \`blueprint/history/\` and resets this file.
 
 _Nothing in progress. Run \`/feature\`, \`/fix\`, or \`/rollback\` to start._
@@ -18,7 +18,7 @@ const FINDINGS_STUB = `# Findings
 > **Generated file.** The findings ledger: review findings raised by \`/audit\`
 > against the work in progress, each with a durable ID, severity (P0-P3), and
 > status. \`/implement\` marks repaired findings \`fixed\`, a later \`/audit\` pass
-> moves them to \`closed\`, and \`/complete\` refuses to merge while any P0 or P1
+> moves them to \`closed\`, and \`/complete\` refuses to land while any P0 or P1
 > finding is \`open\` or \`fixed\`, then archives resolved findings with the work
 > and resets this file.
 

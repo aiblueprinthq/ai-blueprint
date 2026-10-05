@@ -267,7 +267,9 @@ For the finished feature:
 3. Confirm all steps are checked, configured gates ran, no unrelated files are
    mixed in, adapters remain aligned, and no P0/P1 blocker remains.
 4. Reuse the spec's frozen build attempt and exact Complete archive destination.
-   Capture Complete's source-tree/annotation proof before any logging edits.
+   Capture Complete's source-tree/annotation proof before any logging edits,
+   recording `landing` as `local-merge` even when project configuration selects
+   pull-request landing for the regular workflow.
    Fully prepare the archive with the exact verified spec, resolved findings,
    original passing receipt, and any generated `## Manual try guide` section.
 5. Validate and place that archive, update the exact build-plan item/parent and

@@ -50,7 +50,7 @@ and installed dependencies before adding machinery.
 - `blueprint/context/project-overview.md` - the project's source of truth
 - `blueprint/context/coding-standards.md` - read before changing code
 - `blueprint/context/ai-interaction.md` - read when running the Blueprint workflow
-- `blueprint/context/current-feature.md` - the one feature, fix, or rollback being built right now
+- `blueprint/context/current-feature.md` - the one feature, fix, or rollback being built in this checkout
 
 Reuse relevant context already loaded in the session. Claude Code imports only
 this file; its Blueprint skills load the other files on demand.
@@ -95,6 +95,13 @@ New review requests record requested execution and completed receipts record
 actual execution. Manual uses `fresh session`; automatic uses `fresh subagent`;
 an explicit automatic fallback records actual manual with `fresh session`.
 
+`git.landing` controls only how `/complete` offers to land finished regular
+work. Its default, `local-merge`, keeps the local squash-merge flow. Set it to
+`pull-request` when completed branches should be pushed and opened as pull
+requests for provider review and squash merge. Configuration never supplies the
+required push, pull-request, or merge approvals. Continuous Mode remains
+local-only and ignores this setting.
+
 New projects default to one review packet after all small implementation steps
 (`workflow.stepReview: "feature"`) with step checkpoint commits disabled. This
 keeps the normal loop reviewable without repeating the full session context after
@@ -130,6 +137,23 @@ Antigravity-specific skill tree. Both tools use the supported shared trees.
 When changing shared workflow behavior, update the matching skill in both
 adapter folders so every supported tool stays aligned.
 
+### Parallel work
+
+Blueprint supports parallel work through isolated Git checkouts, without a
+separate team mode. Give each developer or agent its own clone or Git worktree
+and one dedicated branch before starting `/feature` or `/fix`. The branch must
+use the configured prefix and the work item's lowercase kebab-case title. Each
+checkout keeps its own
+`blueprint/context/current-feature.md`, findings, and review state. Never run two
+active work items in the same working directory or replace another worker's
+active spec.
+
+Parallel branches may both update `blueprint/build-plan.md`; resolve any normal
+Git conflict when the later branch lands. Use `git.landing: "pull-request"` when
+the default branch is protected or several isolated checkouts are active. This
+model intentionally does not add per-item state folders or automatic agent
+coordination.
+
 Learn the feature loop: `/feature` -> `/implement` -> `/check` -> `/audit current` ->
 `/complete`. Approve the Feature spec before Implement. Check proves behavior;
 Audit reviews code and records findings. Showing both in this path does not
@@ -144,7 +168,7 @@ Core skills:
 - `implement` - build the current spec one small, reviewed step at a time
 - `check` - prove the current spec against the running app, or use `check guide`
   for a read-only manual review guide: where to go, what to click, what to expect
-- `complete` - run the final safety pass, log features, fixes, or rollbacks under `blueprint/history/`, then merge with approval
+- `complete` - run the final safety pass, log features, fixes, or rollbacks under `blueprint/history/`, then request approval for the configured local merge or pull-request landing
 
 ### Understand and review
 
