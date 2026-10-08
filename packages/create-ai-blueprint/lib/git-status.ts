@@ -19,11 +19,15 @@ async function readGitStatus(projectRoot: string): Promise<GitStatusSummary> {
     return unavailableSummary();
   }
 
-  const porcelain = await runGit(projectRoot, [
+  const porcelain = await runOptionalGit(projectRoot, [
     "status",
     "--porcelain=v1",
     "--untracked-files=all"
   ]);
+  if (porcelain === null) {
+    return unavailableSummary();
+  }
+
   const changedFiles = porcelain
     .split(/\r?\n/)
     .filter((line) => line.length > 0)
@@ -105,7 +109,7 @@ async function runGit(projectRoot: string, args: readonly string[]): Promise<str
     encoding: "utf8",
     maxBuffer: 1024 * 1024
   });
-  return result.stdout.trim();
+  return result.stdout.replace(/[\r\n]+$/, "");
 }
 
 function unavailableSummary(): GitStatusSummary {
