@@ -109,7 +109,7 @@ async function runGit(projectRoot: string, args: readonly string[]): Promise<str
     encoding: "utf8",
     maxBuffer: 1024 * 1024
   });
-  return result.stdout.replace(/[\r\n]+$/, "");
+  return result.stdout.trim();
 }
 
 function unavailableSummary(): GitStatusSummary {
