@@ -1113,6 +1113,31 @@ test("formatHumanStatus adds color only when requested", async (t) => {
   assert.equal(colored.replace(/\u001b\[[0-9;]*m/g, ""), plain);
 });
 
+test("readProjectStatus reports Git as unavailable when git status fails", async (t) => {
+  const projectRoot = await createProject(t, {
+    currentWork: resetCurrentWork(),
+    findings: emptyFindings(),
+    branch: "chore/setup"
+  });
+
+  // Corrupt the Git index so rev-parse succeeds as a work tree, but git status fails
+  await fs.writeFile(path.join(projectRoot, ".git", "index"), "corrupted-git-index");
+
+  const status = await readProjectStatus(projectRoot);
+
+  assert.equal(status.git.available, false);
+  assert.equal(status.git.branch, null);
+  assert.equal(status.git.clean, null);
+  assert.equal(status.git.changedFiles, 0);
+  assert.equal(status.git.lastCommit, null);
+  assert.equal(status.git.upstream, null);
+  assert.equal(status.git.ahead, null);
+  assert.equal(status.git.behind, null);
+
+  const human = formatHumanStatus(status);
+  assert.match(human, /^  Status        not a Git repository$/m);
+});
+
 test("shouldUseColor requires a TTY and respects NO_COLOR", () => {
   assert.equal(shouldUseColor(true, {}), true);
   assert.equal(shouldUseColor(false, {}), false);
