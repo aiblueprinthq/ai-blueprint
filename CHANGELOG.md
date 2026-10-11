@@ -3,6 +3,17 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [1.12.1] - 2026-10-11
+
+### Fixed
+
+- Prevented `blueprint status` and the local dashboard from crashing when Git
+  status inspection fails or exceeds the command output buffer. Git information
+  now reports as unavailable while the rest of the project status remains
+  accessible. Contributed by
+  [@ArianPashae](https://github.com/ArianPashae) in
+  [#34](https://github.com/aiblueprinthq/ai-blueprint/pull/34).
+
 ## [1.12.0] - 2026-10-05
 
 ### Added
