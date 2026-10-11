@@ -3,6 +3,20 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [1.13.0] - 2026-10-11
+
+### Added
+
+- Added Automatic Try It Now proofs for features with a safe, meaningful direct
+  observation path. The new `when-testable` try-guide policy is the default for
+  new projects and produces one small command or interaction with the exact
+  expected result after Verify and any required Check pass.
+- Extended `/check guide` to adapt the proof for CLI, library, API, UI,
+  file-generation, configuration, and data changes. Documentation-only and
+  invisible internal work omit the proof instead of inventing instructions.
+- Added live-agent evaluation coverage for policy selection, observable and
+  non-observable classification, generated handoffs, and user-started UI flows.
+
 ## [1.12.1] - 2026-10-11
 
 ### Fixed

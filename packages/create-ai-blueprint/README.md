@@ -414,14 +414,14 @@ conflicts so local changes are not lost.
 Check the version printed in the update plan before proceeding. A cached
 package resolution can run an older release even when the command uses
 `@latest`. Pin the intended published version explicitly. For example, for
-1.12.1:
+1.13.0:
 
 ```bash
 # npm
-npx create-ai-blueprint@1.12.1 update
+npx create-ai-blueprint@1.13.0 update
 
 # pnpm
-pnpm dlx create-ai-blueprint@1.12.1 update
+pnpm dlx create-ai-blueprint@1.13.0 update
 ```
 
 Use the version from the [release list](https://github.com/aiblueprinthq/ai-blueprint/releases)
