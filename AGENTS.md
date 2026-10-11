@@ -74,13 +74,15 @@ try-guide behavior for the normal workflow and Autopilot.
 Mode. The existing `tryGuide` keys select `/check guide`, which generates
 instructions without performing verification or recording acceptance.
 Independent review defaults to `when-sensitive` in both workflows, while
-audit, check, and try guide default to `manual`. Sensitive or unusually broad
-work therefore selects independent review automatically; ordinary small work
-does not. Setting a workflow's independent review to `manual` disables that
-automatic selection, while an explicit `/audit independent current` remains
-available. The other conditional modes are `when-sensitive` for audit,
-`when-behavioral` for check, and `when-user-facing` for try guides. `always`
-runs the gate for every work item in that workflow.
+audit and check default to `manual`. Try guide defaults to `when-testable`,
+which generates one small `## Try it now` demonstration only when the work has
+a safe, meaningful direct observation path. Sensitive or unusually broad work
+therefore selects independent review automatically; ordinary small work does
+not. Setting a workflow's independent review to `manual` disables that automatic
+selection, while an explicit `/audit independent current` remains available.
+The other conditional modes are `when-sensitive` for audit, `when-behavioral`
+for check, and `when-user-facing` for try guides. Existing `manual`, `always`,
+and `when-user-facing` try-guide policies remain supported.
 
 `review.independentExecution` controls how a selected independent-review gate
 runs. Its default, `automatic`, uses a fresh isolated reviewer child when the

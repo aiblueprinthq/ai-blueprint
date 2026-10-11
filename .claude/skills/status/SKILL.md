@@ -43,8 +43,8 @@ state.
    try-guide policies, plus `review.independentExecution`. Explain that
    independent review defaults to `when-sensitive` for both workflows and
    execution defaults to `automatic`, which uses an isolated reviewer only when
-   the current adapter supports it. Audit, check, and try guide default to
-   `manual`.
+   the current adapter supports it. Audit and check default to `manual`; try
+   guide defaults to `when-testable`.
    Before recommending `/overview`, check whether `AGENTS.md` still contains
    the shipped `For a standard Next.js project` command marker. When it does,
    onboarding is incomplete and `/onboard` is the next action.
@@ -107,7 +107,7 @@ A short, scannable summary, not a wall of text. Aim for something like:
     Status: Building feature 4 - PDF export
     Config: Project settings.
     Review execution: automatic.
-    Gates: regular audit manual, independent review when-sensitive, check when-behavioral, try guide manual;
+    Gates: regular audit manual, independent review when-sensitive, check when-behavioral, try guide when-testable;
            Continuous audit always, independent review manual, check always, try guide when-user-facing.
     Plans: Overview current. Build plan 3 of 9 complete.
     Current work: Step 2 of 3 done. Next step: Download PDF button.

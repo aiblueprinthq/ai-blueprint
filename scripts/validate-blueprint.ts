@@ -75,10 +75,12 @@ const requiredPaths = [
   "blueprint/history/features/README.md",
   "blueprint/history/fixes/README.md",
   "blueprint/history/rollbacks/README.md",
+  "evals/try-guide.json",
   "packages/create-ai-blueprint/bin/create-ai-blueprint.ts",
   "packages/create-ai-blueprint/LICENSE",
   "packages/create-ai-blueprint/lib/update.ts",
-  "packages/create-ai-blueprint/package.json"
+  "packages/create-ai-blueprint/package.json",
+  "scripts/e2e/scenarios/try-guide-behavior.ts"
 ];
 
 function errorCode(error: unknown): string | undefined {
@@ -436,6 +438,18 @@ async function validateVerificationContract(): Promise<void> {
         "run checks or the app",
         "A guide\nnever counts as acceptance evidence",
         "For `latest`, use the most recent archive even when an active spec exists",
+        "For `when-testable`, generate Try It Now only when one safe, meaningful path",
+        "**CLI**",
+        "**Library**",
+        "**API**",
+        "**UI**",
+        "**File generation**",
+        "**Configuration or data**",
+        "Documentation-only edits",
+        "omit the `## Try it now` section",
+        "Never start a development server in guide mode",
+        "Prefer an API, MCP, or CLI demonstration",
+        "## Try it now",
         "explicitly route to `/check`"
       ]
     ],
@@ -503,7 +517,9 @@ async function validateVerificationContract(): Promise<void> {
         "Do not create an empty commit for ignored spec changes",
         "sole exception is exactly one immutable independent-review checkpoint",
         "receiving current explicit commit approval",
-        "Treat an existing request without `Requested execution` as legacy manual-only"
+        "Treat an existing request without `Requested execution` as legacy manual-only",
+        "After final Verify and required Check pass, apply the selected try-guide policy",
+        "Include the generated `## Try it now` section verbatim"
       ]
     ],
     [
@@ -641,7 +657,9 @@ async function validateVerificationContract(): Promise<void> {
         "With `git.landing: \"pull-request\"`",
         "Never merge the pull request",
         "NN-name--build-N.md",
-        "12-build-2/F-03"
+        "12-build-2/F-03",
+        "`when-testable` generates `## Try it now`",
+        "Finish with the generated `## Try it now` section"
       ]
     ],
     [
@@ -700,6 +718,7 @@ async function validateVerificationContract(): Promise<void> {
         "Claude uses legacy direct context imports",
         "review.independentExecution",
         "Independent review defaults to `when-sensitive`",
+        "try guide defaults to `when-testable`",
         "defaults to\n     `automatic`",
         "Accept equivalent guidance anywhere in the file; do not require exact prose",
         "A heading or a single slogan is not sufficient",
@@ -725,7 +744,9 @@ async function validateVerificationContract(): Promise<void> {
         "local `Spec snapshot` contract without changing visibility",
         "Do not create an empty commit for ignored spec changes",
         "The request records `Requested execution`",
-        "pending request without `Requested execution` is legacy manual-only"
+        "pending request without `Requested execution` is legacy manual-only",
+        "`when-testable` - run `/check guide` after Verify and required Check",
+        "the generated `## Try it now` section when one exists"
       ]
     ],
     [
@@ -744,7 +765,9 @@ async function validateVerificationContract(): Promise<void> {
         "pending request without `Requested execution` is legacy manual-only",
         "../complete/reference/completion-recovery.md",
         "never counts the same completion twice",
-        "Use the exact `**Branch:**` frozen in the spec"
+        "Use the exact `**Branch:**` frozen in the spec",
+        "`when-testable` runs after Verify",
+        "generated `## Try it now` sections"
       ]
     ],
     [
@@ -752,6 +775,7 @@ async function validateVerificationContract(): Promise<void> {
       [
         "Independent review defaults to `when-sensitive`",
         "execution defaults to `automatic`",
+        "Try guide defaults to `when-testable`",
         "disables\nautomatic selection for that workflow without disabling explicit independent\naudits",
         "Follow and preserve the proportional-engineering contract in `AGENTS.md`"
       ]
@@ -769,7 +793,8 @@ async function validateVerificationContract(): Promise<void> {
         "spawns a generic child through the current runtime",
         "never requires or discovers global agent roles",
         "Independent review defaults to `when-sensitive`",
-        "Its default, `automatic`"
+        "Its default, `automatic`",
+        "Try guide defaults to `when-testable`"
       ]
     ],
     [
@@ -787,6 +812,7 @@ async function validateVerificationContract(): Promise<void> {
         "generic child of the current runtime",
         "No global agent role",
         "Independent review defaults to `when-sensitive`",
+        "Try guide defaults to\n`when-testable`",
         "defaults to\n`automatic`"
       ]
     ],
@@ -802,7 +828,8 @@ async function validateVerificationContract(): Promise<void> {
         "The initial Overview baseline also requires explicit approval",
         "the same approval can finalize the local baseline",
         "generic child through the current runtime",
-        "never depends on a global role"
+        "never depends on a global role",
+        "Try It Now is a user demonstration"
       ]
     ],
     [
@@ -812,7 +839,8 @@ async function validateVerificationContract(): Promise<void> {
         "offers a reviewed local commit for the Blueprint setup and plans",
         "Claude Code and Codex selected by default",
         "generic child of the current runtime",
-        "does not require or discover a global agent role"
+        "does not require or discover a global agent role",
+        "new projects default to `when-testable`"
       ]
     ]
   ]);

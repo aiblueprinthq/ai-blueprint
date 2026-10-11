@@ -98,9 +98,10 @@ Blueprint starts with your plans:
 8. Run `/complete` or `$complete` to archive the work and request approval for
    the configured local merge or pull-request landing.
 
-This teaching path does not change gate policy. Audit, Check, and manual-guide
-gates default to `manual`; independent review defaults to `when-sensitive`.
-Follow your configured gates; Audit is not mandatory for every feature.
+This teaching path does not change gate policy. Audit and Check default to
+`manual`, independent review defaults to `when-sensitive`, and Try It Now
+defaults to `when-testable`. Follow your configured gates; Audit is not
+mandatory for every feature.
 
 Plans, current work, verification evidence, findings, and completed history stay
 in the repository, so another session or supported coding tool can continue
@@ -206,10 +207,12 @@ non-interactive runs.
 
 Explore investigates a possibility without requiring plans. Brief explains an
 item already in the build plan. Neither writes files; Explore never executes
-project code. Check exercises behavior against the spec. Check guide only gives
-you instructions: it never runs checks, writes activity state, records acceptance,
-or marks work verified. Audit reviews the code and
-records findings; a clean review does not prove the application works.
+project code. Verify runs the project's repeatable automated gate. Check
+exercises behavior against the spec. Check guide produces one small Try It Now
+demonstration when the work is testable and can provide a deeper walkthrough on
+request. It never runs checks, writes activity state, records acceptance, or
+marks work verified. Audit reviews the code and records findings; a clean review
+does not prove the application works.
 
 ## Command map
 
@@ -318,11 +321,14 @@ missing, and removing Claude Code never deletes it.
 checkpoint availability, branch prefixes, verification strictness, independent-review execution, regular and
 Continuous quality gates, and Continuous Mode limits. Audit, independent-review,
 check, and try-guide gates use built-in defaults. Independent review defaults to
-`when-sensitive` for regular and Continuous work, while audit, check, and try
-guide default to `manual`. Sensitive or unusually broad work is selected for
-independent review, while ordinary small features are not. Setting a workflow's
-independent review policy to `manual` disables automatic selection; an explicit
-`/audit independent current` still uses the configured execution method. A
+`when-sensitive` for regular and Continuous work, while audit and check default
+to `manual`. Try guide defaults to `when-testable`, which produces Try It Now
+only when a safe meaningful direct observation exists. Existing `manual`,
+`always`, and `when-user-facing` values remain supported. Sensitive or unusually
+broad work is selected for independent review, while ordinary small features
+are not. Setting a workflow's independent review policy to `manual` disables
+automatic selection; an explicit `/audit independent current` still uses the
+configured execution method. A
 missing file uses built-in defaults; an invalid file is reported by status and
 blocks mutating workflow skills until `/doctor` identifies the repair.
 Configuration never grants permission to
@@ -484,8 +490,9 @@ Run the CLI update to install the consolidated skills. Updates remove unchanged
 managed copies of the retired skills and report customized copies as conflicts,
 preserving them until you resolve or explicitly replace them. Review old references in your preserved `AGENTS.md`; updates do not replace your
 project instructions. The `qualityGates.regular.tryGuide` and
-`qualityGates.continuous.tryGuide` keys keep their names and policies and now
-select `/check guide`. No configuration migration is needed.
+`qualityGates.continuous.tryGuide` keys still select `/check guide`. Existing
+policy values remain compatible, and new projects default to `when-testable`.
+No configuration migration is needed.
 
 ## Opening the local dashboard
 

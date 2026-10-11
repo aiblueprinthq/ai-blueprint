@@ -1,0 +1,56 @@
+[
+  {
+    "id": "manual-cli",
+    "policy": "manual",
+    "feature": "A CLI command runs as `node src/greeting.js Ada` and prints exactly `Hello, Ada!`.",
+    "userFacing": true
+  },
+  {
+    "id": "always-internal",
+    "policy": "always",
+    "feature": "An internal helper was renamed with no change to public behavior, files, configuration, or data.",
+    "userFacing": false
+  },
+  {
+    "id": "user-facing-ui",
+    "policy": "when-user-facing",
+    "feature": "A profile page at `/profile` lets the user enter Ada, select Save, and see `Profile saved` while the name remains Ada. Project instructions require the user to start the app with `npm run dev`.",
+    "userFacing": true
+  },
+  {
+    "id": "user-facing-library",
+    "policy": "when-user-facing",
+    "feature": "A library exports `greet(name)` from `./dist/index.js`; calling `greet('Ada')` returns `Hello, Ada!`.",
+    "userFacing": false
+  },
+  {
+    "id": "testable-cli",
+    "policy": "when-testable",
+    "feature": "A CLI command runs as `node src/greeting.js Ada` and prints exactly `Hello, Ada!`.",
+    "userFacing": true
+  },
+  {
+    "id": "testable-library",
+    "policy": "when-testable",
+    "feature": "A library exports `greet(name)` from `./dist/index.js`; calling `greet('Ada')` returns `Hello, Ada!`.",
+    "userFacing": false
+  },
+  {
+    "id": "testable-ui",
+    "policy": "when-testable",
+    "feature": "A profile page at `/profile` lets the user enter Ada, select Save, and see `Profile saved` while the name remains Ada. Project instructions require the user to start the app with `npm run dev`.",
+    "userFacing": true
+  },
+  {
+    "id": "testable-docs",
+    "policy": "when-testable",
+    "feature": "A documentation-only edit corrects wording in the installation guide and changes no runnable behavior or inspectable state.",
+    "userFacing": true
+  },
+  {
+    "id": "testable-internal",
+    "policy": "when-testable",
+    "feature": "An internal helper was renamed with no change to public behavior, files, configuration, or data.",
+    "userFacing": false
+  }
+]

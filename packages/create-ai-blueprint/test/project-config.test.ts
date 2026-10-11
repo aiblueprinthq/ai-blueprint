@@ -11,13 +11,13 @@ import {
   readProjectConfig
 } from "../lib/project-config.js";
 
-test("default config reviews sensitive work automatically", () => {
+test("default config reviews sensitive work and guides testable work automatically", () => {
   const defaults = createDefaultProjectConfig();
   const defaultGates = {
     audit: "manual",
     independentReview: "when-sensitive",
     check: "manual",
-    tryGuide: "manual"
+    tryGuide: "when-testable"
   };
 
   assert.deepEqual(defaults.qualityGates.regular, defaultGates);
@@ -91,7 +91,7 @@ test("readProjectConfig merges partial project values over defaults", async (t) 
   assert.equal(result.values.qualityGates.regular.audit, "when-sensitive");
   assert.equal(result.values.qualityGates.regular.independentReview, "always");
   assert.equal(result.values.qualityGates.regular.check, "always");
-  assert.equal(result.values.qualityGates.regular.tryGuide, "manual");
+  assert.equal(result.values.qualityGates.regular.tryGuide, "when-testable");
   assert.equal(
     result.values.qualityGates.continuous.tryGuide,
     "when-user-facing"
@@ -121,6 +121,22 @@ test("readProjectConfig reports malformed JSON and falls back safely", async (t)
       message: "Invalid Blueprint config JSON: blueprint/config.json"
     }
   ]);
+});
+
+test("try guide policies preserve existing values and accept when-testable", () => {
+  for (const tryGuide of [
+    "manual",
+    "always",
+    "when-user-facing",
+    "when-testable"
+  ] as const) {
+    const config = parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: { regular: { tryGuide } }
+    });
+
+    assert.equal(config.qualityGates.regular.tryGuide, tryGuide);
+  }
 });
 
 test("readProjectConfig rejects unknown and invalid values", async (t) => {
@@ -162,6 +178,15 @@ test("readProjectConfig rejects unknown and invalid values", async (t) => {
       }
     }),
     /qualityGates\.continuous\.check must be one of/
+  );
+  assert.throws(
+    () => parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: {
+        regular: { tryGuide: "when-observable" }
+      }
+    }),
+    /qualityGates\.regular\.tryGuide must be one of/
   );
   assert.throws(
     () => parseProjectConfig({

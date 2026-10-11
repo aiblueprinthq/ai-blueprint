@@ -83,10 +83,12 @@ when you just want something done.
    section of `coding-standards.md` for the gates.
    Run `/ci` separately when you want one Verify command and matching automatic
    GitHub checks; CI setup is not part of this feature loop.
-6. **Try manually (optional)** - Run `/check guide` when you want a human walkthrough:
-   what to start, where to go, what to click or run, what to expect, and what
-   would count as wrong. `/check` proves behavior from the agent side; `/check guide`
-   gives you the manual review path.
+6. **Try it now** - After Verify and any required `/check` pass, the default
+   `when-testable` guide policy adds one small user-run command or interaction
+   with the exact expected result whenever a safe meaningful path exists. Run
+   `/check guide` explicitly for a deeper human walkthrough. `/check` proves
+   behavior from the agent side; Try It Now is a user demonstration and never
+   replaces tests, Verify, or Check.
 7. **Audit (optional)** - Run `/audit` when you want a read-only code quality pass
    before closing a feature or after a larger automated run. It checks for
    duplication, dead code, missing tests for logic, standards drift, and
@@ -114,7 +116,8 @@ when you just want something done.
    checkpoints are optional rollback points; `/complete` still makes the real
    feature-level commit. Verify, or the fallback checks, must pass first. When
    implementation is done, end with a compact review packet: changed files,
-   checks run, manual try path, risks, and next action. The per-step walkthrough
+   checks run, the generated `## Try it now` section when applicable, risks, and
+   next action. The per-step walkthrough
    is part of the Guided checkpoint prompt. The final code walkthrough is always
    available and is separate from the manual product-review path produced by
    `/check guide`.

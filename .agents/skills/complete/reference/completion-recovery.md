@@ -48,7 +48,8 @@ or contradictions; a missing field in an older annotation proves no absence.
 
 Start the archive with the original verified spec bytes, unchanged. Measure
 UTF-8 **bytes**, not characters or lines. Append two LF bytes and this single-line
-JSON comment before any Findings, Independent review, or Manual try guide section:
+JSON comment before any Findings, Independent review, Try it now, or legacy
+Manual try guide section:
 
 ```text
 <!-- blueprint:completion {"schemaVersion":2,"specBytes":123,"specSha256":"<64 hex>","branch":"refs/heads/feature/name","head":"<full SHA>","baseRef":"refs/heads/main","baseCommit":"<full SHA>","sourceTree":"<full tree SHA>","landing":"local-merge","absentOptional":[]} -->

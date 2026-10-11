@@ -20,6 +20,8 @@ never counts as acceptance evidence or proof that any check passed.
 The quality-gate config controls when another workflow generates this guide
 automatically. An explicit `/check guide` or `$check guide` request always runs.
 A generated guide never counts as evidence that the user performed the walkthrough.
+Try It Now is a user demonstration, not a replacement for tests, Verify, or
+`/check`.
 
 ## Input
 
@@ -60,7 +62,36 @@ API endpoints, data states, and done-whens that matter for a human trying it.
 For a rollback, lead with the path that proves the removed behavior is gone, then
 include one unaffected regression path from the rollback spec.
 
-## Step 2 - identify how to run the app
+## Step 2 - classify the observation path
+
+For `when-testable`, generate Try It Now only when one safe, meaningful path
+directly observes behavior added or changed by this work. The path must use
+documented project commands or concrete spec details, require no invented
+credentials or data, avoid destructive effects, and usually take less than a
+minute.
+
+Testable paths include:
+
+- **CLI** - one command with the exact expected terminal output.
+- **Library** - one runnable snippet or sample call with expected console output.
+- **API** - one request with the expected status and response body or fields.
+- **UI** - one route and short interaction with the exact visible result.
+- **File generation** - one command with the expected file path and key content.
+- **Configuration or data** - one exact artifact, query, or state to inspect.
+
+Documentation-only edits, comments, formatting, release metadata, internal
+refactors with unchanged observable behavior, and invisible defensive changes
+without a safe public signal are not testable. Do not substitute a unit test,
+build command, vague inspection, or invented scenario just to produce a section.
+Configuration and data changes still qualify when the changed state has a safe,
+exact inspection path.
+
+When an automatic `when-testable` run finds no qualifying path, omit the
+`## Try it now` section and report that the gate was skipped because no safe,
+meaningful direct observation exists. For an explicit guide request, state that
+plainly instead of inventing instructions.
+
+## Step 3 - identify how to run the app
 
 Use the Commands section in `AGENTS.md`. Match the project type:
 
@@ -75,9 +106,43 @@ Use the Commands section in `AGENTS.md`. Match the project type:
 If the app may already be running, say how to reuse it. If a command is missing
 from `AGENTS.md`, report that as a gap rather than inventing certainty.
 
-## Step 3 - write the manual guide
+Never start a development server in guide mode. When project instructions
+require the user to start it, put that exact command under `Run or do` and make
+clear that the user runs it. Prefer an API, MCP, or CLI demonstration before a
+browser path when each proves the same behavior with less setup.
 
-Produce a short guide with these sections:
+## Step 4 - write the Try It Now proof
+
+When the work is testable, lead with exactly this compact section:
+
+```markdown
+## Try it now
+
+Run or do:
+
+<the smallest useful command or interaction>
+
+Expected:
+
+<the exact visible output, response, file, or UI state>
+
+This proves:
+
+<the specific part of the feature directly observed here>
+```
+
+Use one path, not a catalogue. Include exact output when practical. Keep `This
+proves` narrow: it describes only the observed behavior and never claims that
+tests, Verify, `/check`, or user acceptance passed.
+
+For automatic `when-testable` generation, this section is normally the complete
+output. The calling workflow must place it in the final handoff without reducing
+it to a pointer.
+
+## Step 5 - add deeper manual steps only when useful
+
+For an explicit guide request, or when `always` or `when-user-facing` selected a
+work item that benefits from more detail, follow Try It Now with these sections:
 
 1. **Start** - commands to run and where to run them.
 2. **Open** - URLs, screens, tabs, API endpoints, or CLI commands.
@@ -87,7 +152,7 @@ Produce a short guide with these sections:
 5. **Watch For** - common wrong outcomes, console or network errors, stale data,
    missing fields, bad empty states, layout issues, or safety warnings.
 
-Keep it concrete. Prefer:
+Keep any deeper guide concrete. Prefer:
 
     Open http://127.0.0.1:7788/api/snapshot
     Expect a JSON object with `generated_at`, `services`, `projects`, and
@@ -97,7 +162,7 @@ Avoid:
 
     Check that the snapshot works.
 
-## Step 4 - include confidence and gaps
+## Step 6 - include confidence and gaps
 
 End with:
 
@@ -106,8 +171,8 @@ End with:
 - **Gaps** - anything the guide cannot know from the docs, such as missing route
   names, seed data, credentials, or external services.
 
-If the feature is not user-visible, say so and provide the closest manual signal,
-such as an API response, CLI output, log line, or unit test command.
+If the feature is not user-visible but has a direct API, CLI, library, file, or
+state signal, use that. If no direct signal exists, say so and omit Try It Now.
 
 ## Rules
 
@@ -116,7 +181,8 @@ such as an API response, CLI output, log line, or unit test command.
   you to try it for them, leave guide mode and explicitly route to `/check`
   verification, following its activity and authorization rules.
 - Do not pretend a path is known when the spec does not say it. Give the best
-  likely path and label uncertainty.
+  supported path and label any remaining uncertainty. Do not emit Try It Now
+  when the uncertainty would make the command or expected result speculative.
 - Keep the guide short enough to follow while the app is open.
 - Match the project's commands from `AGENTS.md`.
 

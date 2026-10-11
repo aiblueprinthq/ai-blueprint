@@ -79,6 +79,9 @@ Use `qualityGates.regular` for this work item:
   `manual` runs only when explicitly requested;
   `when-user-facing` generates a guide when the change affects UI, navigation,
   copy, a public API or CLI, output, or another workflow a person directly uses;
+  `when-testable` generates `## Try it now` when guide mode finds a safe,
+  meaningful direct observation for UI, CLI, library, API, file-generation,
+  configuration, or data behavior, and skips without fabricating one otherwise;
   `always` generates one for every work item.
 
 Apply automatic gates in this order: `/check`, review, then `/check guide`. When
@@ -133,8 +136,8 @@ Before logging or committing, run a short safety pass and report blockers only:
 - the exact `Verify` command from `AGENTS.md` passed in this session, when one is
   declared; otherwise the build passed, and tests passed when the project has a
   declared test command and the change touched logic
-- any check required by `qualityGates.regular` has evidence, and there is a clear
-  manual try path
+- any check required by `qualityGates.regular` has evidence, and testable work
+  has a clear manual try path while non-testable work has a recorded skip reason
 - with `verification.logicTests: "required"`, logic changes have a configured
   runner and passing focused tests; otherwise completion is blocked and `/tests`
   is the next setup step
@@ -363,11 +366,12 @@ With `git.landing: "pull-request"`:
 
 Then point the user at `/feature`, `/fix`, or `/rollback` for the next thing.
 
-Finish with a concise **How to try it** note for the completed work. For a
+Finish with the generated `## Try it now` section when one exists. For a
 rollback, explain how to confirm the removed behavior is gone and name one
-unaffected regression path. If the
-manual path is more than a couple of steps, tell the user to run `/check guide latest`;
-that command can read the archived feature after `current-feature.md` is reset.
+unaffected regression path. If there is no safe direct observation, omit the
+section and say so plainly. For an optional deeper walkthrough, point to
+`/check guide latest`; that command can read the archived feature after
+`current-feature.md` is reset.
 
 ## Rules
 

@@ -198,7 +198,9 @@ Use `qualityGates.continuous`, not the regular or Autopilot gates:
 - **Try guide (`qualityGates.continuous.tryGuide`):** use `/check guide`.
   `manual` skips automatic generation; `when-user-facing`
   generates a guide for UI, navigation, copy, public API or CLI, output, or
-  another workflow a person directly uses; `always` generates one for every
+  another workflow a person directly uses; `when-testable` runs after Verify
+  and required Check, emitting `## Try it now` only for a safe meaningful direct
+  observation and recording a skip otherwise; `always` generates one for every
   feature.
 
 Run required gates in this order: check, review, then try guide. Use independent
@@ -271,7 +273,7 @@ For the finished feature:
    recording `landing` as `local-merge` even when project configuration selects
    pull-request landing for the regular workflow.
    Fully prepare the archive with the exact verified spec, resolved findings,
-   original passing receipt, and any generated `## Manual try guide` section.
+   original passing receipt, and any generated `## Try it now` section.
 5. Validate and place that archive, update the exact build-plan item/parent and
    overview hash, then reset live evidence last using Complete's canonical rules.
    Preserve unresolved findings; reuse a matching archive during recovery.
@@ -344,6 +346,7 @@ On any stop, report:
 - active feature and next unchecked step, if blocked mid-feature
 - exact checks and quality gates run per feature
 - generated try-guide archive locations
+- generated `## Try it now` sections, or recorded non-testable skip reasons
 - audit findings and repairs
 - current build-plan progress and next unchecked item
 - why the loop stopped

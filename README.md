@@ -162,10 +162,10 @@ Each step has a narrow job:
 5. **Complete** runs the final gates, archives the work, and asks before the
    configured local merge or pull-request landing.
 
-This is a teaching path, not a new gate policy. Audit, Check, and manual-guide
-gates still default to `manual`; independent review defaults to `when-sensitive`.
-Run the checks and reviews your project requires. Showing Audit here does not
-make it mandatory for every feature.
+This is a teaching path, not a new gate policy. Audit and Check default to
+`manual`, independent review defaults to `when-sensitive`, and Try It Now
+defaults to `when-testable`. Run the checks and reviews your project requires.
+Showing Audit here does not make it mandatory for every feature.
 
 The optional `/explore <topic>` weighs an idea against the actual code before
 planning work. It compares options, including doing nothing, without writing files or
@@ -257,10 +257,12 @@ full tour and command options.
 
 Explore investigates a possibility without requiring plans. Brief explains an
 item already in the build plan. Neither writes files; Explore never executes
-project code. Check exercises behavior against the spec. Check guide only gives
-you instructions: it never runs checks, writes activity state, records acceptance,
-or marks work verified. Audit reviews the code and
-records findings; a clean review does not prove the application works.
+project code. Verify runs the project's repeatable automated gate. Check
+exercises behavior against the spec. Check guide produces one small Try It Now
+demonstration when the work is testable and can provide a deeper walkthrough on
+request. It never runs checks, writes activity state, records acceptance, or
+marks work verified. Audit reviews the code and records findings; a clean review
+does not prove the application works.
 
 ## Command map
 
@@ -357,11 +359,15 @@ Blueprint separates several kinds of proof that are easy to blur together:
 - **Verify command:** project-owned type checks, tests, builds, or other
   repeatable checks.
 - **Check:** observable proof that the current work satisfies its spec.
+- **Try It Now:** one small user-run command or interaction with the exact
+  expected result. It demonstrates the changed behavior but does not replace
+  Verify or Check.
 - **Audit:** branch-aware review across quality, security, performance, and
   tests, with focused lenses when needed.
 - **Independent Audit:** a fresh reviewer session or configured isolated
   reviewer child inspects an approved checkpoint using an exact adapter and model.
-- **Check guide:** `/check guide` generates a read-only manual walkthrough for human review.
+- **Check guide:** `/check guide` generates Try It Now and, when requested, a
+  deeper read-only manual walkthrough for human review.
 
 Independent review records the target, permitted base, spec hash, requested and
 actual reviewer metadata, Check result, commands, evidence, findings, and
@@ -369,12 +375,15 @@ remaining risk. Relevant later changes make the receipt stale. Adapter, model,
 and fresh-context identity remain declared metadata, not cryptographic proof.
 
 Independent review defaults to `when-sensitive` for regular and Continuous
-work. Audit, check, and try guide default to `manual`. Sensitive or unusually
-broad work therefore receives independent review automatically, while ordinary
-small features do not. Set a workflow's independent review policy to `manual`
-to disable automatic selection. An explicit `/audit independent current` is
-still available and uses the configured execution method. Configuration never
-grants permission to merge, push, deploy, publish, or waive findings.
+work. Audit and check default to `manual`. Try guide defaults to
+`when-testable`, which produces Try It Now only for work with a safe meaningful
+direct observation. Existing `manual`, `always`, and `when-user-facing` values
+remain supported. Sensitive or unusually broad work receives independent review
+automatically, while ordinary small features do not. Set a workflow's
+independent review policy to `manual` to disable automatic selection. An
+explicit `/audit independent current` is still available and uses the configured
+execution method. Configuration never grants permission to merge, push, deploy,
+publish, or waive findings.
 
 The gate decides when independent review is required. The separate
 `review.independentExecution` setting decides how it runs and defaults to
@@ -502,8 +511,9 @@ Run the CLI update to install the consolidated skills. Updates remove unchanged
 managed copies of the retired skills and report customized copies as conflicts,
 preserving them until you resolve or explicitly replace them. Review old references in your preserved `AGENTS.md`; updates do not replace your
 project instructions. The `qualityGates.regular.tryGuide` and
-`qualityGates.continuous.tryGuide` keys keep their names and policies and now
-select `/check guide`. No configuration migration is needed.
+`qualityGates.continuous.tryGuide` keys still select `/check guide`. Existing
+policy values remain compatible, and new projects default to `when-testable`.
+No configuration migration is needed.
 
 ### If latest runs an older version
 

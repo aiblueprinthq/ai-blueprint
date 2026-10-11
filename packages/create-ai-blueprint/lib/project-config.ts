@@ -16,7 +16,11 @@ type AuditGatePolicy = "always" | "manual" | "when-sensitive";
 type IndependentReviewGatePolicy = "always" | "manual" | "when-sensitive";
 type IndependentReviewExecution = "automatic" | "manual";
 type CheckGatePolicy = "always" | "manual" | "when-behavioral";
-type TryGuideGatePolicy = "always" | "manual" | "when-user-facing";
+type TryGuideGatePolicy =
+  | "always"
+  | "manual"
+  | "when-testable"
+  | "when-user-facing";
 type ProjectConfigState = "defaults" | "invalid" | "project";
 
 interface QualityGatePolicy {
@@ -93,13 +97,13 @@ function createDefaultProjectConfig(): ProjectConfig {
         audit: "manual",
         independentReview: "when-sensitive",
         check: "manual",
-        tryGuide: "manual"
+        tryGuide: "when-testable"
       },
       continuous: {
         audit: "manual",
         independentReview: "when-sensitive",
         check: "manual",
-        tryGuide: "manual"
+        tryGuide: "when-testable"
       }
     },
     continuous: {
@@ -361,7 +365,7 @@ function parseQualityGatePolicy(
     ),
     tryGuide: optionalEnum(
       value.tryGuide,
-      ["always", "manual", "when-user-facing"],
+      ["always", "manual", "when-testable", "when-user-facing"],
       defaults.tryGuide,
       `${label}.tryGuide`
     )

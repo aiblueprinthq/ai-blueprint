@@ -296,6 +296,9 @@ Apply `qualityGates.regular.tryGuide`:
 - `when-user-facing` - run `/check guide` when the change affects UI,
   navigation, copy, a public API or CLI, output, or another workflow a person
   directly uses.
+- `when-testable` - run `/check guide` after Verify and required Check. Guide
+  mode emits `## Try it now` only when it finds a safe, meaningful direct
+  observation and otherwise records a skip without inventing instructions.
 - `always` - generate a guide for every work item.
 
 The guide is a review artifact, not proof. Never claim the user performed it.
@@ -315,7 +318,8 @@ a full audit report:
   skipped
 - independent-review target, selected reviewer and model, and receipt state
 - screenshots or output paths, when relevant
-- how to try it manually, or a pointer to `/check guide` for the full walkthrough
+- the generated `## Try it now` section when one exists, or the recorded reason
+  it was omitted
 - checkpoint commits created
 - self-review findings
 - targeted audit scope and findings, when the audit gate ran

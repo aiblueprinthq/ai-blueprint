@@ -125,7 +125,15 @@ Apply configured regular gates:
 - Check runs for `always`, for behavioral work under `when-behavioral`, or when
   explicitly requested.
 - `/check guide` follows `qualityGates.regular.tryGuide`: it runs for `always`,
-  for user-facing work under `when-user-facing`, or when explicitly requested.
+  for user-facing work under `when-user-facing`, for work with a safe meaningful
+  direct observation under `when-testable`, or when explicitly requested.
+
+After final Verify and required Check pass, apply the selected try-guide policy.
+For `when-testable`, let `/check guide` perform its conservative classification.
+Keep its generated `## Try it now` section for the final packet. When no safe,
+meaningful direct observation exists, record that the gate was skipped and do
+not fabricate a section. Guide output never counts as verification or user
+acceptance.
 
 Do not start a dev server. When a required runtime check needs one, ask the user
 to start it. Build output does not prove visual, persisted-data, authenticated,
@@ -172,9 +180,13 @@ spec checklist step, mark it fixed after its check passes, then send it back to
 When all steps and required gates pass:
 
 - Update activity to `ready` with `/complete` as the resume command.
-- Present the branch, changes grouped by area, exact checks run, how to try it,
-  findings and independent-review state, known risks, configured gate outcomes,
-  and `/complete` as the next action.
+- Present the branch, changes grouped by area, exact checks run, findings and
+  independent-review state, known risks, configured gate outcomes, and
+  `/complete` as the next action.
+- Include the generated `## Try it now` section verbatim when guide mode produced
+  one. Do not replace it with a vague summary or a pointer. When the selected
+  policy found no safe direct path, omit the section and state that outcome with
+  the gate results.
 
 After the final packet, always offer these choices:
 
