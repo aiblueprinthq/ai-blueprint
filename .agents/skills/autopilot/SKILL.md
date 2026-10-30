@@ -8,8 +8,15 @@ description: Run one explicit bounded Blueprint spec and implementation pass thr
 **Context reuse:** Reuse any required file already loaded in project instructions or the current session. Read it again only if absent, changed, or exact current bytes or line references are needed.
 
 **First action:** Before project inspection, preflight, or any other tool call,
-publish `running` to `blueprint/.state/run.json` using the dashboard activity
-contract in `AGENTS.md`.
+publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
+exists. From the project root, run the first helper that exists,
+`node .agents/skills/doctor/scripts/run-state.mjs` or
+`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+<skill> --summary "<truthful summary>" --boundary
+<read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
+blocked --resume <command>` for a blocker, and `finish --status ready|completed`
+at the end; `--help` lists every option and `blueprint/workflow.md` has the full
+activity contract. A missing or failing helper is a warning, not a blocker.
 
 Where this sits in the workflow:
 
@@ -92,7 +99,7 @@ If the only issue is that `project-overview.md` is stale and the plans are clear
 regenerate it using the `/overview` behavior and continue. Include that in the
 final packet.
 
-The initial `blueprint/.state/run.json` record required by `AGENTS.md` must
+The initial `blueprint/.state/run.json` record required by the first action must
 already show command `autopilot` and status `running` before preflight begins.
 After preflight passes, enrich it with boundary `reviewed`, the target feature
 or fix, and build-step progress when known. Update it after the spec, each

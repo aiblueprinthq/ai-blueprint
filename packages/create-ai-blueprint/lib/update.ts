@@ -93,7 +93,7 @@ interface InstallManifestOptions {
 }
 
 const MANAGED_ROOTS = {
-  common: [],
+  common: ["blueprint/workflow.md"],
   agents: [".agents/skills"],
   claude: [".claude/skills"]
 } as const;

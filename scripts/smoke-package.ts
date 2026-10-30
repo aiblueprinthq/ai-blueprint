@@ -541,6 +541,7 @@ async function validateInstall(
     "AGENTS.md",
     "blueprint/project-plan.md",
     "blueprint/build-plan.md",
+    "blueprint/workflow.md",
     "blueprint/context/findings.md",
     "blueprint/context/review.md",
     "blueprint/.state/manifest.json",
@@ -625,7 +626,7 @@ async function validateInstall(
     );
   }
 
-  const expectedManagedFiles: string[] = [];
+  const expectedManagedFiles: string[] = ["blueprint/workflow.md"];
 
   if (expectsSharedSkills) {
     expectedManagedFiles.push(

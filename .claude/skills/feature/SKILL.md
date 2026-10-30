@@ -15,6 +15,14 @@ This skill plans one feature and stops before implementation. Its output is
 
 **First action:** Before project inspection, preflight, or any other tool call,
 publish the `feature` activity as `running` when `blueprint/.state/` exists.
+From the project root, run the first helper that exists,
+`node .agents/skills/doctor/scripts/run-state.mjs` or
+`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+<skill> --summary "<truthful summary>" --boundary
+<read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
+blocked --resume <command>` for a blocker, and `finish --status ready|completed`
+at the end; `--help` lists every option and `blueprint/workflow.md` has the full
+activity contract. A missing or failing helper is a warning, not a blocker.
 Combine that write with the first context-gathering tool batch when the adapter
 supports it.
 

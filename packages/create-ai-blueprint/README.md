@@ -54,6 +54,7 @@ The installer copies the Blueprint workflow files into the current directory:
 - `AGENTS.md`
 - `CLAUDE.md`
 - `blueprint/config.json`
+- `blueprint/workflow.md`
 - `blueprint/.state/manifest.json`
 - `.agents/`
 - `.claude/`
@@ -298,6 +299,7 @@ The updater detects the installed adapters and manages only these paths:
 
 - `.agents/skills/`
 - `.claude/skills/`
+- `blueprint/workflow.md`
 
 It preserves `AGENTS.md`, `CLAUDE.md`, project configuration, project and build
 plans, context, history, references, and prototypes. An unchanged `blueprint/README.md` installed by an
@@ -350,7 +352,10 @@ compatible only as fresh-session manual reviews.
 
 ## Context efficiency
 
-New installations make Claude Code import only `AGENTS.md` at startup. Explicit
+New installations make Claude Code import only `AGENTS.md` at startup, and
+`AGENTS.md` holds only the project contract. The workflow reference for
+configuration, skills, dashboard activity, and automatic checks lives in
+`blueprint/workflow.md` and is read only when a command needs it. Explicit
 workflow skills load the compact overview, active spec, coding standards, and
 interaction guide on demand. Feature uses targeted repository reads and writes
 one reviewed spec. Implement reuses that spec and normally runs the full Verify

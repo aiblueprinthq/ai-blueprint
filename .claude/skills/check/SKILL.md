@@ -34,6 +34,14 @@ verification mode.
 ## Verification startup (verification mode only)
 
 **First action:** Before project inspection, preflight, or any other tool call,
-publish `running` to `blueprint/.state/run.json` using the dashboard activity
-contract in `AGENTS.md`, with command `check`. This precedes reading the
-verification reference. Guide mode must skip this startup entirely.
+publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
+exists, with command `check`. From the project root, run the first helper that
+exists, `node .agents/skills/doctor/scripts/run-state.mjs` or
+`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+<skill> --summary "<truthful summary>" --boundary
+<read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
+blocked --resume <command>` for a blocker, and `finish --status ready|completed`
+at the end; `--help` lists every option and `blueprint/workflow.md` has the full
+activity contract. A missing or failing helper is a warning, not a blocker. This
+precedes reading the verification reference. Guide mode must skip this startup
+entirely.
