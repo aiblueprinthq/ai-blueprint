@@ -209,3 +209,140 @@ just to capture ignored spec changes or edit a passed receipt into a new review.
 The adapter, model, and context fields are declared metadata. Blueprint proves
 the target and staleness, but it cannot cryptographically prove that a separate
 agent or fresh context performed the review.
+
+## Phase A - prepare the handoff
+
+Use this phase when `blueprint/context/review.md` has no current `pending`
+request for `HEAD` and the current spec hash.
+
+A current pending request without `Requested execution` is legacy and manual
+only. Never add execution fields to it or run a subagent against it. Stop with
+the fresh-session handoff; Phase B must omit `Actual execution` so the legacy
+request and receipt keep both execution fields absent.
+
+1. Require an active spec with every build step checked and status `verified`, a
+   non-default work branch, a reliable merge base, and a working tree matching
+   the target except existing `blueprint/context/review.md` and
+   `blueprint/context/findings.md` evidence.
+   Independent mode accepts only a locally recorded remote default branch,
+   local `main`, or local `master` as its enforceable base ref. Stop when none
+   reliably covers the active work.
+   The current full `HEAD` must be the approved application-code checkpoint.
+   Include the verified spec when tracked; for a new ignored-spec request, prepare
+   the exact local `Spec snapshot` under the contract above. Never force-add
+   it or change ignore visibility. Never create a commit inside Audit. If any
+   tracked, staged, unstaged, or untracked path other than those two evidence
+   paths differs from the target, stop and ask the user to approve a review
+   checkpoint through `/implement`, even when normal checkpoint commits are
+   disabled. Do not create a checkpoint solely for review/findings changes.
+   This normal Phase A exception never allows snapshot Git differences or
+   overwriting conflicting completion-recovery evidence.
+2. Read installed adapters from `blueprint/.state/manifest.json` when valid.
+   For older installs, detect `.agents/skills` as `codex` and `.claude/skills`
+   as `claude`. These files prove project support, not that the external runtime
+   is installed or authenticated.
+3. Resolve the review executor from `review.independentExecution`:
+   - For `manual`, ask which detected adapter and available model should review.
+     Recommend an equal-or-stronger coding model, a different model family when
+     practical, and high reasoning for sensitive work. Offer a fresh session in
+     the current adapter as the fallback. Do not invent available models or
+     offer an adapter that is not installed in the project.
+   - For `automatic`, use only a live child-agent capability in the current
+     adapter that can start with no builder transcript, disclose the exact
+     reviewer adapter and model, and wait for completion. Spawn a generic fresh
+     isolated child through the current runtime. Do not discover, select, or
+     depend on a globally installed role, skill, prompt, or another workflow
+     such as TraversyFlow. If the runtime cannot start that generic child from
+     project-local instructions, or capability, isolation, identity, model,
+     completion, or access to the same ignored spec/snapshot inputs cannot be
+     confirmed, use the manual path in the original checkout.
+4. Record the full target SHA, full merge-base SHA, the exact local base ref
+   used to calculate it, exact spec SHA-256, current adapter and model,
+   requested reviewer adapter and model, requested execution from
+   `review.independentExecution`, workflow, and
+   whether the configured Check gate is required. For a new ignored-spec request,
+   create or reuse the exact snapshot first and record `Spec snapshot` as defined
+   above. Never add that field to an existing pending or completed
+   record. Write the pending template exactly. Copy the full model identifier
+   exposed by the active runtime or session metadata (for example,
+   `gpt-5.6-sol`), never a generic family label
+   such as `GPT-5`. If the runtime does not expose an exact identifier, record
+   `unknown (runtime did not expose exact model)` instead of guessing. When the
+   reviewer runtime cannot select a specific model before opening the session,
+   record the exact runtime-default sentinel from the contract above.
+5. Execute the configured path:
+   - For `manual`, set dashboard activity to `ready` and give the exact handoff
+     command for the selected adapter. Claude Code and Google Antigravity use
+     `/audit independent current`; Codex uses `$audit independent current`;
+     Copilot and OpenCode receive the equivalent plain-language instruction.
+     Tell the user to open a fresh session in the original checkout with only the
+     handoff, not the builder chat. Include target/base SHAs and, when present,
+     the exact snapshot path and spec hash.
+   - For `automatic`, freeze all parent product, test, spec, and config changes.
+     Start one generic isolated child without the builder transcript. Instruct
+     it to read the project-local Audit skill and
+     `audit/reference/independent-review.md` from the current adapter tree, then
+     execute Phase B using the same local spec/snapshot inputs against the
+     prepared request. All review instructions come
+     from that installed Blueprint project. The reviewer may write only
+     `blueprint/context/findings.md` and `blueprint/context/review.md`; it must
+     not repair code, change the spec, commit, or perform external actions. Wait
+     for completion, then reread and validate the normal receipt before
+     continuing. Record `fresh subagent` as its reviewer context.
+
+If automatic execution fails or any required property becomes uncertain, keep
+the pending request intact, set activity to `ready`, and stop with the existing
+manual fresh-session handoff. Never let the builder review its own work or skip
+a selected independent-review gate.
+
+The builder never performs Phase B itself. It may continue only after a manual
+reviewer session or automatic isolated reviewer produced a valid current receipt.
+
+## Phase B - perform the review
+
+Use this phase when a current pending request exists.
+
+1. Confirm the current adapter matches `Requested reviewer`, the current model
+   matches `Requested model` unless the runtime-default sentinel was selected,
+   and a sentinel request now records the exact model exposed by the session,
+   `HEAD` matches `Target commit`, the recorded base ref still produces the
+   recorded merge base, the exact spec hash matches, and no path differs from
+   the target except `blueprint/context/review.md` and
+   `blueprint/context/findings.md`. When `Spec snapshot` is present, verify both
+   raw spec/snapshot hashes and every path, visibility, and Git condition above.
+   Stop on any mismatch or stale state.
+2. Proceed only from the fresh reviewer handoff. Record `fresh session` for a
+   manual reviewer or `fresh subagent` for an automatic isolated reviewer. This
+   is a declaration, never cryptographic proof. If the reviewer has the builder
+   conversation or is the builder continuing in place, stop and request a fresh
+   context. For a legacy request with no `Requested execution`, require a fresh
+   reviewer session, record `fresh session`, and omit `Actual execution`.
+3. Run Audit Steps 1 through 3 across `current` with quality, security,
+   performance, and tests together. Review the code fresh against the recorded
+   `Base commit` and `Target commit`; exclude the request and findings files
+   from the code scope. Existing findings are context, never the review
+   checklist.
+4. Run `/check` from the reviewer session when the request says Check is
+   required. Follow Check's server and evidence boundaries. A required check
+   that cannot run prevents a passing receipt.
+5. Update the findings ledger through Audit Step 4, then replace the pending
+   request with a completed receipt. Use `passed` only when the whole target was
+   reviewed, required checks passed, and no P0 or P1 finding is `open` or
+   `fixed`. Copy the reviewer's full runtime model identifier using the same
+   rule as Phase A. Record `Check result` and keep all four receipt sections
+   non-empty, using an explicit `None` entry when appropriate. List every
+   unavailable verification command under Remaining risk, even when Check was
+   not required and the receipt may still pass. Otherwise use
+   `changes-requested` and name the exact blockers. Record actual `automatic`
+   with `fresh subagent`, or actual `manual` with `fresh session`, including an
+   explicit manual fallback from an automatic request.
+6. Report the receipt target, reviewer adapter and model, commands, evidence,
+   findings, remaining risk, and whether the receipt passed. Never repair code
+   from the reviewer session.
+
+After changes are requested, the builder repairs through `/implement`, obtains
+approval for a new checkpoint, and prepares a new request. The next reviewer
+pass reviews the complete new delta, not only the old findings.
+A local-spec-only revision may reuse the same approved product HEAD after normal
+spec and verification gates, with a new snapshot/request and full fresh review;
+it never requires an empty commit.
