@@ -77,30 +77,11 @@ one stops for an exact path decision. Finish plan/overview bookkeeping, then
 remove only the archived findings and reset review. Reset the active spec last.
 Do not append sections incrementally to an existing archive during recovery.
 
-## Screen candidates read-only
-
-Before matching a reused feature branch, apply the historical-build exclusion
-below. Do not treat a proved prior reversed build as pending completion of its
-replacement. If that exclusion cannot be proved, retain the candidate and stop
-for full proof rather than guessing from a different spec or archive name.
-
-Inspect current branch, `git status --porcelain=v1`, live spec/review and plan
-consistency, and relevant annotated archives. Check recorded local work refs with
-`git show-ref --verify --quiet <branch>`. A matching work branch/archive, a retained
-matching work ref after merge, or uncommitted completion changes/live evidence tied
-to that item is a recovery candidate. An explicit request to resume completion
-also requires full proof. Status reports candidates and routes them to Complete;
-it does not create a temporary index or claim the phase has passed full proof.
-
-For ordinary Status or a new Continuous invocation, a clean local default branch
-with consistent live state, no matching local work ref, and no pending completion
-evidence is settled history. An archive at its tip alone does not trigger recovery.
-Do not require historical `head`/`sourceTree` objects for that orientation; clean
-clones and Git pruning legitimately lose them. This is not a new claim about past
-verification. A reset stub alone proves nothing: check the refs, cleanliness, and
-live state too. Missing objects still block actual recovery and explicit resume.
-
 ## Prove an actual recovery candidate
+
+Run the read-only screen in `../../complete/reference/completion-screen.md`
+first. Only a candidate it finds, or an explicit request to resume completion,
+needs this proof.
 
 For feature archives on a reused branch, exclude a prior build only when all of
 these read-only Git checks pass:
@@ -279,7 +260,7 @@ Use this phase only for schema 1 records and schema 2 `local-merge` records.
 Require a clean local default branch tip whose sole parent is the recorded
 `baseCommit`, and the complete finished tree and archive. If the work branch still
 exists, require its exact final work commit and tree equality with that default
-tip (`git diff --exit-code <workCommit>^{tree} <defaultTip>^{tree>`), including the
+tip (`git diff --exit-code <workCommit>^{tree} <defaultTip>^{tree}`), including the
 archive blob. A squash merge normally does not contain the work commit as an
 ancestor. Tree equality alone without the matching base, archive, and completed
 bookkeeping is insufficient.

@@ -687,6 +687,7 @@ async function validateVerificationContract(): Promise<void> {
         "local `Spec snapshot` contract without changing visibility",
         "the original `Spec snapshot` field when present",
         "Before requiring a real active spec",
+        "reference/completion-screen.md",
         "reference/completion-recovery.md",
         "git.landing",
         "With `git.landing: \"pull-request\"`",
@@ -704,8 +705,7 @@ async function validateVerificationContract(): Promise<void> {
         '"sourceTree"',
         '"landing"',
         '"absentOptional"',
-        "## Screen candidates read-only",
-        "historical-build exclusion",
+        "../../complete/reference/completion-screen.md",
         "never allocate a new attempt on resume",
         "## Interrupted archival, before the work commit",
         "## Work committed, awaiting landing",
@@ -719,8 +719,16 @@ async function validateVerificationContract(): Promise<void> {
       ]
     ],
     [
+      ".agents/skills/complete/reference/completion-screen.md",
+      [
+        "## Screen candidates read-only",
+        "historical-build exclusion",
+        "../../complete/reference/completion-recovery.md"
+      ]
+    ],
+    [
       ".agents/skills/status/SKILL.md",
-      ["Pending completion candidate", "../complete/reference/completion-recovery.md"]
+      ["Pending completion candidate", "../complete/reference/completion-screen.md"]
     ],
     [
       ".agents/skills/rollback/SKILL.md",
@@ -798,6 +806,7 @@ async function validateVerificationContract(): Promise<void> {
         "Do not create an empty commit for ignored spec changes",
         "The request records `Requested execution`",
         "pending request without `Requested execution` is legacy manual-only",
+        "../complete/reference/completion-screen.md",
         "../complete/reference/completion-recovery.md",
         "never counts the same completion twice",
         "Use the exact `**Branch:**` frozen in the spec",
@@ -964,19 +973,26 @@ async function validateClaudeImports(): Promise<number> {
 async function validateSkillReferences(adapterFiles: readonly string[]): Promise<number> {
   let count = 0;
 
-  for (const relativePath of adapterFiles.filter((file) => file.endsWith("SKILL.md"))) {
-    const skillFile = path.join(codexSkillsRoot, ...relativePath.split("/"));
-    const content = await fs.readFile(skillFile, "utf8");
+  for (const relativePath of adapterFiles.filter((file) => file.endsWith(".md"))) {
+    const sourceFile = path.join(codexSkillsRoot, ...relativePath.split("/"));
+    const content = await fs.readFile(sourceFile, "utf8");
     const references = [
-      ...content.matchAll(/`(reference\/[A-Za-z0-9._/-]+)`/g)
+      ...content.matchAll(/`((?:\.\.\/){0,2}(?:[a-z0-9-]+\/)?reference\/[A-Za-z0-9._/-]+)`/g)
     ].map((match) => match[1]);
 
     for (const reference of new Set(references)) {
-      assertSafeRelativePath(reference);
-      await requirePath(
-        path.join(path.dirname(skillFile), ...reference.split("/")),
-        `${relativePath} reference ${reference}`
-      );
+      // A bare `<skill>/reference/...` names another skill from the adapter skills root.
+      const base = reference.startsWith("../") || reference.startsWith("reference/")
+        ? path.dirname(sourceFile)
+        : codexSkillsRoot;
+      const target = path.resolve(base, ...reference.split("/"));
+      const fromRoot = path.relative(codexSkillsRoot, target);
+
+      if (fromRoot.startsWith("..") || path.isAbsolute(fromRoot)) {
+        throw new Error(`Unsafe skill reference in ${relativePath}: ${reference}`);
+      }
+
+      await requirePath(target, `${relativePath} reference ${reference}`);
       count += 1;
     }
   }

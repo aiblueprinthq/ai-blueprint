@@ -89,7 +89,7 @@ state.
    `/doctor` to inspect and offer the approved generated-state reset.
 
 Before choosing the next action, use the read-only candidate screen in the
-installed Complete skill (`../complete/reference/completion-recovery.md`). Inspect
+installed Complete skill (`../complete/reference/completion-screen.md`). Inspect
 branch, working-tree changes, live state, relevant archives, and matching local
 work refs. Route a completion candidate to `/complete` for full phase proof; do
 not write Git objects or claim recovery has been verified from Status. On a clean

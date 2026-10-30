@@ -46,12 +46,12 @@ check waivers, or product decisions. It always stops before those actions.
 ## Input and target selection
 
 Before selecting an item or requiring a live active spec, inspect pending
-completion using the installed Complete skill and
-`../complete/reference/completion-recovery.md`. Use its read-only candidate screen
-first: settled clean default-branch history needs no historical transient objects
-for a new run. An actual completion candidate or an explicit request to resume
-interrupted completion requires full recovery proof, using this run's scoped Git
-authority and
+completion with the installed Complete skill's read-only candidate screen,
+`../complete/reference/completion-screen.md`, first: settled clean default-branch
+history needs no historical transient objects for a new run. An actual completion
+candidate or an explicit request to resume interrupted completion requires full
+recovery proof from `../complete/reference/completion-recovery.md`, using this
+run's scoped Git authority and
 `qualityGates.continuous`. Do not repeat archival or a work commit/merge. Missing,
 conflicting, or unprovable recovery evidence stops before next-feature work. An
 active feature with no completion candidate resumes implementation normally; its

@@ -42,8 +42,9 @@ Record `git.landing`; a missing value defaults to `local-merge`. The
 `pull-request` value applies only to this skill. Continuous Mode remains a
 local-only serial workflow and never pushes or opens pull requests.
 
-Before requiring a real active spec, check for pending completion using
-`reference/completion-recovery.md`. A matching archive may mean archival was
+Before requiring a real active spec, check for pending completion: run the
+read-only screen in `reference/completion-screen.md`, then prove any candidate
+with `reference/completion-recovery.md`. A matching archive may mean archival was
 interrupted, the work commit awaits merge, or the merge already finished. Follow
 that phase instead of restarting logging. Missing or ambiguous evidence stops
 with concrete recovery steps; a reset stub never authorizes selecting new work.
