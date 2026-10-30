@@ -3,6 +3,24 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [1.15.0] - 2026-10-30
+
+### Changed
+
+- Renamed `/status` and `/doctor` to `/blueprint-status` and
+  `/blueprint-doctor` (`$blueprint-status` and `$blueprint-doctor` in Codex) so
+  they no longer hide the Claude Code built-in commands with the same names. The
+  dashboard activity helper moved with the skill to
+  `skills/blueprint-doctor/scripts/run-state.mjs`. Updates remove unchanged
+  copies of the old skill folders and report customized copies as conflicts.
+  The `blueprint status` terminal command is unchanged. Reported by
+  [@ibjorn](https://github.com/ibjorn) in
+  [#43](https://github.com/aiblueprinthq/ai-blueprint/issues/43).
+- Audit now loads its independent-review phases only when an independent review
+  runs, so `audit/SKILL.md` is about 31% smaller on every other audit.
+  Contributed by [@ibjorn](https://github.com/ibjorn) in
+  [#41](https://github.com/aiblueprinthq/ai-blueprint/pull/41).
+
 ## [1.14.0] - 2026-10-30
 
 ### Changed
