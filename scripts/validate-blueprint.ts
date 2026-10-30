@@ -622,20 +622,8 @@ async function validateVerificationContract(): Promise<void> {
         "`/audit independent current` is a two-context workflow",
         "Never let a builder complete its own independent request",
         "A stale receipt is no receipt",
-        "Record `fresh subagent` as its reviewer context",
         "may write only `blueprint/context/findings.md` and `blueprint/context/review.md`",
-        "Spawn a generic fresh isolated child through the current runtime",
-        "Do not discover, select, or depend on a globally installed role, skill, prompt",
-        "read the project-local Audit skill",
-        "pending request without `Requested execution` is legacy and manual only",
-        "omit `Actual execution`",
-        "create or reuse the exact snapshot first",
         "Phase B may write only",
-        "same ignored spec/snapshot inputs",
-        "working tree matching the target except existing `blueprint/context/review.md` and `blueprint/context/findings.md` evidence",
-        "tracked, staged, unstaged, or untracked path other than those two evidence paths differs from the target, stop",
-        "Do not create a checkpoint solely for review/findings changes",
-        "normal Phase A exception never allows snapshot Git differences",
         "gate value disables only\nautomatic selection by the workflow"
       ]
     ],
@@ -664,7 +652,19 @@ async function validateVerificationContract(): Promise<void> {
         "never overwrite or repair the existing snapshot in place",
         "Git failure never passes",
         "A local-spec-only revision may reuse the same approved product HEAD",
-        "Never create an empty commit"
+        "Never create an empty commit",
+        "Record `fresh subagent` as its reviewer context",
+        "Spawn a generic fresh isolated child through the current runtime",
+        "Do not discover, select, or depend on a globally installed role, skill, prompt",
+        "read the project-local Audit skill",
+        "pending request without `Requested execution` is legacy and manual only",
+        "omit `Actual execution`",
+        "create or reuse the exact snapshot first",
+        "same ignored spec/snapshot inputs",
+        "working tree matching the target except existing `blueprint/context/review.md` and `blueprint/context/findings.md` evidence",
+        "tracked, staged, unstaged, or untracked path other than those two evidence paths differs from the target, stop",
+        "Do not create a checkpoint solely for review/findings changes",
+        "normal Phase A exception never allows snapshot Git differences"
       ]
     ],
     [
