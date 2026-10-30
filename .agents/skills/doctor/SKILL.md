@@ -37,6 +37,8 @@ Gather these, then summarize. Do not dump file contents.
      `blueprint/context/ai-interaction.md`,
      `blueprint/context/current-feature.md`, and
      `blueprint/context/project-overview.md` exist.
+   - Check `blueprint/workflow.md`, the managed workflow reference. Missing on a
+     legacy installation is a warning, not a blocker; a Blueprint update adds it.
    - Confirm `blueprint/history/features/` and `blueprint/history/fixes/` exist.
      When the rollback skill is installed, also check
      `blueprint/history/rollbacks/`. A missing rollback folder on a legacy
@@ -115,6 +117,12 @@ Gather these, then summarize. Do not dump file contents.
      If guidance is missing or incomplete, identify the missing substance as a
      warning, not a setup blocker. The updater preserves existing `AGENTS.md`,
      so updating Blueprint alone does not repair this warning.
+   - Check whether `AGENTS.md` still carries the workflow reference that now
+     lives in `blueprint/workflow.md`: `## Project configuration`,
+     `## Dashboard activity`, `## Automatic verification`, or the `Core skills:`
+     catalogue. If it does, recommend trimming those sections so every session
+     loads less startup context. This is a recommendation, not a warning. The
+     updater preserves `AGENTS.md`, so the trim is a manual edit.
    - Check whether root `README.md` is still the copied Blueprint workflow doc
      by looking for `# AI Coding Blueprint` or opening text that describes the
      Blueprint workflow instead of the app. If so, warn that `/onboard` should
@@ -175,7 +183,7 @@ Gather these, then summarize. Do not dump file contents.
 7. **Current workflow state**
    - Inspect `blueprint/.state/run.json` when it exists. Missing means no recorded
      activity and is healthy. Require a regular non-symbolic-link JSON file that
-     matches dashboard schema version 1 from `AGENTS.md`.
+     matches dashboard schema version 1 from `blueprint/workflow.md`.
    - If the path is a symbolic link or not a regular file, do not read, replace,
      or remove it. Report the exact path for manual review.
    - If the regular file is invalid JSON or does not match the schema, report it
@@ -242,6 +250,8 @@ Choose the repair order in this priority:
   selected tool. OpenCode can use either compatible tree.
 - Installed adapter is missing `doctor/scripts/run-state.mjs` -> update
   Blueprint before relying on dashboard activity.
+- `blueprint/workflow.md` is missing -> update Blueprint to restore the managed
+  workflow reference.
 - Claude uses legacy direct context imports -> remove the exact direct imports
   for `project-overview.md`, `current-feature.md`, `coding-standards.md`, and
   `ai-interaction.md` that are present in `CLAUDE.md`, then rerun `/doctor`. The
@@ -253,6 +263,10 @@ Choose the repair order in this priority:
   existing project rules and equivalent customized wording. In local-only mode,
   keep `AGENTS.md` public-safe without adding hidden workflow paths or skill lists.
   Doctor must not edit or replace `AGENTS.md`.
+- `AGENTS.md` still carries the moved workflow reference -> compare it with the
+  current Blueprint template's `AGENTS.md` and remove only the sections now in
+  `blueprint/workflow.md`, keeping the project description, commands, and
+  project rules. Doctor must not edit `AGENTS.md`.
 - Root README is still the Blueprint workflow doc -> run `/onboard` to replace
   it with a project README before publishing.
 - Local-only visibility selected but ignored Blueprint files are missing ->

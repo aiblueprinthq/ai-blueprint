@@ -482,6 +482,11 @@ npx create-ai-blueprint@latest update
 pnpm dlx create-ai-blueprint@latest update
 ```
 
+Updates manage the skill trees and `blueprint/workflow.md`, the workflow
+reference agents read on demand. They preserve `AGENTS.md`, so an older project
+keeps its longer startup file until you trim it; `/doctor` names the sections
+that moved.
+
 Update can also add an adapter to an existing installation:
 
 ```bash

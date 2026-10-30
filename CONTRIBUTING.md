@@ -127,8 +127,10 @@ Use `npm run sandbox:clear -- --yes` only when confirmation must be skipped.
 ## Workflow changes
 
 Shared skills under `.agents/skills/` and `.claude/skills/` must remain identical.
-Add or remove a command in both adapter trees, the `AGENTS.md` command inventory,
-and the README command table in the same change. The validation gate rejects any
+Add or remove a command in both adapter trees, the `blueprint/workflow.md`
+command inventory, the `AGENTS.md` skills list, and the README command table in
+the same change. Keep `AGENTS.md` to the project contract that every session
+needs; workflow reference belongs in `blueprint/workflow.md`. The validation gate rejects any
 drift between those surfaces.
 
 The root `package.json`, `scripts/`, `.github/`, and this guide are maintainer

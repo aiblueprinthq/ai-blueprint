@@ -14,6 +14,7 @@ const templateFiles = {
   "CLAUDE.md": "@AGENTS.md\n",
   "blueprint/config.json": "{}\n",
   "blueprint/project-plan.md": "Starter project plan\n",
+  "blueprint/workflow.md": "Workflow reference\n",
   ".agents/skills/check/SKILL.md": "Check skill\n",
   ".claude/skills/check/SKILL.md": "Check skill\n"
 };

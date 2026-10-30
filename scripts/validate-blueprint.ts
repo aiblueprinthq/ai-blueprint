@@ -41,6 +41,17 @@ const reviewStub = `# Independent Review
 
 _No independent review requested. Run \`/audit independent current\` to prepare one._
 `;
+const AGENTS_BYTE_BUDGET = 6000;
+const ACTIVITY_HELPER_INSTRUCTION = [
+  "From the project root, run the first helper that exists,",
+  "`node .agents/skills/doctor/scripts/run-state.mjs` or",
+  "`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command",
+  "<skill> --summary \"<truthful summary>\" --boundary",
+  "<read-only|reviewed|local-only>`. Use `update` at milestones, with `--status",
+  "blocked --resume <command>` for a blocker, and `finish --status ready|completed`",
+  "at the end; `--help` lists every option and `blueprint/workflow.md` has the full",
+  "activity contract. A missing or failing helper is a warning, not a blocker."
+].join(" ");
 const requiredPaths = [
   "AGENTS.md",
   "CLAUDE.md",
@@ -75,6 +86,7 @@ const requiredPaths = [
   "blueprint/history/features/README.md",
   "blueprint/history/fixes/README.md",
   "blueprint/history/rollbacks/README.md",
+  "blueprint/workflow.md",
   "evals/try-guide.json",
   "packages/create-ai-blueprint/bin/create-ai-blueprint.ts",
   "packages/create-ai-blueprint/LICENSE",
@@ -256,38 +268,57 @@ async function validateSkillMetadata(skills: readonly string[]): Promise<void> {
 }
 
 async function validateCommandInventories(skills: readonly string[]): Promise<void> {
-  const [agents, readme] = await Promise.all([
+  const [agents, workflow, readme] = await Promise.all([
     fs.readFile(path.join(repoRoot, "AGENTS.md"), "utf8"),
+    fs.readFile(path.join(repoRoot, "blueprint", "workflow.md"), "utf8"),
     fs.readFile(path.join(repoRoot, "README.md"), "utf8")
   ]);
-  const coreBlock = agents.match(/Core skills:\r?\n([\s\S]*?)\r?\nIn Codex/);
+  const coreBlock = workflow.match(/Core skills:\r?\n([\s\S]*?)\r?\nIn Codex/);
 
   if (!coreBlock) {
-    throw new Error("Could not find the Core skills inventory in AGENTS.md");
+    throw new Error("Could not find the Core skills inventory in blueprint/workflow.md");
   }
 
-  const agentSkills = [...coreBlock[1].matchAll(/^- `([a-z0-9-]+)`/gm)].map(
+  const workflowSkills = [...coreBlock[1].matchAll(/^- `([a-z0-9-]+)`/gm)].map(
     (match) => match[1]
   );
   const optionalSkills = [
-    ...agents.matchAll(/Optional explicit-only skill: `([a-z0-9-]+)`/g)
+    ...workflow.matchAll(/Optional explicit-only skill: `([a-z0-9-]+)`/g)
   ].map((match) => match[1]);
+  const agentsBlock = agents.match(/^Skills: ([\s\S]*?)\.\r?\n/m);
+
+  if (!agentsBlock) {
+    throw new Error("Could not find the Skills list in AGENTS.md");
+  }
+
+  const agentSkills = [...agentsBlock[1].matchAll(/`([a-z0-9-]+)`/g)].map((match) => match[1]);
   const readmeSkills = [
     ...readme.matchAll(/^\| \*\*\/([a-z0-9-]+)\*\* \|/gm)
   ].map((match) => match[1]);
 
-  assertEqualLists(skills, [...agentSkills, ...optionalSkills].sort(), "AGENTS.md commands");
+  assertEqualLists(
+    skills,
+    [...workflowSkills, ...optionalSkills].sort(),
+    "blueprint/workflow.md commands"
+  );
+  assertEqualLists(skills, agentSkills.sort(), "AGENTS.md skills list");
   assertEqualLists(skills, readmeSkills.sort(), "README command table");
+
+  if (Buffer.byteLength(agents, "utf8") > AGENTS_BYTE_BUDGET) {
+    throw new Error(
+      `AGENTS.md exceeds the ${AGENTS_BYTE_BUDGET}-byte startup context budget; move workflow reference to blueprint/workflow.md`
+    );
+  }
 }
 
 async function validateDashboardActivityContract(skills: readonly string[]): Promise<void> {
-  const agents = await fs.readFile(path.join(repoRoot, "AGENTS.md"), "utf8");
-  const trackedBlock = agents.match(
+  const workflow = await fs.readFile(path.join(repoRoot, "blueprint", "workflow.md"), "utf8");
+  const trackedBlock = workflow.match(
     /Commands with meaningful progress or a durable handoff should write it when the\s+state directory exists:([\s\S]*?)\. Short/
   );
 
   if (!trackedBlock) {
-    throw new Error("Could not find the dashboard activity command inventory in AGENTS.md");
+    throw new Error("Could not find the dashboard activity command inventory in blueprint/workflow.md");
   }
 
   for (const required of [
@@ -295,7 +326,7 @@ async function validateDashboardActivityContract(skills: readonly string[]): Pro
     ".agents/skills/doctor/scripts/run-state.mjs",
     ".claude/skills/doctor/scripts/run-state.mjs"
   ]) {
-    if (!agents.includes(required)) {
+    if (!workflow.includes(required)) {
       throw new Error(`Dashboard activity contract is missing: ${required}`);
     }
   }
@@ -324,6 +355,10 @@ async function validateDashboardActivityContract(skills: readonly string[]): Pro
     const content = await fs.readFile(path.join(codexSkillsRoot, skill, "SKILL.md"), "utf8");
     if (!content.includes(directive)) {
       throw new Error(`Tracked skill does not publish immediate dashboard activity: ${skill}`);
+    }
+
+    if (!content.replace(/\s+/g, " ").includes(ACTIVITY_HELPER_INSTRUCTION)) {
+      throw new Error(`Tracked skill does not name the dashboard activity helper: ${skill}`);
     }
   }
 }
@@ -787,7 +822,12 @@ async function validateVerificationContract(): Promise<void> {
         "Unknown scale or extensibility defaults to the smaller reversible design",
         "Derive trust and data-integrity boundaries from actual reachability",
         "Ask only when an unknown materially changes behavior",
-        "Stack-specific template standards apply only when the project uses that stack",
+        "Stack-specific template standards apply only when the project uses that stack"
+      ]
+    ],
+    [
+      "blueprint/workflow.md",
+      [
         "## Automatic verification",
         "`contents: read`",
         "spawns a generic child through the current runtime",
