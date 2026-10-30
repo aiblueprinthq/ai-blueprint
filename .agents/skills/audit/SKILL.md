@@ -246,12 +246,15 @@ Resolve this required context:
 
 - `AGENTS.md`
 - `blueprint/config.json`
-- `blueprint/context/project-overview.md`
+- `blueprint/context/project-overview.md`, targeted: search it for the scope's
+  feature, paths, and distinctive nouns. Read the matching passages plus the
+  security and data passages they touch, meaning the trust, access, and tenancy
+  facts in Users and Usage model and the affected Data model entries. Do not
+  read the whole overview by default.
 - `blueprint/context/coding-standards.md`
 - `blueprint/context/current-feature.md`
 - `blueprint/context/findings.md`, for existing IDs and statuses
 - `blueprint/context/review.md`, for independent request and receipt state
-- `blueprint/context/ai-interaction.md`
 - `blueprint/build-plan.md`, when feature order matters
 - git branch and working tree status
 - relevant source files, tests, and configs for the chosen scope

@@ -130,7 +130,10 @@ passed without its output.
 
 Apply configured regular gates:
 
-- Audit and independent review follow `qualityGates.regular`.
+- Audit and independent review follow `qualityGates.regular`; `when-sensitive`
+  selects them for authentication, authorization, payments, secrets, personal
+  or user data, migrations, destructive operations, external side effects,
+  security boundaries, or unusually broad changes.
 - Check runs for `always`, for behavioral work under `when-behavioral`, or when
   explicitly requested.
 - `/check guide` follows `qualityGates.regular.tryGuide`: it runs for `always`,

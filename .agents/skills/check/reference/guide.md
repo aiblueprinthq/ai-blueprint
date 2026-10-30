@@ -44,13 +44,15 @@ Read:
 - `AGENTS.md`
 - `blueprint/config.json`
 - `blueprint/context/current-feature.md`
-- `blueprint/context/project-overview.md`
-- `blueprint/context/coding-standards.md`
-- `blueprint/build-plan.md`
 - latest files under `blueprint/history/features/`,
   `blueprint/history/fixes/`, and `blueprint/history/rollbacks/`, if the current
   feature is reset
 - git branch and working tree status
+
+When the spec lacks a route, command, data state, or credential detail the
+demonstration needs, search `blueprint/context/project-overview.md` or
+`blueprint/build-plan.md` and read only the matching passage. Otherwise skip
+both. A detail still missing after that is a gap for Step 6.
 
 For `latest`, use the most recent archive even when an active spec exists.
 Otherwise prefer the active spec. If `current-feature.md` is the reset stub, use
