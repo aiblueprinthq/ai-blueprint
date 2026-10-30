@@ -385,7 +385,7 @@ async function readState(projectRoot) {
   try {
     parsed = JSON.parse(await fs.readFile(filePath, "utf8"));
   } catch {
-    throw new Error("Existing dashboard state is malformed. Start a new run or use /doctor.");
+    throw new Error("Existing dashboard state is malformed. Start a new run or use /blueprint-doctor.");
   }
   return validateState(parsed);
 }

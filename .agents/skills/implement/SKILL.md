@@ -15,8 +15,8 @@ packet. Implement it and stop before the work-level commit or merge.
 **First action:** Before project inspection, preflight, or any other tool call,
 publish the `implement` activity as `running` when `blueprint/.state/` exists.
 From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -31,7 +31,7 @@ In one preflight batch, read:
 - the current branch, status, and recent relevant log
 - the Commands section already loaded from `AGENTS.md`
 
-Stop for `/doctor` on invalid config. Stop for `/feature`, `/fix`, or `/rollback`
+Stop for `/blueprint-doctor` on invalid config. Stop for `/feature`, `/fix`, or `/rollback`
 when the active spec is empty. Preserve unrelated worktree changes.
 
 Do not reread the full project overview, coding standards, interaction guide,

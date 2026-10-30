@@ -16,8 +16,8 @@ This skill plans one feature and stops before implementation. Its output is
 **First action:** Before project inspection, preflight, or any other tool call,
 publish the `feature` activity as `running` when `blueprint/.state/` exists.
 From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -27,7 +27,7 @@ Combine that write with the first context-gathering tool batch when the adapter
 supports it.
 
 Read `blueprint/config.json` only for settings that affect the spec. Invalid
-configuration stops mutating work and points to `/doctor`.
+configuration stops mutating work and points to `/blueprint-doctor`.
 
 Confirm that `blueprint/context/current-feature.md` is the empty stub. If it
 contains active work, stop and direct the user to resume or complete it. Never

@@ -136,7 +136,8 @@ function buildCorpus(skills: readonly Skill[]): Corpus {
   const documents = new Map<string, TermCounts>();
 
   for (const skill of skills) {
-    const nameTokens = tokenize(skill.name.replaceAll("-", " "));
+    // The blueprint- prefix only avoids clashes with built-in tool commands, so it carries no routing signal.
+    const nameTokens = tokenize(skill.name.replace(/^blueprint-/, "").replaceAll("-", " "));
     documents.set(
       skill.name,
       countTerms([...nameTokens, ...nameTokens, ...tokenize(skill.description)])

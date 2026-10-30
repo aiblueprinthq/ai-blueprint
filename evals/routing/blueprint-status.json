@@ -1,12 +1,12 @@
 {
-  "skill": "status",
+  "skill": "blueprint-status",
   "positive": [
-    { "prompt": "Run /status", "top_k": 1 },
+    { "prompt": "Run /blueprint-status", "top_k": 1 },
     { "prompt": "Where does this project stand and what should I do next?", "top_k": 3 },
     { "prompt": "Show build-plan progress, current work, git state, and the next action", "top_k": 3 }
   ],
   "negative": [
     { "prompt": "Run /brief to preview the next feature's scope and dependencies", "owner": "brief" },
-    { "prompt": "Run /doctor to check whether Blueprint itself is configured correctly", "owner": "doctor" }
+    { "prompt": "Run /blueprint-doctor to check whether Blueprint itself is configured correctly", "owner": "blueprint-doctor" }
   ]
 }

@@ -40,8 +40,8 @@
       "owner": "implement"
     },
     {
-      "prompt": "Run /status and tell me what is in progress",
-      "owner": "status"
+      "prompt": "Run /blueprint-status and tell me what is in progress",
+      "owner": "blueprint-status"
     }
   ]
 }

@@ -252,8 +252,8 @@ full tour and command options.
 | "Show that this feature works." | `/check` |
 | "Tell me how to test it myself." | `/check guide` |
 | "Review the implementation for defects." | `/audit current` |
-| "Where did we leave off?" | `/status` |
-| "Is Blueprint set up correctly?" | `/doctor` |
+| "Where did we leave off?" | `/blueprint-status` |
+| "Is Blueprint set up correctly?" | `/blueprint-doctor` |
 
 Explore investigates a possibility without requiring plans. Brief explains an
 item already in the build plan. Neither writes files; Explore never executes
@@ -286,10 +286,10 @@ and other adapters can run the named skill through plain language.
 | --- | --- |
 | **/explore** | Investigate an idea against the code without writing files or requiring plans. |
 | **/brief** | Explain an existing planned feature, its dependencies, and likely size without writing files. |
-| **/status** | Show progress, drift, blockers, and the suggested next action. |
+| **/blueprint-status** | Show progress, drift, blockers, and the suggested next action. |
 | **/debug** | Reproduce and isolate a failure without editing code. |
 | **/audit** | Review code and record findings; `/audit independent current` requests an independent review of a checkpoint. |
-| **/doctor** | Check Blueprint setup and workflow health; offer to reset malformed generated dashboard state after approval. |
+| **/blueprint-doctor** | Check Blueprint setup and workflow health; offer to reset malformed generated dashboard state after approval. |
 
 ### Plan and set up
 
@@ -484,8 +484,8 @@ pnpm dlx create-ai-blueprint@latest update
 
 Updates manage the skill trees and `blueprint/workflow.md`, the workflow
 reference agents read on demand. They preserve `AGENTS.md`, so an older project
-keeps its longer startup file until you trim it; `/doctor` names the sections
-that moved.
+keeps its longer startup file until you trim it; `/blueprint-doctor` names the
+sections that moved.
 
 Update can also add an adapter to an existing installation:
 
@@ -505,14 +505,20 @@ Read [Updating Blueprint](https://ai-blueprint.dev/docs/updating-blueprint/) and
 
 ### Command migration
 
-Two standalone skills have been removed:
+Some standalone skills have been removed or renamed:
 
 | Old command | Replacement |
 | --- | --- |
 | `/browser-tests` | `/tests browser` (Codex: `$tests browser`) |
 | `/try` | `/check guide` (Codex: `$check guide`) |
+| `/status` | `/blueprint-status` (Codex: `$blueprint-status`) |
+| `/doctor` | `/blueprint-doctor` (Codex: `$blueprint-doctor`) |
 
-Run the CLI update to install the consolidated skills. Updates remove unchanged
+`/status` and `/doctor` were renamed so they no longer hide the Claude Code
+built-in commands with the same names. The `blueprint status` terminal command
+is unchanged.
+
+Run the CLI update to install the current skills. Updates remove unchanged
 managed copies of the retired skills and report customized copies as conflicts,
 preserving them until you resolve or explicitly replace them. Review old references in your preserved `AGENTS.md`; updates do not replace your
 project instructions. The `qualityGates.regular.tryGuide` and

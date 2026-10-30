@@ -7,7 +7,7 @@
   ],
   "negative": [
     { "prompt": "Run /feature 3 and write the buildable spec", "owner": "feature" },
-    { "prompt": "Run /status and tell me what is currently in progress", "owner": "status" },
+    { "prompt": "Run /blueprint-status and tell me what is currently in progress", "owner": "blueprint-status" },
     { "prompt": "Explore an idea against the codebase and compare alternatives without writing files or a spec", "owner": "explore" }
   ]
 }

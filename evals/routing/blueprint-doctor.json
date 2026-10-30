@@ -1,12 +1,12 @@
 {
-  "skill": "doctor",
+  "skill": "blueprint-doctor",
   "positive": [
-    { "prompt": "Run /doctor", "top_k": 1 },
+    { "prompt": "Run /blueprint-doctor", "top_k": 1 },
     { "prompt": "Check whether Blueprint is installed and configured correctly", "top_k": 3 },
     { "prompt": "Give this project's Blueprint setup a read-only health check", "top_k": 3 }
   ],
   "negative": [
     { "prompt": "Run /onboard and configure this newly scaffolded project", "owner": "onboard" },
-    { "prompt": "Run /status to show current build-plan progress", "owner": "status" }
+    { "prompt": "Run /blueprint-status to show current build-plan progress", "owner": "blueprint-status" }
   ]
 }

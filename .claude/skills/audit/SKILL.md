@@ -11,8 +11,8 @@ disable-model-invocation: true
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -25,7 +25,7 @@ Where this sits in the workflow:
     (code exists)                 (review +    (repair quality issues
                                    ledger)      or close the feature)
 
-`/check` proves behavior against the spec. `/doctor` checks Blueprint setup and
+`/check` proves behavior against the spec. `/blueprint-doctor` checks Blueprint setup and
 workflow health. This skill checks the code itself through either a broad review
 or one focused lens: quality, security, performance, or tests.
 
@@ -43,7 +43,7 @@ A selected `independentReview` gate invokes independent mode instead of letting
 the builder satisfy its own review. When both audit and independent review are
 selected, one passing independent review satisfies the audit gate.
 A missing config means built-in defaults. If it exists but is invalid, stop and
-point to `/doctor` before writing the findings ledger.
+point to `/blueprint-doctor` before writing the findings ledger.
 
 ## Input
 

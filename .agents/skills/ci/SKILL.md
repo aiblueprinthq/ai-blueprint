@@ -10,8 +10,8 @@ description: Set up or normalize one project Verify command and matching GitHub 
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -189,7 +189,7 @@ part of this skill.
   creates CI by itself.
 - `/implement`, `/complete`, and `/autopilot` run Verify when it is documented,
   with their existing fallback behavior when it is absent.
-- `/doctor` diagnoses drift between `AGENTS.md`, the project command, and the
+- `/blueprint-doctor` diagnoses drift between `AGENTS.md`, the project command, and the
   workflow. Missing CI remains informational.
 
 ## Rules

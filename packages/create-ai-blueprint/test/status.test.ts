@@ -313,7 +313,7 @@ test("readProjectStatus warns when project config is invalid", async (t) => {
   assert.equal(status.configuration.state, "invalid");
   assert.equal(status.configuration.values.qualityGates.regular.audit, "manual");
   assert.deepEqual(status.nextAction, {
-    command: "/doctor",
+    command: "/blueprint-doctor",
     reason: "Repair blueprint/config.json before running a mutating workflow."
   });
   assert.deepEqual(status.completion, { state: "idle", blockers: [] });
@@ -684,11 +684,11 @@ test("readProjectStatus diagnoses malformed review and findings evidence without
 
       assert.equal(status.health, "warning");
       assert.equal(status.completion.state, "blocked");
-      assert.equal(status.nextAction.command, "/doctor");
+      assert.equal(status.nextAction.command, "/blueprint-doctor");
       assert.ok(status.warnings.some((warning) => warning.code === (kind === "review" ? "malformed_review" : kind)));
       assert.match(status.nextAction.reason, kind === "review" ? /blueprint\/context\/review\.md/ : /blueprint\/context\/findings\.md/);
       assert.match(status.completion.blockers.join("; "), kind === "review" ? /independent review record is malformed/ : /findings (record|path)/);
-      assert.match(formatHumanStatus(status), /Next action\n  \/doctor/);
+      assert.match(formatHumanStatus(status), /Next action\n  \/blueprint-doctor/);
       if (kind === "malformed_findings") {
         assert.equal(status.findings.total, 2);
         assert.equal(status.findings.byStatus.open, 1);
@@ -733,7 +733,7 @@ test("readProjectStatus does not offer completion on a mismatched branch", async
   const status = await readProjectStatus(projectRoot);
 
   assert.deepEqual(status.completion, { state: "blocked", blockers: ["branch does not match feature work"] });
-  assert.equal(status.nextAction.command, "/doctor");
+  assert.equal(status.nextAction.command, "/blueprint-doctor");
   assert.match(status.nextAction.reason, /branch does not match feature work/);
 });
 
@@ -992,14 +992,14 @@ test("readProjectStatus sends malformed dashboard state to Doctor", async (t) =>
 
   assert.equal(status.activity.state, "malformed");
   assert.deepEqual(status.nextAction, {
-    command: "/doctor",
+    command: "/blueprint-doctor",
     reason: "Inspect and reset malformed dashboard state in blueprint/.state/run.json."
   });
   assert.ok(status.warnings.some((warning) =>
     warning.code === "malformed_run_state" &&
-    warning.message.includes("Run /doctor")
+    warning.message.includes("Run /blueprint-doctor")
   ));
-  assert.match(formatHumanStatus(status), /Next action\n  \/doctor/);
+  assert.match(formatHumanStatus(status), /Next action\n  \/blueprint-doctor/);
 });
 
 test("readProjectStatus keeps activity advice consistent with active work evidence", async (t) => {
@@ -1010,9 +1010,9 @@ test("readProjectStatus keeps activity advice consistent with active work eviden
     { name: "blocked inferred completion", work: checkedCurrentWork("implemented"), activity: recordedActivity("complete", "blocked"), expected: "/check" },
     { name: "stale inferred completion", work: checkedCurrentWork("implemented"), activity: recordedActivity("complete", "running"), expected: "/check" },
     { name: "ready activity after failed verification", work: checkedCurrentWork("verification failed"), activity: recordedActivity("autopilot", "ready", "/audit"), expected: "/implement" },
-    { name: "malformed work", work: "# Feature: Incomplete contract\n", activity: recordedActivity("complete", "blocked"), expected: "/doctor" },
-    { name: "malformed review", work: checkedCurrentWork(), activity: recordedActivity("continuous", "blocked", "/continuous resume"), review: "# Independent Review\n\n**State:** passed\n", expected: "/doctor" },
-    { name: "malformed findings", work: checkedCurrentWork(), activity: recordedActivity("autopilot", "ready", "/complete"), findings: "### F-01 [P1] unknown - Invalid status\n", expected: "/doctor" }
+    { name: "malformed work", work: "# Feature: Incomplete contract\n", activity: recordedActivity("complete", "blocked"), expected: "/blueprint-doctor" },
+    { name: "malformed review", work: checkedCurrentWork(), activity: recordedActivity("continuous", "blocked", "/continuous resume"), review: "# Independent Review\n\n**State:** passed\n", expected: "/blueprint-doctor" },
+    { name: "malformed findings", work: checkedCurrentWork(), activity: recordedActivity("autopilot", "ready", "/complete"), findings: "### F-01 [P1] unknown - Invalid status\n", expected: "/blueprint-doctor" }
   ]) {
     await t.test(entry.name, async (t) => {
       const projectRoot = await createProject(t, {

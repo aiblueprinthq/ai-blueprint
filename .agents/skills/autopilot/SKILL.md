@@ -10,8 +10,8 @@ description: Run one explicit bounded Blueprint spec and implementation pass thr
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -20,7 +20,7 @@ activity contract. A missing or failing helper is a warning, not a blocker.
 
 Where this sits in the workflow:
 
-    /status  ->  [autopilot]  ->  review packet  ->  /complete
+    /blueprint-status  ->  [autopilot]  ->  review packet  ->  /complete
     (where       (spec, build,      (human review,    (log, commit,
      are we?)     configured gates)  fixes if needed)  merge with approval)
 
@@ -65,9 +65,9 @@ or `current-feature.md` is marked `Type: Rollback`, stop and direct the user to
 the reviewed `/implement` path. Reversing completed work requires the explicit
 dependency and conflict gates in `/rollback` and `/implement`.
 
-## Step 1 - preflight like /status
+## Step 1 - preflight like /blueprint-status
 
-Read the same state `/status` reads:
+Read the same state `/blueprint-status` reads:
 
 - `AGENTS.md`
 - `blueprint/config.json`
@@ -84,7 +84,7 @@ Then decide whether it is safe to run.
 
 Stop before changing files when:
 
-- `blueprint/config.json` exists but is invalid. Point the user to `/doctor`.
+- `blueprint/config.json` exists but is invalid. Point the user to `/blueprint-doctor`.
 - The repo is not a git repo.
 - The working tree is dirty and there is no current feature tying those changes
   to this run.

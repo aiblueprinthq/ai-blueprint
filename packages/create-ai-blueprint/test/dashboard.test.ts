@@ -265,7 +265,7 @@ test("dashboard serves live read-only project status on loopback", async (t) => 
   await fs.writeFile(reviewPath, "# Independent Review\n\n**State:** passed\n");
   const malformedReviewStatus = await readStatus(dashboard.url);
   assert.equal(malformedReviewStatus.completion.state, "blocked");
-  assert.equal(malformedReviewStatus.nextAction.command, "/doctor");
+  assert.equal(malformedReviewStatus.nextAction.command, "/blueprint-doctor");
   assert.match(malformedReviewStatus.nextAction.reason, /blueprint\/context\/review\.md/);
   await fs.rm(reviewPath);
 
@@ -275,7 +275,7 @@ test("dashboard serves live read-only project status on loopback", async (t) => 
   );
   const malformedFindingsStatus = await readStatus(dashboard.url);
   assert.deepEqual(malformedFindingsStatus.completion, { state: "blocked", blockers: ["findings record is malformed"] });
-  assert.equal(malformedFindingsStatus.nextAction.command, "/doctor");
+  assert.equal(malformedFindingsStatus.nextAction.command, "/blueprint-doctor");
   assert.match(malformedFindingsStatus.nextAction.reason, /blueprint\/context\/findings\.md/);
   assert.equal(renderActivityPanel(page, malformedFindingsStatus).get("activity-resume-row")?.hidden, true);
 
