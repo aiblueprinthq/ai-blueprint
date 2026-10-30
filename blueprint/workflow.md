@@ -10,7 +10,7 @@
 this project. Workflow skills read the relevant settings before acting. A
 missing file means built-in defaults. An invalid file falls back to defaults for
 read-only status reporting, but mutating workflow commands stop and point to
-`/doctor` instead of guessing.
+`/blueprint-doctor` instead of guessing.
 
 Configuration can make review or verification stricter and can tune local
 branch names and automated-mode limits. It never grants permission to commit,
@@ -125,10 +125,10 @@ Core skills:
 
 - `explore` - investigate an idea against the actual code without writing files or requiring plans
 - `brief` - read-only briefing on an upcoming build-plan feature (scope, dependencies, size) before you spec it
-- `status` - read-only progress summary, workflow drift warning, and suggested next action
+- `blueprint-status` - read-only progress summary, workflow drift warning, and suggested next action
 - `debug` - reproduce and isolate a failure without editing code, then hand the evidence to `fix` or `implement`
 - `audit` - branch-aware or full-project review across all concerns or a focused quality, security, performance, or tests lens; `audit independent current` prepares an immutable checkpoint for a fresh reviewer session or configured isolated reviewer child; records findings in `blueprint/context/findings.md` and independent receipts in `blueprint/context/review.md`, where blocking findings or stale review state stop `complete`
-- `doctor` - Blueprint health check for setup, adapters, plans, overview freshness, dashboard state, and workflow drift; it may offer to reset only malformed generated dashboard state after approval
+- `blueprint-doctor` - Blueprint health check for setup, adapters, plans, overview freshness, dashboard state, and workflow drift; it may offer to reset only malformed generated dashboard state after approval
 
 ### Plan and set up
 
@@ -189,10 +189,11 @@ Commands with meaningful progress or a durable handoff should write it when the
 state directory exists: `onboard`, `adopt`, `discovery`, `overview`, `feature`,
 `fix`, `rollback`, `implement`, `debug`, `check`, `audit`, `tests`,
 `ci`, `prototype`, `autopilot`, `continuous`, `complete`, and
-`release`. Short orientation commands such as `explore`, `brief`, `status`, and `doctor`
-do not write activity state. The `check guide` mode also never writes activity
-state; select the Check mode before any activity call. Doctor's optional
-approved reset removes malformed activity instead of recording another run.
+`release`. Short orientation commands such as `explore`, `brief`,
+`blueprint-status`, and `blueprint-doctor` do not write activity state. The
+`check guide` mode also never writes activity state; select the Check mode
+before any activity call. Doctor's optional approved reset removes malformed
+activity instead of recording another run.
 
 Writing the initial activity record is the first action of a tracked command,
 before project inspection, preflight, or other tool calls. This one generated
@@ -202,8 +203,8 @@ Never create or edit `run.json` directly. From the project root, use the first
 helper that exists:
 
 ```text
-node .agents/skills/doctor/scripts/run-state.mjs <action> <options>
-node .claude/skills/doctor/scripts/run-state.mjs <action> <options>
+node .agents/skills/blueprint-doctor/scripts/run-state.mjs <action> <options>
+node .claude/skills/blueprint-doctor/scripts/run-state.mjs <action> <options>
 ```
 
 Start with `start --command <skill> --summary <truthful-summary> --boundary

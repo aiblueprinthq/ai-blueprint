@@ -70,9 +70,9 @@ test("parseRunState rejects malformed or incomplete state", () => {
   const invalidSchema = parseRunState("{}");
 
   assert.equal(invalidJson.state, "malformed");
-  assert.match(invalidJson.warnings[0]?.message || "", /Run \/doctor/);
+  assert.match(invalidJson.warnings[0]?.message || "", /Run \/blueprint-doctor/);
   assert.equal(invalidSchema.state, "malformed");
-  assert.match(invalidSchema.warnings[0]?.message || "", /Run \/doctor/);
+  assert.match(invalidSchema.warnings[0]?.message || "", /Run \/blueprint-doctor/);
   assert.equal(
     parseRunState(JSON.stringify({
       schemaVersion: 1,

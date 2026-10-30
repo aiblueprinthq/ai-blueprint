@@ -1,16 +1,17 @@
 ---
-name: doctor
-description: Run a Blueprint health and context check covering setup, adapters, commands, visibility, plans, overview freshness, configuration, dashboard state, and workflow drift. May offer to reset malformed generated dashboard state after approval. Use for /doctor, installation checks, context overhead, setup problems, or when something feels wrong.
+name: blueprint-doctor
+description: Run a Blueprint health and context check covering setup, adapters, commands, visibility, plans, overview freshness, configuration, dashboard state, and workflow drift. May offer to reset malformed generated dashboard state after approval. Use for /blueprint-doctor, installation checks, context overhead, setup problems, or when something feels wrong.
+disable-model-invocation: true
 ---
 
-# doctor - Blueprint health check
+# blueprint-doctor - Blueprint health check
 
 **Context reuse:** Reuse any required file already loaded in project instructions or the current session. Read it again only if absent, changed, or exact current bytes or line references are needed.
 
 Where this sits in the workflow:
 
-    any time  ->  [doctor]  ->  reads setup + plans + workflow state + git
-                  (diagnostic)  prints health, warnings, and repair order
+    any time  ->  [blueprint-doctor]  ->  reads setup + plans + workflow state + git
+                  (diagnostic)            prints health, warnings, and repair order
 
 This skill answers one question: *is this Blueprint project ready to use?* It is
 the diagnostic pass for setup drift, incomplete onboarding, missing files,
@@ -19,12 +20,12 @@ workflow state. It never changes anything: no edits, no commits, no installs, no
 builds, no branch changes. Its only repair is an approved reset of a malformed
 generated `blueprint/.state/run.json` file.
 
-Use `/status` when the user mainly wants progress and the next build action. Use
-`/doctor` when the user wants to know whether the workflow itself is healthy.
+Use `/blueprint-status` when the user mainly wants progress and the next build action. Use
+`/blueprint-doctor` when the user wants to know whether the workflow itself is healthy.
 
 ## Input
 
-None. `/doctor` takes no argument.
+None. `/blueprint-doctor` takes no argument.
 
 ## What it checks
 
@@ -244,7 +245,7 @@ Choose the repair order in this priority:
 - Required Blueprint files missing -> overlay the Blueprint again, or use
   `/adopt` for a brownfield app.
 - Invalid `blueprint/config.json` -> fix the named key or value, then rerun
-  `/doctor`. Do not mutate project work while configuration is ambiguous.
+  `/blueprint-doctor`. Do not mutate project work while configuration is ambiguous.
 - No git repo -> initialize git before using the build loop.
 - No tool adapter -> restore `.agents/skills/` or `.claude/skills/` for the
   selected tool. OpenCode can use either compatible tree.
@@ -254,7 +255,7 @@ Choose the repair order in this priority:
   workflow reference.
 - Claude uses legacy direct context imports -> remove the exact direct imports
   for `project-overview.md`, `current-feature.md`, `coding-standards.md`, and
-  `ai-interaction.md` that are present in `CLAUDE.md`, then rerun `/doctor`. The
+  `ai-interaction.md` that are present in `CLAUDE.md`, then rerun `/blueprint-doctor`. The
   files stay in the project and workflow skills still read them on demand.
 - Onboarding incomplete -> run `/onboard`.
 - Proportional-engineering guidance missing or incomplete -> review the current
@@ -284,14 +285,14 @@ Choose the repair order in this priority:
   `blueprint/build-plan.md`.
 - Overview missing or stale -> run `/overview`.
 - Malformed regular `blueprint/.state/run.json` -> offer to reset that exact
-  generated file, then rerun `/doctor` or refresh the dashboard.
-- Active spec has unchecked steps -> run `/status` or `/implement`, depending on
+  generated file, then rerun `/blueprint-doctor` or refresh the dashboard.
+- Active spec has unchecked steps -> run `/blueprint-status` or `/implement`, depending on
   whether the user wants orientation or action.
 - A P0 or P1 finding is `open` -> repair it through `/implement` while a spec
   is active, or `/fix <finding id>` between work items. One that is `fixed` ->
   `/audit` to re-review and close it. Both come before suggesting `/complete`.
 - Active spec is done but not closed -> run `/check`, then `/complete`.
-- Everything is healthy -> say so, then suggest `/status` for progress or
+- Everything is healthy -> say so, then suggest `/blueprint-status` for progress or
   `/feature` for the next planned feature.
 
 ## Rules

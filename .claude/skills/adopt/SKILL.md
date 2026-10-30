@@ -11,8 +11,8 @@ disable-model-invocation: true
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -112,7 +112,7 @@ it rather than inherit a wrong guess.
 - **`blueprint/build-plan.md`** - the ordered feature list as a checklist. **Mark
   shipped features `- [x]`** (this is the brownfield difference: the build plan
   reflects reality, so most of an existing app starts checked) and the roadmap
-  items from the interview as `- [ ]`. This makes `/status` and `/feature` work
+  items from the interview as `- [ ]`. This makes `/blueprint-status` and `/feature` work
   immediately - the next unchecked item is genuinely what's next.
 - **`blueprint/context/coding-standards.md`** - rewrite the default to match the
   project's *actual* conventions from Step 1, not the shipped Next.js/Prisma

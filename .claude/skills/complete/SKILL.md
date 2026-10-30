@@ -11,8 +11,8 @@ disable-model-invocation: true
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -35,7 +35,7 @@ tests, passes.
 ## Before you start
 
 Read `blueprint/config.json`. A missing file means the built-in defaults apply.
-If the file exists but is invalid, stop and point the user to `/doctor`.
+If the file exists but is invalid, stop and point the user to `/blueprint-doctor`.
 Configuration can strengthen or shape the completion gates, but it never grants
 permission to commit, merge, push, deploy, publish, or take destructive action.
 Record `git.landing`; a missing value defaults to `local-merge`. The

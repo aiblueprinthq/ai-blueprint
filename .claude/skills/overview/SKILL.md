@@ -11,8 +11,8 @@ disable-model-invocation: true
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -126,7 +126,7 @@ Before hashing, normalize only build-plan completion markers by replacing each
 `- [x]` or `- [X]` marker with `- [ ]`, while preserving indentation and every
 other byte. Compute `<sha256>` from the exact UTF-8 bytes of `project-plan.md`,
 one zero byte, then the normalized UTF-8 bytes of `build-plan.md`. This lets
-`/status` detect real plan changes after cloning, copying, or updating without
+`/blueprint-status` detect real plan changes after cloning, copying, or updating without
 treating completed features as overview drift. Replace the previous marker every
 time this skill regenerates the overview.
 

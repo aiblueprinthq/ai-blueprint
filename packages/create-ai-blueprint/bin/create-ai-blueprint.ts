@@ -31,10 +31,9 @@ const templateRoot = path.join(packageRoot, "template");
 const ADAPTER_PROMPT = "Select AI tool adapters";
 const ALL_ADAPTERS = adapterListFromMode("all");
 const AI_SKILLS = new Set([
-  "adopt", "audit", "autopilot", "brief", "check", "ci",
-  "complete", "continuous", "debug", "discovery", "doctor", "explore", "feature", "fix",
-  "implement", "onboard", "overview", "prototype", "release", "rollback",
-  "status", "tests"
+  "adopt", "audit", "autopilot", "blueprint-doctor", "blueprint-status", "brief",
+  "check", "ci", "complete", "continuous", "debug", "discovery", "explore", "feature",
+  "fix", "implement", "onboard", "overview", "prototype", "release", "rollback", "tests"
 ]);
 
 interface AdapterCheckboxChoice {
@@ -341,6 +340,12 @@ function parseArgs(args: readonly string[], surface: CliSurface = "package"): Cl
     if (!commandSeen && arg === "try") {
       throw new Error(
         "The try skill was removed. Open your project in your AI chat and run `$check guide` in Codex or `/check guide` in Claude Code."
+      );
+    }
+
+    if (!commandSeen && arg === "doctor") {
+      throw new Error(
+        "The doctor skill is now blueprint-doctor. Open your project in your AI chat and run `$blueprint-doctor` in Codex or `/blueprint-doctor` in Claude Code."
       );
     }
 

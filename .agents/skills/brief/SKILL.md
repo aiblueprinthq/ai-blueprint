@@ -27,7 +27,7 @@ How it differs from its neighbors:
 - `/explore` investigates an open idea against the code without requiring plans.
   `/brief` explains an existing build-plan item.
 
-- `/status` reports the *whole project*: progress, current work, git, next action.
+- `/blueprint-status` reports the *whole project*: progress, current work, git, next action.
   `/brief` zooms into *one feature* and explains it in depth.
 - `/feature` *writes* the spec (and may split the item in `build-plan.md`).
   `/brief` previews what `/feature` would tackle, changing nothing.

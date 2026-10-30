@@ -44,8 +44,8 @@ _No independent review requested. Run \`/audit independent current\` to prepare 
 const AGENTS_BYTE_BUDGET = 6000;
 const ACTIVITY_HELPER_INSTRUCTION = [
   "From the project root, run the first helper that exists,",
-  "`node .agents/skills/doctor/scripts/run-state.mjs` or",
-  "`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command",
+  "`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or",
+  "`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command",
   "<skill> --summary \"<truthful summary>\" --boundary",
   "<read-only|reviewed|local-only>`. Use `update` at milestones, with `--status",
   "blocked --resume <command>` for a blocker, and `finish --status ready|completed`",
@@ -323,8 +323,8 @@ async function validateDashboardActivityContract(skills: readonly string[]): Pro
 
   for (const required of [
     "Never create or edit `run.json` directly.",
-    ".agents/skills/doctor/scripts/run-state.mjs",
-    ".claude/skills/doctor/scripts/run-state.mjs"
+    ".agents/skills/blueprint-doctor/scripts/run-state.mjs",
+    ".claude/skills/blueprint-doctor/scripts/run-state.mjs"
   ]) {
     if (!workflow.includes(required)) {
       throw new Error(`Dashboard activity contract is missing: ${required}`);
@@ -332,8 +332,8 @@ async function validateDashboardActivityContract(skills: readonly string[]): Pro
   }
 
   for (const relativePath of [
-    ".agents/skills/doctor/scripts/run-state.mjs",
-    ".claude/skills/doctor/scripts/run-state.mjs"
+    ".agents/skills/blueprint-doctor/scripts/run-state.mjs",
+    ".claude/skills/blueprint-doctor/scripts/run-state.mjs"
   ]) {
     await requirePath(
       path.join(repoRoot, ...relativePath.split("/")),
@@ -394,7 +394,7 @@ async function validateVerificationContract(): Promise<void> {
         "authoritative installer selection",
         "does not mean all four tools were selected",
         "Do not ask the user to select adapters again",
-        "point to `/doctor` instead of guessing"
+        "point to `/blueprint-doctor` instead of guessing"
       ]
     ],
     [
@@ -512,7 +512,7 @@ async function validateVerificationContract(): Promise<void> {
       ["add the real test command", "never creates a GitHub workflow on its own"]
     ],
     [
-      ".agents/skills/status/SKILL.md",
+      ".agents/skills/blueprint-status/SKILL.md",
       [
         "markers normalized to `- [ ]`",
         "matching legacy exact-byte hash",
@@ -727,7 +727,7 @@ async function validateVerificationContract(): Promise<void> {
       ]
     ],
     [
-      ".agents/skills/status/SKILL.md",
+      ".agents/skills/blueprint-status/SKILL.md",
       ["Pending completion candidate", "../complete/reference/completion-screen.md"]
     ],
     [
@@ -753,7 +753,7 @@ async function validateVerificationContract(): Promise<void> {
       ]
     ],
     [
-      ".agents/skills/doctor/SKILL.md",
+      ".agents/skills/blueprint-doctor/SKILL.md",
       [
         "missing `Verify` command or GitHub workflow is informational",
         "At or above 20,000 bytes, call it oversized",

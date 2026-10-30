@@ -39,10 +39,6 @@ test("CLI recovery recognizes every shipped AI skill without reading a project",
   const skillsRoot = fileURLToPath(new URL("../../../.agents/skills/", import.meta.url));
   const skills = await fs.readdir(skillsRoot, { withFileTypes: true });
   for (const skill of skills.filter((entry) => entry.isDirectory())) {
-    if (skill.name === "status") {
-      assert.equal(parseArgs([skill.name]).command, "status");
-      continue;
-    }
     assert.throws(() => parseArgs([skill.name]), (error: unknown) => {
       assert.ok(error instanceof Error);
       assert.ok(error.message.includes(`\`$${skill.name}\` in Codex`));
@@ -72,6 +68,18 @@ test("retired try CLI input points to consolidated AI chat commands", () => {
       assert.match(error.message, /skill was removed/);
       assert.ok(error.message.includes("`$check guide` in Codex"));
       assert.ok(error.message.includes("`/check guide` in Claude Code"));
+      return true;
+    });
+  }
+});
+
+test("renamed doctor CLI input points to the blueprint-doctor AI chat command", () => {
+  for (const surface of ["global", "package"] as const) {
+    assert.throws(() => parseArgs(["doctor"], surface), (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /skill is now blueprint-doctor/);
+      assert.ok(error.message.includes("`$blueprint-doctor` in Codex"));
+      assert.ok(error.message.includes("`/blueprint-doctor` in Claude Code"));
       return true;
     });
   }

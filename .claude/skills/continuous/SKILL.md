@@ -11,8 +11,8 @@ disable-model-invocation: true
 **First action:** Before project inspection, preflight, or any other tool call,
 publish `running` to `blueprint/.state/run.json` when `blueprint/.state/`
 exists. From the project root, run the first helper that exists,
-`node .agents/skills/doctor/scripts/run-state.mjs` or
-`node .claude/skills/doctor/scripts/run-state.mjs`, with `start --command
+`node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
+`node .claude/skills/blueprint-doctor/scripts/run-state.mjs`, with `start --command
 <skill> --summary "<truthful summary>" --boundary
 <read-only|reviewed|local-only>`. Use `update` at milestones, with `--status
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
@@ -21,7 +21,7 @@ activity contract. A missing or failing helper is a warning, not a blocker.
 
 Where this sits in the workflow:
 
-    /status  ->  [continuous]  ->  final review packet
+    /blueprint-status  ->  [continuous]  ->  final review packet
     (ready)      (feature loop,    (local main only,
                   local history)    never pushed)
 
@@ -92,7 +92,7 @@ Read:
   recent log
 
 A missing config means built-in defaults. If it exists but is invalid, stop and
-point to `/doctor`.
+point to `/blueprint-doctor`.
 
 Start only when the state is safe:
 

@@ -10,7 +10,7 @@ const execFileAsync = promisify(execFile);
 const helper = path.resolve(
   ".agents",
   "skills",
-  "doctor",
+  "blueprint-doctor",
   "scripts",
   "run-state.mjs"
 );

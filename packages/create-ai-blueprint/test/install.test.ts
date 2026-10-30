@@ -99,7 +99,7 @@ for (const binary of ["create-ai-blueprint", "blueprint"]) {
 
   test(`${binary} redirects mistaken AI skills without running or writing`, async () => {
     const { target } = await createTarget();
-    for (const args of [["doctor"], ["doctor", "--help"], ["implement"]]) {
+    for (const args of [["blueprint-doctor"], ["blueprint-doctor", "--help"], ["implement"]]) {
       const result = runWithoutTemplate(binary, ...args, "--target", target);
       assert.equal(result.status, 1, result.stderr);
       assert.equal(result.stdout, "");

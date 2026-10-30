@@ -30,7 +30,7 @@ verify the whole current feature against every "done when" in
 ## Step 1 - build the checklist
 
 Read `blueprint/config.json` first. A missing file means the built-in defaults
-apply. If the file exists but is invalid, stop and point the user to `/doctor`.
+apply. If the file exists but is invalid, stop and point the user to `/blueprint-doctor`.
 Configuration never grants permission to start a server or take any other action
 that the project instructions or user have not authorized.
 The quality-gate config controls automatic invocation only. An explicit `/check`

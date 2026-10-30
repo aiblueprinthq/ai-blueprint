@@ -66,10 +66,10 @@ that carries its own instructions. Claude Code and Google Antigravity use slash
 commands such as `/feature`, Codex uses `$feature`, and other tools can follow
 the matching `SKILL.md` when asked.
 
-Skills: `adopt`, `audit`, `brief`, `check`, `ci`, `complete`, `debug`,
-`discovery`, `doctor`, `explore`, `feature`, `fix`, `implement`, `onboard`,
-`overview`, `prototype`, `release`, `rollback`, `status`, and `tests`, plus the
-explicit-only `autopilot` and `continuous`.
+Skills: `adopt`, `audit`, `blueprint-doctor`, `blueprint-status`, `brief`,
+`check`, `ci`, `complete`, `debug`, `discovery`, `explore`, `feature`, `fix`,
+`implement`, `onboard`, `overview`, `prototype`, `release`, `rollback`, and
+`tests`, plus the explicit-only `autopilot` and `continuous`.
 
 - Keep one active work item per checkout. Parallel work needs its own clone or
   Git worktree and branch; never replace another worker's active spec.

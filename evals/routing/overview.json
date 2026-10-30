@@ -7,6 +7,6 @@
   ],
   "negative": [
     { "prompt": "Run /feature and spec the next build-plan item", "owner": "feature" },
-    { "prompt": "Run /status and summarize current progress", "owner": "status" }
+    { "prompt": "Run /blueprint-status and summarize current progress", "owner": "blueprint-status" }
   ]
 }
