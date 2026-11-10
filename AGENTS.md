@@ -51,14 +51,14 @@ and installed dependencies before adding machinery.
 - `blueprint/context/project-overview.md` - the project's source of truth
 - `blueprint/context/coding-standards.md` - read before changing code
 - `blueprint/context/ai-interaction.md` - read when running the Blueprint workflow
-- `blueprint/context/current-feature.md` - the one feature, fix, or rollback being built in this checkout
+- `blueprint/context/current-feature.md` - the one feature or fix being built in this checkout
 
 Reuse relevant context already loaded in the session. Claude Code imports only
 this file; its Blueprint skills load the other files on demand.
 
 ## Workflow
 
-Build one feature, fix, or rollback at a time, behind review gates. The feature
+Build one feature or fix at a time, behind review gates. The feature
 loop is `/feature` -> `/implement` -> `/check` -> `/audit current` ->
 `/complete`; approve the Feature spec before Implement. Each command is a local
 skill at `.agents/skills/<skill>/SKILL.md` or `.claude/skills/<skill>/SKILL.md`
@@ -68,8 +68,8 @@ the matching `SKILL.md` when asked.
 
 Skills: `adopt`, `audit`, `blueprint-doctor`, `blueprint-status`, `brief`,
 `check`, `ci`, `complete`, `debug`, `discovery`, `explore`, `feature`, `fix`,
-`implement`, `onboard`, `overview`, `prototype`, `release`, `rollback`, and
-`tests`, plus the explicit-only `autopilot` and `continuous`.
+`implement`, `onboard`, `overview`, `prototype`, `release`, and `tests`, plus
+the explicit-only `autopilot` and `continuous`.
 
 - Keep one active work item per checkout. Parallel work needs its own clone or
   Git worktree and branch; never replace another worker's active spec.

@@ -1107,12 +1107,13 @@ function isMatchingWorkBranch(
   type: CurrentWorkType,
   config: ProjectConfig
 ): boolean {
+  // A leftover rollback spec can no longer be implemented or completed.
   const prefix = type === "feature"
     ? config.git.featureBranchPrefix
     : type === "fix"
       ? config.git.fixBranchPrefix
-      : config.git.rollbackBranchPrefix;
-  return branch?.startsWith(prefix) === true;
+      : null;
+  return prefix !== null && branch?.startsWith(prefix) === true;
 }
 
 async function readOnboardingStatus(projectRoot: string): Promise<{

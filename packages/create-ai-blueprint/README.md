@@ -217,7 +217,7 @@ does not prove the application works.
 
 ## Command map
 
-All 22 skills are installed for each selected adapter. These groups organize the
+All 21 skills are installed for each selected adapter. These groups organize the
 reference without adding configuration or optional installation modes. Use the
 matching `$` form in Codex.
 
@@ -258,7 +258,6 @@ matching `$` form in Codex.
 | Skill | Purpose |
 | --- | --- |
 | **/fix** | Write a spec for a small unplanned change or confirmed bug. |
-| **/rollback** | Plan a history-preserving reversal of completed work. |
 | **/release** | Prepare local Render or Vercel configuration and readiness checks; deployment needs separate approval. |
 
 ### Automation

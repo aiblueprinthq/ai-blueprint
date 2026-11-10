@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Start coding or resume the approved current feature, fix, or rollback on its branch, testing each step and presenting review. Use for /implement or building current-feature.md.
+description: Start coding or resume the approved current feature or fix on its branch, testing each step and presenting review. Use for /implement or building current-feature.md.
 ---
 
 # implement - build the approved spec
@@ -31,7 +31,7 @@ In one preflight batch, read:
 - the current branch, status, and recent relevant log
 - the Commands section already loaded from `AGENTS.md`
 
-Stop for `/blueprint-doctor` on invalid config. Stop for `/feature`, `/fix`, or `/rollback`
+Stop for `/blueprint-doctor` on invalid config. Stop for `/feature` or `/fix`
 when the active spec is empty. Preserve unrelated worktree changes.
 
 Do not reread the full project overview, coding standards, interaction guide,
@@ -46,19 +46,19 @@ blocks the next change. Do not list or survey the repository, inspect unrelated
 examples, or run scratch environment probes. Follow the declared runtime and
 existing target-area patterns, then let the narrow check expose incompatibilities.
 
+If the spec says `Type: Rollback`, it predates the removal of the rollback
+workflow. Stop without changing product files and suggest removing the feature
+through `/fix` instead.
+
 Resolve the work branch before editing. Use the exact `**Branch:**` value in the
 spec when present. For an older spec without it, combine the configured prefix
 for its type with the work title: lowercase ASCII letters and digits, replace
 each run of other characters with one hyphen, and trim edge hyphens. Feature
-titles come from the named build-plan item; fix and rollback titles come from
-their spec heading or target. Stop if the type or title is ambiguous. Create or
+titles come from the named build-plan item; fix titles come from their spec
+heading. Stop if the type or title is ambiguous. Create or
 switch to that exact branch and never implement on the default branch. On
 resume, start at the first unchecked build step and use git status plus the
 checked boxes to distinguish finished work from unfinished work.
-
-If the spec says `Type: Rollback`, read and follow
-`reference/rollback-implementation.md` before changing product files. Do not load
-that reference for a feature or fix.
 
 ## Build loop
 

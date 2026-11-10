@@ -71,7 +71,7 @@ the starting item only when no different work item is active. After that item,
 continue with the next unchecked leaf items in normal build-plan order.
 
 Continuous Mode handles planned features only. If the active work is a fix or
-rollback, stop and point to its normal reviewed workflow. Never overwrite active
+another spec type, stop and point to its normal reviewed workflow. Never overwrite active
 work to make the requested target fit.
 
 ## Step 1 - preflight once

@@ -73,6 +73,18 @@ test("retired try CLI input points to consolidated AI chat commands", () => {
   }
 });
 
+test("retired rollback CLI input points to the fix AI chat command", () => {
+  for (const surface of ["global", "package"] as const) {
+    assert.throws(() => parseArgs(["rollback"], surface), (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /skill was removed/);
+      assert.ok(error.message.includes("`$fix` in Codex"));
+      assert.ok(error.message.includes("`/fix` in Claude Code"));
+      return true;
+    });
+  }
+});
+
 test("renamed doctor CLI input points to the blueprint-doctor AI chat command", () => {
   for (const surface of ["global", "package"] as const) {
     assert.throws(() => parseArgs(["doctor"], surface), (error: unknown) => {

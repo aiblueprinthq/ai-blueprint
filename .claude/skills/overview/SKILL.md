@@ -186,8 +186,8 @@ Treat this as the initial pre-feature state only when all of these are true:
 - the version of `blueprint/context/project-overview.md` in `HEAD` does not
   already contain a `blueprint:source-hash` marker
 - `blueprint/context/current-feature.md` is still the canonical empty stub
-- `blueprint/history/features/`, `fixes/`, and `rollbacks/` contain no archived
-  work beyond their shipped `README.md` placeholders
+- `blueprint/history/features/` and `fixes/` contain no archived work beyond
+  their shipped `README.md` placeholders
 - `blueprint/build-plan.md` contains no checked feature items
 - the Blueprint workflow is meant to be committed, not kept local-only
 

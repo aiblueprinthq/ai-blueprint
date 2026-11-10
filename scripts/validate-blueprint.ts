@@ -13,13 +13,12 @@ const codexSkillsRoot = path.join(repoRoot, ".agents", "skills");
 const claudeSkillsRoot = path.join(repoRoot, ".claude", "skills");
 const currentFeatureStub = `# Current Feature
 
-> **Generated file.** Holds the one feature, fix, or rollback being built in this checkout. Run
+> **Generated file.** Holds the one feature or fix being built in this checkout. Run
 > \`/feature <number-or-name>\` to spec a build-plan feature, or \`/fix "<bug>"\` for
-> an ad-hoc fix. Use \`/rollback <completed-feature>\` to plan a safe reversal.
-> Build one thing at a time in this checkout; \`/complete\` archives it under
-> \`blueprint/history/\` and resets this file.
+> an ad-hoc fix. Build one thing at a time in this checkout; \`/complete\` archives
+> it under \`blueprint/history/\` and resets this file.
 
-_Nothing in progress. Run \`/feature\`, \`/fix\`, or \`/rollback\` to start._
+_Nothing in progress. Run \`/feature\` or \`/fix\` to start._
 `;
 const findingsStub = `# Findings
 
@@ -85,7 +84,6 @@ const requiredPaths = [
   "blueprint/context/project-overview.md",
   "blueprint/history/features/README.md",
   "blueprint/history/fixes/README.md",
-  "blueprint/history/rollbacks/README.md",
   "blueprint/workflow.md",
   "evals/try-guide.json",
   "packages/create-ai-blueprint/bin/create-ai-blueprint.ts",
@@ -558,16 +556,6 @@ async function validateVerificationContract(): Promise<void> {
       ]
     ],
     [
-      ".agents/skills/implement/reference/rollback-implementation.md",
-      [
-        "both values match `^[0-9a-f]{40}$`",
-        "verify it has exactly one parent",
-        "Stop on a merge target",
-        "resolved parent exactly equals `Target parent`",
-        "Use only the resolved full SHA values"
-      ]
-    ],
-    [
       ".agents/skills/feature/SKILL.md",
       [
         "Apply proportional engineering before drafting",
@@ -593,13 +581,10 @@ async function validateVerificationContract(): Promise<void> {
     [
       ".agents/skills/feature/reference/build-history.md",
       [
-        "max(attempts) + 1",
-        "unique introducing commit",
-        "**Target archive:**",
-        "**Target commit:**",
-        "Ignored local-only history",
-        "git log --all --reflog --full-history",
-        "including a dangling symlink"
+        "one greater than\nthe highest attempt among them",
+        "unchecked its\nbuild-plan item",
+        "including a dangling symlink",
+        "Do not\nauto-bump the attempt"
       ]
     ],
     [
@@ -722,35 +707,12 @@ async function validateVerificationContract(): Promise<void> {
       ".agents/skills/complete/reference/completion-screen.md",
       [
         "## Screen candidates read-only",
-        "historical-build exclusion",
         "../../complete/reference/completion-recovery.md"
       ]
     ],
     [
       ".agents/skills/blueprint-status/SKILL.md",
       ["Pending completion candidate", "../complete/reference/completion-screen.md"]
-    ],
-    [
-      ".agents/skills/rollback/SKILL.md",
-      [
-        "target commit and parent commit as full 40-character SHA values",
-        "`# Rollback: Feature <id> - <title>`",
-        "`**Type:** Rollback` contract",
-        "stop before Step 2 and before",
-        "writing or changing `blueprint/context/current-feature.md`",
-        "Publish `blocked` to",
-        "Do not record a target parent or choose a mainline",
-        "retains its merge-target stop as defense in depth",
-        "exactly one unreversed build",
-        "../feature/reference/build-history.md"
-      ]
-    ],
-    [
-      ".agents/skills/rollback/reference/rollback-spec-template.md",
-      [
-        "**Target commit:** `<full 40-character commit SHA>`",
-        "**Target parent:** `<full 40-character parent SHA>`"
-      ]
     ],
     [
       ".agents/skills/blueprint-doctor/SKILL.md",

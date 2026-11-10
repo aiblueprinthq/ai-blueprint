@@ -33,7 +33,7 @@ const ALL_ADAPTERS = adapterListFromMode("all");
 const AI_SKILLS = new Set([
   "adopt", "audit", "autopilot", "blueprint-doctor", "blueprint-status", "brief",
   "check", "ci", "complete", "continuous", "debug", "discovery", "explore", "feature",
-  "fix", "implement", "onboard", "overview", "prototype", "release", "rollback", "tests"
+  "fix", "implement", "onboard", "overview", "prototype", "release", "tests"
 ]);
 
 interface AdapterCheckboxChoice {
@@ -340,6 +340,12 @@ function parseArgs(args: readonly string[], surface: CliSurface = "package"): Cl
     if (!commandSeen && arg === "try") {
       throw new Error(
         "The try skill was removed. Open your project in your AI chat and run `$check guide` in Codex or `/check guide` in Claude Code."
+      );
+    }
+
+    if (!commandSeen && arg === "rollback") {
+      throw new Error(
+        "The rollback skill was removed. Open your project in your AI chat and remove the feature with `$fix` in Codex or `/fix` in Claude Code."
       );
     }
 

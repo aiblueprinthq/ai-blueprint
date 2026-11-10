@@ -67,7 +67,7 @@ the user can ask for an explanation of the finished implementation.
 
 ## Workflow
 
-Build one feature, fix, or rollback at a time, behind review gates. Each step's instructions
+Build one feature or fix at a time, behind review gates. Each step's instructions
 are plain markdown skills any capable agent can read and follow. The workflow is
 exposed through tool-specific adapters:
 
@@ -119,7 +119,7 @@ Core skills:
 - `implement` - build the current spec one small, reviewed step at a time
 - `check` - prove the current spec against the running app, or use `check guide`
   for a read-only manual review guide: where to go, what to click, what to expect
-- `complete` - run the final safety pass, log features, fixes, or rollbacks under `blueprint/history/`, then request approval for the configured local merge or pull-request landing
+- `complete` - run the final safety pass, log features or fixes under `blueprint/history/`, then request approval for the configured local merge or pull-request landing
 
 ### Understand and review
 
@@ -144,8 +144,7 @@ Core skills:
 
 ### Recover and release
 
-- `fix` - document an ad-hoc bug or change into `blueprint/context/current-feature.md`
-- `rollback` - plan a safe reversal of a completed feature from its archive and exact git commit, with later-dependency review before code changes
+- `fix` - document an ad-hoc bug or change into `blueprint/context/current-feature.md`, including removing a completed feature
 - `release` - optional Render or Vercel deployment readiness, local config, env review, and smoke-test planning
 
 In Codex, invoke these as skills (`$onboard`, `$discovery`, `$overview`, `$feature`,
@@ -187,7 +186,7 @@ Git, and never part of a feature commit.
 
 Commands with meaningful progress or a durable handoff should write it when the
 state directory exists: `onboard`, `adopt`, `discovery`, `overview`, `feature`,
-`fix`, `rollback`, `implement`, `debug`, `check`, `audit`, `tests`,
+`fix`, `implement`, `debug`, `check`, `audit`, `tests`,
 `ci`, `prototype`, `autopilot`, `continuous`, `complete`, and
 `release`. Short orientation commands such as `explore`, `brief`,
 `blueprint-status`, and `blueprint-doctor` do not write activity state. The
