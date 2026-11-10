@@ -113,7 +113,7 @@ when you just want something done.
 9. **Checkpoint (optional)** - checkpoint commits are disabled by default. When
    enabled with per-step review, `/implement` offers continue, commit a
    checkpoint, walk me through it, or stop here after an approved step. The
-   checkpoints are optional rollback points; `/complete` still makes the real
+   checkpoints are optional restore points; `/complete` still makes the real
    feature-level commit. Verify, or the fallback checks, must pass first. When
    implementation is done, end with a compact review packet: changed files,
    checks run, the generated `## Try it now` section when applicable, risks, and
@@ -176,7 +176,7 @@ decisions.
 
 ## Branching
 
-A new branch for every feature, fix, or rollback, using the prefixes in
+A new branch for every feature or fix, using the prefixes in
 `blueprint/config.json`. Ask to delete the branch once merged. Continuous Mode's
 explicit invocation already authorizes deletion of each locally merged feature
 branch.

@@ -244,8 +244,7 @@ never renumbered while their entries live here, even after a finding closes.
 Bare IDs are scoped to the live ledger: `/complete` archives resolved entries
 under a work-item prefix (feature 12's first `F-03` becomes `12/F-03`, and its
 second build's becomes `12-build-2/F-03`). The build attempt comes from the verified
-spec/history proof, not arbitrary filename text; fix and rollback prefixes stay
-their archive filenames. That prefixed form is the permanent reference. A later
+spec, not arbitrary filename text; fix prefixes stay their archive filenames. That prefixed form is the permanent reference. A later
 ledger that has emptied and reset starts at `F-01` again without colliding. Severity reuses the P0-P3
 scheme from Step 5; only P0 and P1 block `/complete`. Status is one of:
 

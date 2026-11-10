@@ -42,7 +42,6 @@ interface ProjectConfig {
     landing: LandingPolicy;
     featureBranchPrefix: string;
     fixBranchPrefix: string;
-    rollbackBranchPrefix: string;
   };
   verification: {
     logicTests: LogicTestPolicy;
@@ -84,8 +83,7 @@ function createDefaultProjectConfig(): ProjectConfig {
     git: {
       landing: "local-merge",
       featureBranchPrefix: "feature/",
-      fixBranchPrefix: "fix/",
-      rollbackBranchPrefix: "rollback/"
+      fixBranchPrefix: "fix/"
     },
     verification: {
       logicTests: "when-configured",
@@ -225,6 +223,7 @@ function parseProjectConfig(value: unknown): ProjectConfig {
       "landing",
       "featureBranchPrefix",
       "fixBranchPrefix",
+      // Configs written before /rollback was removed may still carry this key.
       "rollbackBranchPrefix"
     ],
     "git"
@@ -280,11 +279,6 @@ function parseProjectConfig(value: unknown): ProjectConfig {
         git.fixBranchPrefix,
         defaults.git.fixBranchPrefix,
         "git.fixBranchPrefix"
-      ),
-      rollbackBranchPrefix: optionalBranchPrefix(
-        git.rollbackBranchPrefix,
-        defaults.git.rollbackBranchPrefix,
-        "git.rollbackBranchPrefix"
       )
     },
     verification: {

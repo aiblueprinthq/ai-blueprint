@@ -74,6 +74,9 @@ Then stop. Tell the user to review the fix spec, then run `/implement` to build 
 ## Rules
 
 - A fix is not a build-plan item; don't add it to `build-plan.md`.
+- Removing a completed feature is a fix. Keep its original feature archive. The
+  plans stay user-owned: to build it again later, the user unchecks its item; if
+  it is abandoned, they edit the plans and rerun `/overview`.
 - Keep it small. If it's really a new feature, use `/feature` and the build plan
   instead.
 - Same conventions as everything else (`blueprint/context/coding-standards.md`).

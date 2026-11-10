@@ -1,4 +1,0 @@
-interface:
-  display_name: "Rollback"
-  short_description: "Safely reverse a completed Blueprint feature"
-  default_prompt: "Use $rollback to plan a safe rollback of a completed feature."

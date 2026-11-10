@@ -27,10 +27,10 @@ Try It Now is a user demonstration, not a replacement for tests, Verify, or
 
 Optional scope:
 
-- no argument: use the active feature, fix, or rollback in
+- no argument: use the active feature or fix in
   `blueprint/context/current-feature.md`
-- `latest`: use the most recent archive under `blueprint/history/features/`,
-  `blueprint/history/fixes/`, or `blueprint/history/rollbacks/`
+- `latest`: use the most recent archive under `blueprint/history/features/` or
+  `blueprint/history/fixes/`
 - a step name or number: focus the guide on that current-feature step
 - a path, route, or command: include it as the main thing to try
 
@@ -44,9 +44,8 @@ Read:
 - `AGENTS.md`
 - `blueprint/config.json`
 - `blueprint/context/current-feature.md`
-- latest files under `blueprint/history/features/`,
-  `blueprint/history/fixes/`, and `blueprint/history/rollbacks/`, if the current
-  feature is reset
+- latest files under `blueprint/history/features/` and
+  `blueprint/history/fixes/`, if the current feature is reset
 - git branch and working tree status
 
 When the spec lacks a route, command, data state, or credential detail the
@@ -56,13 +55,13 @@ both. A detail still missing after that is a gap for Step 6.
 
 For `latest`, use the most recent archive even when an active spec exists.
 Otherwise prefer the active spec. If `current-feature.md` is the reset stub, use
-the most recent archived feature, fix, or rollback by filename or modification time and
+the most recent archived feature or fix by filename or modification time and
 say that is what you used.
 
 Do not dump the spec. Pull out the routes, commands, UI surfaces, CLI commands,
 API endpoints, data states, and done-whens that matter for a human trying it.
-For a rollback, lead with the path that proves the removed behavior is gone, then
-include one unaffected regression path from the rollback spec.
+When the work removed behavior, lead with the path that proves it is gone, then
+include one unaffected regression path.
 
 ## Step 2 - classify the observation path
 

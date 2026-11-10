@@ -559,8 +559,7 @@ async function validateInstall(
       ".agents/skills/discovery/SKILL.md",
       ".agents/skills/explore/SKILL.md",
       ".agents/skills/blueprint-doctor/scripts/run-state.mjs",
-      ".agents/skills/onboard/SKILL.md",
-      ".agents/skills/rollback/SKILL.md"
+      ".agents/skills/onboard/SKILL.md"
     );
   }
 
@@ -576,8 +575,7 @@ async function validateInstall(
       ".claude/skills/discovery/SKILL.md",
       ".claude/skills/explore/SKILL.md",
       ".claude/skills/blueprint-doctor/scripts/run-state.mjs",
-      ".claude/skills/onboard/SKILL.md",
-      ".claude/skills/rollback/SKILL.md"
+      ".claude/skills/onboard/SKILL.md"
     );
   }
 
@@ -587,8 +585,10 @@ async function validateInstall(
 
   await requireMissing(path.join(targetDir, ".agents/skills/browser-tests"));
   await requireMissing(path.join(targetDir, ".agents/skills/try"));
+  await requireMissing(path.join(targetDir, ".agents/skills/rollback"));
   await requireMissing(path.join(targetDir, ".claude/skills/browser-tests"));
   await requireMissing(path.join(targetDir, ".claude/skills/try"));
+  await requireMissing(path.join(targetDir, ".claude/skills/rollback"));
   await requireMissing(path.join(targetDir, "README.md"));
   await requireMissing(path.join(targetDir, "blueprint", "README.md"));
   await requireMissing(path.join(targetDir, ".ai-blueprint"));

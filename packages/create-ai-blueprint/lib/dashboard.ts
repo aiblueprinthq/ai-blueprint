@@ -697,7 +697,7 @@ const DASHBOARD_HTML: string = `<!doctype html>
         </article>
 
         <article class="card history-card">
-          <div class="card-head"><div><h2 class="label">Completed work</h2><div class="muted">Archived features, fixes, and rollbacks</div></div><span class="value" id="history-count">-</span></div>
+          <div class="card-head"><div><h2 class="label">Completed work</h2><div class="muted">Archived features and fixes</div></div><span class="value" id="history-count">-</span></div>
           <ul class="timeline" id="history-list" tabindex="0" aria-label="Completed Blueprint work"><li class="empty">Loading completed work...</li></ul>
         </article>
       </div>

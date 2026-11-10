@@ -83,34 +83,13 @@ Run the read-only screen in `../../complete/reference/completion-screen.md`
 first. Only a candidate it finds, or an explicit request to resume completion,
 needs this proof.
 
-For feature archives on a reused branch, exclude a prior build only when all of
-these read-only Git checks pass:
-
-- `../../feature/reference/build-history.md` proves its unique unchanged archive
-  addition on the local default, and the introducing commit's sole parent equals
-  that archive annotation's `baseCommit` on the same `baseRef`.
-- An exact completed, unchanged, reachable rollback record names that archive and
-  introducing commit; its commit is after the feature addition.
-- The current work branch descends from a post-rollback local default: that
-  rollback commit is an ancestor of the merge base of the current work branch
-  and local default. Its old archive remains byte/mode-identical in both trees
-  and the working tree, with no pending archive edits or retained review explicitly
-  targeting that old build.
-
-Different spec bytes, title, attempt, filename, or ancestry alone never exclude
-an archive. Missing, changed, or contradictory proof stops; this exception does
-not recover old missing inputs or waive current gates. It permits legacy branch
-reuse only after the old lifecycle is demonstrably finished and reversed.
-
 Require one annotated archive matching the recorded work branch, or the exact
 archive/commit proof in the merged phase below. A real live spec must match its
 recovered bytes; the canonical stub is also expected. A different spec conflicts.
 For features, use the recovered spec's frozen `**Build attempt:**` and that exact
 archive path; never allocate a new attempt on resume. For a legacy feature spec
-without the field, the path plus existing annotation fixes the destination only
-after the prior-build proof in `../../feature/reference/build-history.md` at its
-recorded `baseCommit` uniquely establishes its attempt. Exclude the current archive from those prior
-builds. Do not edit the recovered bytes to insert metadata.
+without the field, the existing annotated archive path fixes the destination.
+Do not edit the recovered bytes to insert metadata.
 
 Require all recorded commits and `sourceTree` to exist (`git cat-file -e`).
 Unreferenced source trees can be pruned by Git: missing objects stop recovery;
@@ -136,8 +115,8 @@ Only these exact transformations can follow the captured source tree:
 - Add this one archive, with the exact spec prefix and annotation, resolved
   findings copied with only the documented ID prefix, the original passing
   receipt bytes, and a try guide for this spec when required or already generated.
-- Apply this work item's exact build-plan checkbox/parent changes, or its exact
-  rollback note. Change only the overview's existing source-hash value, using
+- Apply this work item's exact build-plan checkbox/parent changes. Change only
+  the overview's existing source-hash value, using
   the documented hash contract. A fix has no build-plan change.
 - Remove only resolved ledger entries present in that archive. Preserve every
   `open`, `fixed`, and `unverified` entry byte-for-byte, including its ID. The live
