@@ -60,10 +60,8 @@ If the requested target conflicts with a feature already in progress, stop and
 ask which one should win. Do not overwrite `blueprint/context/current-feature.md`
 silently.
 
-Rollback is intentionally excluded from Autopilot. If the request is a rollback
-or `current-feature.md` is marked `Type: Rollback`, stop and direct the user to
-the reviewed `/implement` path. Reversing completed work requires the explicit
-dependency and conflict gates in `/rollback` and `/implement`.
+Autopilot handles features and fixes only. If `current-feature.md` holds any
+other spec type, such as an older `Type: Rollback` spec, stop and report it.
 
 ## Step 1 - preflight like /blueprint-status
 

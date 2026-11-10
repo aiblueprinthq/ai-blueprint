@@ -37,7 +37,8 @@ state.
    `project settings`, `built-in defaults`, or `invalid, using defaults`. A
    missing file is healthy and means defaults. Invalid JSON, schema versions,
    keys, values, non-file paths, or symbolic links are a warning and make
-   `/blueprint-doctor` the next action before any mutating workflow command. Report the
+   `/blueprint-doctor` the next action before any mutating workflow command. An
+   obsolete `git.rollbackBranchPrefix` is ignored, not invalid. Report the
    effective regular and Continuous audit, independent-review, check, and
    try-guide policies, plus `review.independentExecution`. Explain that
    independent review defaults to `when-sensitive` for both workflows and
@@ -51,7 +52,7 @@ state.
    items. Name the next unchecked leaf, the same target `/feature` would pick,
    and note if a parent item was split into sub-items (`4a`, `4b`, ...).
 3. **Current work** - `blueprint/context/current-feature.md`. Is something in
-   progress, or is it the reset stub? If a feature, fix, or rollback spec is
+   progress, or is it the reset stub? If a feature or fix spec is
    present, report its type and name, which build steps are checked, and the
    first unchecked step where `/implement` resumes.
 4. **Findings** - `blueprint/context/findings.md`. Count findings by status and
@@ -76,12 +77,11 @@ state.
    branch is ahead of its remote. If the directory is not a git repo, say so and
    skip this part rather than failing.
 8. **Progress drift** - flag active spec on `main`, a spec in progress but no
-   branch matching the configured feature, fix, or rollback prefix, all spec steps checked but
+   branch matching the configured feature or fix prefix, all spec steps checked but
    not completed, or disagreement between `build-plan.md` and
    `current-feature.md`. With `git.landing: "pull-request"`, an active feature
    may differ from the next unchecked item because parallel branches can be
-   active. A rollback legitimately targets a checked build-plan item until
-   `/complete` unchecks it, so do not compare it to the next unchecked feature.
+   active.
 9. **Dashboard activity** - read `blueprint/.state/run.json` when it exists.
    Report the command, mode, status, progress, boundary, and safe resume command.
    A missing file simply means no activity has been recorded. Invalid activity

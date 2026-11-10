@@ -105,6 +105,24 @@ test("readProjectConfig merges partial project values over defaults", async (t) 
   assert.deepEqual(result.warnings, []);
 });
 
+test("readProjectConfig accepts and ignores the retired rollback branch prefix", async (t) => {
+  const projectRoot = await createProject(t);
+  await writeConfig(projectRoot, {
+    schemaVersion: 1,
+    git: {
+      fixBranchPrefix: "bugfix/",
+      rollbackBranchPrefix: "revert/"
+    }
+  });
+
+  const result = await readProjectConfig(projectRoot);
+
+  assert.equal(result.state, "project");
+  assert.equal(result.values.git.fixBranchPrefix, "bugfix/");
+  assert.equal("rollbackBranchPrefix" in result.values.git, false);
+  assert.deepEqual(result.warnings, []);
+});
+
 test("readProjectConfig reports malformed JSON and falls back safely", async (t) => {
   const projectRoot = await createProject(t);
   const configPath = path.join(projectRoot, PROJECT_CONFIG_PATH);

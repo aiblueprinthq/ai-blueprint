@@ -9,12 +9,6 @@ live in `../../complete/reference/completion-recovery.md`.
 
 ## Screen candidates read-only
 
-Before matching a reused feature branch, apply the historical-build exclusion
-that opens "Prove an actual recovery candidate" in the recovery reference. Do
-not treat a proved prior reversed build as pending completion of its
-replacement. If that exclusion cannot be proved, retain the candidate and stop
-for full proof rather than guessing from a different spec or archive name.
-
 Inspect current branch, `git status --porcelain=v1`, live spec/review and plan
 consistency, and relevant annotated archives. Check recorded local work refs with
 `git show-ref --verify --quiet <branch>`. A matching work branch/archive, a retained

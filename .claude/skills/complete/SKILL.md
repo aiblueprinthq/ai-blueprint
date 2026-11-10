@@ -1,6 +1,6 @@
 ---
 name: complete
-description: Complete a finished feature, fix, or rollback by running final gates, archiving its spec, updating plans, creating the work commit, and requesting approval to land it locally or by pull request. Use for /complete or requests to finish, wrap up, merge, or close the current work item.
+description: Complete a finished feature or fix by running final gates, archiving its spec, updating plans, creating the work commit, and requesting approval to land it locally or by pull request. Use for /complete or requests to finish, wrap up, merge, or close the current work item.
 disable-model-invocation: true
 ---
 
@@ -21,10 +21,10 @@ activity contract. A missing or failing helper is a warning, not a blocker.
 
 Where this sits in the workflow:
 
-    /feature, /fix, or /rollback  ->  /implement  ->  [complete]  ->  next
+    /feature or /fix  ->  /implement  ->  [complete]  ->  next
     (the spec)                         (build it)      (commit + land + log)
 
-`/implement` built the feature, fix, or rollback on its branch, with optional per-step commit
+`/implement` built the feature or fix on its branch, with optional per-step commit
 checkpoints. This skill closes it out: it logs the work, makes the single
 work-level commit, then follows `git.landing`. The default `local-merge` path
 squash-merges locally. The optional `pull-request` path pushes the work branch
@@ -50,7 +50,9 @@ that phase instead of restarting logging. Missing or ambiguous evidence stops
 with concrete recovery steps; a reset stub never authorizes selecting new work.
 Recovery uses archive and Git proof, never dashboard activity as authority.
 
-For a normal completion with no recovery in progress, continue below.
+For a normal completion with no recovery in progress, continue below. A spec
+marked `Type: Rollback` predates the removal of the rollback workflow; stop
+before any gate and suggest removing the feature through `/fix` instead.
 
 Confirm the work is actually finished: `blueprint/context/current-feature.md`
 holds a real spec, its steps are built on a branch, and `Verify`, or the fallback
@@ -138,7 +140,7 @@ current passing receipt:
 Before logging or committing, run a short safety pass and report blockers only:
 
 - active spec exists and the work is not being completed from `main` or `master`
-- the branch name uses the configured feature, fix, or rollback prefix
+- the branch name uses the configured feature or fix prefix
 - changed files are tied to the active spec, with no unrelated dirty work mixed
   in (dirty `blueprint/context/findings.md` and
   `blueprint/context/review.md` are expected review evidence)
@@ -199,19 +201,17 @@ Prepare the entire archive, including the sections below and any generated try
 guide, before placing it at its absent destination. An existing matching archive
 enters recovery; never overwrite it or append duplicate sections.
 
-Check whether the spec is a feature, fix, or rollback. A fix is marked
-`Type: Fix` and has no build-plan number. A rollback is marked `Type: Rollback`
-and records the exact target feature, archive, commit, and parent.
+Check whether the spec is a feature or fix. A fix is marked `Type: Fix` and has
+no build-plan number.
 
 - **Feature** - use the verified spec's frozen `**Build attempt:**` and stable ID,
   following `../feature/reference/build-history.md`. Attempt 1 keeps
   `blueprint/history/features/NN-name.md`; N > 1 uses `NN-name--build-N.md`.
-  Validate the attempt against prior immutable builds and completed reversals;
-  never increment it at completion or resume. For an older active spec without
-  the field, derive 1 only with no prior builds, or derive the next attempt only
-  from unambiguous prior builds and their proven completed reversals. Keep those
-  reviewed spec bytes and the existing branch unchanged; otherwise stop. An
-  existing matching archive and its annotation freeze the recovery destination.
+  Never increment the attempt at completion or resume. For an older active spec
+  without the field, derive it with the reference's allocation rule, excluding
+  this work item's own archive during recovery. Keep those reviewed spec bytes
+  and the existing branch unchanged; otherwise stop. An existing matching archive
+  and its annotation freeze the recovery destination.
   Check the feature off in `blueprint/build-plan.md`
   (and its parent item once all sub-items are checked). Then recompute the
   overview fingerprint using `/overview`'s checkbox-normalized hash contract and
@@ -220,26 +220,15 @@ and records the exact target feature, archive, commit, and parent.
   plan drift and migrates older exact-byte fingerprints.
 - **Fix** - archive it to `blueprint/history/fixes/name.md`. A fix isn't a build-plan item, so
   there's nothing to check off.
-- **Rollback** - archive it to
-  `blueprint/history/rollbacks/YYYY-MM-DD-<exact-target-archive-stem>.md`, using the
-  spec's exact `Target archive` filename without `.md`, including any build suffix.
-  Preserve the original completed feature archive. Create
-  `blueprint/history/rollbacks/` first if an
-  older Blueprint installation does not have it yet. Uncheck the exact target item in
-  `blueprint/build-plan.md` and its parent when applicable, then append a concise
-  note to the target line with the rollback date and archive path. Keep the
-  feature number stable. If the user later decides the feature is permanently
-  abandoned rather than pending rebuild, that roadmap decision is a separate
-  plan edit.
 
 **Archive resolved findings.** If `blueprint/context/findings.md` holds any
 findings, include a `## Findings` section in the prepared archive with
 every `closed`, `accepted`, or `invalid` entry at its final status (`accepted`
 entries keep their recorded reason). Prefix feature IDs with the normalized stable
 ID and, for N > 1, `-build-N`: feature 12's first `F-03` becomes `12/F-03`, while
-attempt 2 becomes `12-build-2/F-03`. Derive N from the verified spec/history proof,
-never arbitrary filename text. Fixes and rollbacks use their archive filename as
-the prefix. An entry carried forward from earlier work archives with the item that
+attempt 2 becomes `12-build-2/F-03`. Derive N from the verified spec's frozen
+attempt, never arbitrary filename text. Fixes use their archive filename as the
+prefix. An entry carried forward from earlier work archives with the item that
 resolved it; its **Found** line preserves
 where it came from. Only `closed`, `accepted`, and `invalid` entries are
 resolved for archival. A `fixed` entry is not resolved at any severity: never
@@ -304,13 +293,12 @@ work" stub. Before committing, read the file and confirm it exactly matches:
 
     # Current Feature
 
-    > **Generated file.** Holds the one feature, fix, or rollback being built in this checkout. Run
+    > **Generated file.** Holds the one feature or fix being built in this checkout. Run
     > `/feature <number-or-name>` to spec a build-plan feature, or `/fix "<bug>"` for
-    > an ad-hoc fix. Use `/rollback <completed-feature>` to plan a safe reversal.
-    > Build one thing at a time in this checkout; `/complete` archives it under
-    > `blueprint/history/` and resets this file.
+    > an ad-hoc fix. Build one thing at a time in this checkout; `/complete` archives
+    > it under `blueprint/history/` and resets this file.
 
-    _Nothing in progress. Run `/feature`, `/fix`, or `/rollback` to start._
+    _Nothing in progress. Run `/feature` or `/fix` to start._
 
 When no open, fixed, or unverified ledger entries remain, confirm
 `blueprint/context/findings.md` exactly matches the canonical Findings stub
@@ -325,8 +313,8 @@ documentation changes. The archive is the build history.
 
 Show the complete product and logging diff with the proposed commit message,
 then obtain explicit commit approval. Only then stage the reviewed branch work
-(any uncommitted step work plus the Step 1 logging changes) and make one conventional work commit (for example `feat: <feature>`,
-`fix: <name>`, or `revert: roll back <feature>`). `Verify`, or the fallback build
+(any uncommitted step work plus the Step 1 logging changes) and make one conventional work commit (for example `feat: <feature>`
+or `fix: <name>`). `Verify`, or the fallback build
 and tests, must pass first.
 
 ## Step 3 - land the work
@@ -373,22 +361,20 @@ With `git.landing: "pull-request"`:
    `reference/completion-recovery.md`; verify the exact pull request and squash
    commit before reporting completion or offering local branch cleanup.
 
-Then point the user at `/feature`, `/fix`, or `/rollback` for the next thing.
+Then point the user at `/feature` or `/fix` for the next thing.
 
-Finish with the generated `## Try it now` section when one exists. For a
-rollback, explain how to confirm the removed behavior is gone and name one
-unaffected regression path. If there is no safe direct observation, omit the
+Finish with the generated `## Try it now` section when one exists. If there is
+no safe direct observation, omit the
 section and say so plainly. For an optional deeper walkthrough, point to
 `/check guide latest`; that command can read the archived feature after
 `current-feature.md` is reset.
 
 ## Rules
 
-- The work item is the unit of history: one squashed feature, fix, or rollback
-  commit on the default branch, even if the branch carried several checkpoint
-  commits.
-- A rollback preserves the original feature archive and adds a separate rollback
-  archive. Never rewrite history to make the feature look as if it never existed.
+- The work item is the unit of history: one squashed feature or fix commit on
+  the default branch, even if the branch carried several checkpoint commits.
+- Removing a completed feature is ordinary fix work. Keep its original feature
+  archive; never rewrite history to make the feature look as if it never existed.
 - Don't merge unfinished or failing work. The documented `Verify` command, or
   the fallback build and tests, must pass first.
 - Never merge while a P0 or P1 finding is `open` or `fixed` in the ledger. The

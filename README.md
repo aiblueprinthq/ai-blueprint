@@ -53,7 +53,7 @@ Blueprint adds a controlled loop:
   while real trust and data-integrity boundaries still apply.
 - **Explain the result.** Every completed implementation offers a read-only code
   walkthrough, regardless of the configured review cadence.
-- **One work item at a time.** The current feature, fix, or rollback has one
+- **One work item at a time.** The current feature or fix has one
   explicit scope and one set of acceptance criteria.
 - **Proof before completion.** Check runs the real app against the spec instead
   of treating a green build as behavioral proof.
@@ -175,7 +175,7 @@ Other work enters the same control loop:
 
 - Use `fix` for a small unplanned change or confirmed bug.
 - Use `debug` first when the cause is unclear.
-- Use `rollback` to reverse a completed feature without erasing its history.
+- Use `fix` to remove a completed feature. Its original archive stays in history.
 - Use `check guide` when you want a human manual-review guide.
 
 Read [Core Workflow](https://ai-blueprint.dev/docs/core-workflow/) for the full
@@ -266,7 +266,7 @@ does not prove the application works.
 
 ## Command map
 
-All 22 skills are installed for each selected adapter. These groups help you
+All 21 skills are installed for each selected adapter. These groups help you
 find a command; they do not add installation modes or configuration. Examples
 use Claude Code slash commands in AI chat. Codex uses the matching `$skill` form,
 and other adapters can run the named skill through plain language.
@@ -308,7 +308,6 @@ and other adapters can run the named skill through plain language.
 | Skill | Purpose |
 | --- | --- |
 | **/fix** | Write a spec for a small unplanned change or confirmed bug. |
-| **/rollback** | Plan a history-preserving reversal of completed work. |
 | **/release** | Prepare local Render or Vercel configuration and readiness checks; deployment needs separate approval. |
 
 ### Automation
@@ -339,10 +338,10 @@ read:
 | File | Purpose |
 | --- | --- |
 | `blueprint/context/project-overview.md` | Durable project context generated from both plans |
-| `blueprint/context/current-feature.md` | The active feature, fix, or rollback spec |
+| `blueprint/context/current-feature.md` | The active feature or fix spec |
 | `blueprint/context/findings.md` | Audit findings with durable IDs, severities, and statuses |
 | `blueprint/context/review.md` | Independent-review handoff and latest reviewer receipt |
-| `blueprint/history/` | Archived feature, fix, and rollback records |
+| `blueprint/history/` | Archived feature and fix records |
 | `blueprint/config.json` | User-owned workflow policy shared by every adapter |
 
 This state stays tool-independent. A project can move between supported agents

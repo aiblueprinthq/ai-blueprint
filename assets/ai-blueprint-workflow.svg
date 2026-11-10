@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title description">
   <title id="title">AI Blueprint core workflow</title>
-  <desc id="description">Plan the project, generate context, specify one work item, implement it, verify it, and complete it. Fix issues by returning to implementation, then repeat for the next work item. Brief, prototype, debug, and rollback are optional tools.</desc>
+  <desc id="description">Plan the project, generate context, specify one work item, implement it, verify it, and complete it. Fix issues by returning to implementation, then repeat for the next work item. Brief, prototype, and debug are optional tools.</desc>
   <defs>
     <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
       <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#dce8ec" stroke-width="1"/>
@@ -130,12 +130,8 @@
           <rect width="150" height="42" rx="12" fill="#eef3ff" stroke="#b8c9f4"/>
           <text x="75" y="27" fill="#244b9d">/debug</text>
         </g>
-        <g transform="translate(522 49)">
-          <rect width="150" height="42" rx="12" fill="#eef3ff" stroke="#b8c9f4"/>
-          <text x="75" y="27" fill="#244b9d">/rollback</text>
-        </g>
       </g>
-      <text x="695" y="73" class="body" fill="#65716c">Not part of every run.</text>
+      <text x="529" y="73" class="body" fill="#65716c">Not part of every run.</text>
     </g>
   </g>
 </svg>

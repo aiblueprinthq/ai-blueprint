@@ -41,10 +41,7 @@ Gather these, then summarize. Do not dump file contents.
    - Check `blueprint/workflow.md`, the managed workflow reference. Missing on a
      legacy installation is a warning, not a blocker; a Blueprint update adds it.
    - Confirm `blueprint/history/features/` and `blueprint/history/fixes/` exist.
-     When the rollback skill is installed, also check
-     `blueprint/history/rollbacks/`. A missing rollback folder on a legacy
-     installation is a warning, not a blocker; `/complete` creates it on the
-     first rollback.
+     An older `blueprint/history/rollbacks/` folder is kept history, not an error.
    - Check `blueprint/context/findings.md`. Missing on a legacy installation is
      a warning, not a blocker; `/audit` and `/complete` create it on first use.
      When present, confirm its entry headers still match
@@ -61,6 +58,8 @@ Gather these, then summarize. Do not dump file contents.
    - Read `blueprint/config.json` when present. Missing is healthy and means
      built-in defaults. When present, require a regular non-symbolic-link JSON
      file with `schemaVersion: 1`. Reject unknown keys and unsupported values.
+     An obsolete `git.rollbackBranchPrefix` is ignored, not invalid; mention
+     that it can be removed.
      Report the effective workflow, git, verification, review execution, regular
      quality-gate, Continuous quality-gate, and Continuous Mode settings. Confirm each audit,
      independent-review, check, and try-guide gate uses its supported values.
@@ -199,17 +198,17 @@ Gather these, then summarize. Do not dump file contents.
      backups, or any project file. Without approval, leave it unchanged and
      include the reset in `Repair order:`.
    - Check whether `blueprint/context/current-feature.md` is the reset stub or an
-     active feature, fix, or rollback spec.
+     active feature or fix spec. A `Type: Rollback` spec predates the removal of
+     the rollback workflow; report it and suggest removing the feature through
+     `/fix` instead.
    - If a spec is active, report checked and unchecked implementation steps.
    - If `current-feature.md` is the reset stub but git has source or workflow
      changes, warn that work is happening without an active spec.
    - Flag active spec on `main`, all spec steps checked but no completion, or a
-     branch that does not match the configured feature, fix, or rollback prefix
-     for the spec type. For a feature using `git.landing: "local-merge"`, also
-     flag a mismatch with the next unchecked build-plan item. Pull-request
-     landing permits another unchecked feature because parallel branches can be
-     active. For a rollback, confirm its target is a checked item and do not
-     compare it to the next unchecked item.
+     branch that does not match the configured feature or fix prefix for the
+     spec type. For a feature using `git.landing: "local-merge"`, also flag a
+     mismatch with the next unchecked build-plan item. Pull-request landing
+     permits another unchecked feature because parallel branches can be active.
 8. **Git**
    - Report current branch, clean vs dirty working tree, rough changed-file count,
      last commit subject, and whether the branch is ahead of upstream.
