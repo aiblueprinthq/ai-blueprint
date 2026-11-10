@@ -88,9 +88,9 @@ Gather these, then summarize. Do not dump file contents.
      the matching adapter file too. Warn when workflow behavior was updated in
      one adapter but not the other.
    - Confirm each installed adapter tree contains
-     `doctor/scripts/run-state.mjs`. This managed helper validates and atomically
-     writes dashboard activity. A missing helper needs a Blueprint update before
-     tracked commands can record activity safely.
+     `blueprint-doctor/scripts/run-state.mjs`. This managed helper validates
+     and atomically writes dashboard activity. A missing helper needs a
+     Blueprint update before tracked commands can record activity safely.
    - If only one tool is used, mention the unused adapter can be deleted. Do not
      treat extra adapters as an error.
    - If `CLAUDE.md` exists and still starts with `# Project Name`, flag that
@@ -248,8 +248,8 @@ Choose the repair order in this priority:
 - No git repo -> initialize git before using the build loop.
 - No tool adapter -> restore `.agents/skills/` or `.claude/skills/` for the
   selected tool. OpenCode can use either compatible tree.
-- Installed adapter is missing `doctor/scripts/run-state.mjs` -> update
-  Blueprint before relying on dashboard activity.
+- Installed adapter is missing `blueprint-doctor/scripts/run-state.mjs` ->
+  update Blueprint before relying on dashboard activity.
 - `blueprint/workflow.md` is missing -> update Blueprint to restore the managed
   workflow reference.
 - Claude uses legacy direct context imports -> remove the exact direct imports

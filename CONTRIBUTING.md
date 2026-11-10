@@ -71,11 +71,12 @@ blueprint status
 
 Re-run `npm run link:local` after editing the source. The linked commands run the
 compiled `dist/` output and a copied `template/`, not the source files directly, so
-edits are not picked up until both are rebuilt. Re-running the command removes the
-existing global package registration before recreating the link, so a separate
-`npm run unlink:local` is not required. Installer runs from the linked checkout
-also skip the optional prompt that would replace the local commands with the
-registry package.
+edits are not picked up until both are rebuilt. The template holds only Git-tracked
+files, so stage new Blueprint files with `git add` before rebuilding. Re-running the
+command removes the existing global package registration before recreating the
+link, so a separate `npm run unlink:local` is not required. Installer runs from the
+linked checkout also skip the optional prompt that would replace the local commands
+with the registry package.
 
 `npm run unlink:local` runs `npm rm --global create-ai-blueprint`, which removes any
 global copy of the package, whether it was linked from a checkout or installed from

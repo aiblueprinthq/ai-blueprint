@@ -38,7 +38,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsx --test test/build-plan.test.ts test/current-work.test.ts test/dashboard.test.ts test/findings.test.ts test/history.test.ts test/install.test.ts test/project-config.test.ts test/project-metadata.test.ts test/project-root.test.ts test/review.test.ts test/run-state.test.ts test/status.test.ts test/update.test.ts",
+    "test": "tsx --test test/build-plan.test.ts test/current-work.test.ts test/dashboard.test.ts test/findings.test.ts test/history.test.ts test/install.test.ts test/prepare-template.test.ts test/project-config.test.ts test/project-metadata.test.ts test/project-root.test.ts test/review.test.ts test/run-state.test.ts test/status.test.ts test/update.test.ts",
     "check:pack": "npm pack --dry-run",
     "prepare-template": "tsx scripts/prepare-template.ts",
     "prepack": "npm run build && npm run prepare-template",
