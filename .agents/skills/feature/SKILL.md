@@ -44,7 +44,8 @@ Resolve the target from `blueprint/build-plan.md`:
 - If the requested item is already checked, stop. It was built. To build it
   again, the user first removes it through `/fix` and unchecks the item.
 
-State the selected feature in one sentence.
+A `--check` argument requests the spec check for this run and is not part of
+the target. State the selected feature in one sentence.
 
 ## Build one authoritative feature packet
 
@@ -122,7 +123,7 @@ title suffix, file count, or timestamps.
 
 Draft and critique in context, then write
 `blueprint/context/current-feature.md` once. A later write is only for a
-mechanical correction or user-requested revision. Record `**Branch:**` with the
+mechanical correction, a selected spec check, or a user-requested revision. Record `**Branch:**` with the
 full configured feature branch. The first heading and build-plan identity must
 use this canonical form:
 
@@ -213,6 +214,8 @@ If a prerequisite is absent, incomplete, untracked, or unverified, say which one
 the evidence shows. Do not bury repair inside this feature. Stop with the exact
 `/fix` or user decision required.
 
-Otherwise write the tightened spec, update activity to `ready`, and stop for
-review. Lead with a short note naming what the critique changed, or say that it
-found no material change. Never implement from this skill.
+Otherwise write the tightened spec. When `qualityGates.regular.specCheck` is
+`always` or this run requested `--check`, follow `reference/spec-check.md`
+before the review stop. Then update activity to `ready` and stop for review.
+Lead with a short note naming what the critique and any spec check changed, or
+say that they found no material change. Never implement from this skill.

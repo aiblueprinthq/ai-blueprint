@@ -3,6 +3,18 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [Unreleased]
+
+### Added
+
+- Optional spec check for `/feature`. A fresh reviewer reads the new spec
+  against the repository and reports mismatches, finished or unneeded parts,
+  missing needs, and risky guesses. Feature fixes the clear gaps, lists real
+  decisions as open questions, and leads the review with a one-line summary.
+  Off by default: run it for one feature with `/feature <target> --check`, or
+  set `qualityGates.regular.specCheck` and `qualityGates.continuous.specCheck`
+  to `always`. Autopilot and Continuous apply the same gate.
+
 ## [1.15.0] - 2026-10-30
 
 ### Changed

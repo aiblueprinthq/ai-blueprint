@@ -17,7 +17,8 @@ test("default config reviews sensitive work and guides testable work automatical
     audit: "manual",
     independentReview: "when-sensitive",
     check: "manual",
-    tryGuide: "when-testable"
+    tryGuide: "when-testable",
+    specCheck: "manual"
   };
 
   assert.deepEqual(defaults.qualityGates.regular, defaultGates);
@@ -155,6 +156,26 @@ test("try guide policies preserve existing values and accept when-testable", () 
 
     assert.equal(config.qualityGates.regular.tryGuide, tryGuide);
   }
+});
+
+test("spec check policies accept manual and always and reject other values", () => {
+  for (const specCheck of ["manual", "always"] as const) {
+    const config = parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: { regular: { specCheck }, continuous: { specCheck } }
+    });
+
+    assert.equal(config.qualityGates.regular.specCheck, specCheck);
+    assert.equal(config.qualityGates.continuous.specCheck, specCheck);
+  }
+
+  assert.throws(
+    () => parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: { regular: { specCheck: "when-sensitive" } }
+    }),
+    /qualityGates\.regular\.specCheck must be one of/
+  );
 });
 
 test("readProjectConfig rejects unknown and invalid values", async (t) => {

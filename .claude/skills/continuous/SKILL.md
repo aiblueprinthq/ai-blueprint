@@ -141,7 +141,8 @@ For a new item, apply the `/feature` behavior to the selected build-plan leaf,
 write `blueprint/context/current-feature.md`, and self-review the spec before
 coding. Correct missing unhappy paths, oversized steps, undefined contracts,
 scope drift, vague done-whens, missing design references, and missing testing
-plans.
+plans. When `qualityGates.continuous.specCheck` is `always`, run the spec
+check from `../feature/reference/spec-check.md`.
 
 Do not invent an unanswered product, data, architecture, auth, billing, or visual
 decision. Stop with the exact decision needed.

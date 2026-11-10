@@ -71,13 +71,15 @@ test("readProjectStatus reports active work, findings, Git, and the next step", 
       audit: "manual",
       independentReview: "when-sensitive",
       check: "manual",
-      tryGuide: "when-testable"
+      tryGuide: "when-testable",
+      specCheck: "manual"
     },
     continuous: {
       audit: "manual",
       independentReview: "when-sensitive",
       check: "manual",
-      tryGuide: "when-testable"
+      tryGuide: "when-testable",
+      specCheck: "manual"
     }
   });
   assert.equal(status.configuration.values.review.independentExecution, "automatic");
@@ -1083,11 +1085,11 @@ test("formatHumanStatus prints a scannable orientation", async (t) => {
   assert.match(output, /^  Review exec\.  automatic$/m);
   assert.match(
     output,
-    /^  Regular gates audit manual, independent review when-sensitive, check manual, try guide when-testable$/m
+    /^  Regular gates audit manual, independent review when-sensitive, check manual, try guide when-testable, spec check manual$/m
   );
   assert.match(
     output,
-    /^  Cont\. gates   audit manual, independent review when-sensitive, check manual, try guide when-testable$/m
+    /^  Cont\. gates   audit manual, independent review when-sensitive, check manual, try guide when-testable, spec check manual$/m
   );
   assert.match(output, /^  Findings      none$/m);
   assert.match(output, /^  Review        none$/m);

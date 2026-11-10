@@ -61,9 +61,10 @@ Gather these, then summarize. Do not dump file contents.
      that it can be removed.
      Report the effective workflow, git, verification, review execution, regular
      quality-gate, Continuous quality-gate, and Continuous Mode settings. Confirm each audit,
-     independent-review, check, and try-guide gate uses its supported values.
+     independent-review, check, try-guide, and spec-check gate uses its
+     supported values.
      Independent review defaults to `when-sensitive` for both workflows; audit
-     and check default to `manual`, while try guide defaults to `when-testable`. Confirm
+     and check default to `manual`, while try guide defaults to `when-testable` and spec check to `manual`. Confirm
      `review.independentExecution` is `manual` or `automatic` and defaults to
      `automatic`. Do not claim automatic capability is available from installed
      project files alone.
