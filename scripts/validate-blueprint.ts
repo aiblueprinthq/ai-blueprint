@@ -977,12 +977,12 @@ async function validateSkillReferences(adapterFiles: readonly string[]): Promise
     const sourceFile = path.join(codexSkillsRoot, ...relativePath.split("/"));
     const content = await fs.readFile(sourceFile, "utf8");
     const references = [
-      ...content.matchAll(/`((?:\.\.\/){0,2}(?:[a-z0-9-]+\/)?reference\/[A-Za-z0-9._/-]+)`/g)
+      ...content.matchAll(/`((?:\.\.\/){0,2}(?:[a-z0-9-]+\/)?(?:reference|scripts)\/[A-Za-z0-9._/-]+)`/g)
     ].map((match) => match[1]);
 
     for (const reference of new Set(references)) {
-      // A bare `<skill>/reference/...` names another skill from the adapter skills root.
-      const base = reference.startsWith("../") || reference.startsWith("reference/")
+      // A bare `<skill>/...` path names another skill from the adapter skills root.
+      const base = reference.startsWith("../") || /^(?:reference|scripts)\//.test(reference)
         ? path.dirname(sourceFile)
         : codexSkillsRoot;
       const target = path.resolve(base, ...reference.split("/"));
