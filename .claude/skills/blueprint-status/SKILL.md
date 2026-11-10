@@ -39,12 +39,13 @@ state.
    missing file is healthy and means defaults. Invalid JSON, schema versions,
    keys, values, non-file paths, or symbolic links are a warning and make
    `/blueprint-doctor` the next action before any mutating workflow command. Report the
-   effective regular and Continuous audit, independent-review, check, and
-   try-guide policies, plus `review.independentExecution`. Explain that
+   effective regular and Continuous audit, independent-review, check,
+   try-guide, and spec-check policies, plus `review.independentExecution`. Explain that
    independent review defaults to `when-sensitive` for both workflows and
    execution defaults to `automatic`, which uses an isolated reviewer only when
    the current adapter supports it. Audit and check default to `manual`; try
-   guide defaults to `when-testable`.
+   guide defaults to `when-testable`. Spec check defaults to `manual`, which
+   runs it only when `/feature --check` asks.
    Before recommending `/overview`, check whether `AGENTS.md` still contains
    the shipped `For a standard Next.js project` command marker. When it does,
    onboarding is incomplete and `/onboard` is the next action.

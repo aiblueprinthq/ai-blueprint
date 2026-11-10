@@ -127,9 +127,12 @@ If there is no active spec:
    - vague done-whens
    - missing testing plan when `AGENTS.md` declares a test command
 4. Apply the spec fixes.
+5. Apply `qualityGates.regular.specCheck` through
+   `../feature/reference/spec-check.md` when it is `always` or the user asked
+   for the spec check. A Needs-you item stops Autopilot with the exact decision.
 
 Autopilot may continue past this spec gate because the user explicitly invoked
-Autopilot. Still report what the critique changed in the final packet.
+Autopilot. Still report what the critique and any spec check changed in the final packet.
 Follow the proportional-engineering contract in `AGENTS.md` throughout this run.
 
 ## Step 3 - create or reuse the branch

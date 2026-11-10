@@ -2,6 +2,7 @@
   "skill": "feature",
   "positive": [
     { "prompt": "Run /feature 4", "top_k": 1 },
+    { "prompt": "Run /feature 7 --check", "top_k": 1 },
     { "prompt": "Turn the next build-plan item into a detailed buildable spec", "top_k": 3 },
     { "prompt": "Spec out this new feature with small steps and clear done-when criteria", "top_k": 3 }
   ],

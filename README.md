@@ -385,6 +385,15 @@ explicit `/audit independent current` is still available and uses the configured
 execution method. Configuration never grants permission to merge, push, deploy,
 publish, or waive findings.
 
+The spec check is an optional gate before you approve a spec. A fresh reviewer
+reads the new spec against the repository and reports where it no longer matches
+the code, what is already done or unneeded, what is missing, and where a builder
+would have to guess. `/feature` fixes the clear gaps and lists real decisions as
+open questions, so you read one short note instead of a raw findings list. It
+defaults to `manual`: run it for one feature with `/feature <target> --check`,
+or set `qualityGates.regular.specCheck` (and `qualityGates.continuous.specCheck`
+for Continuous Mode) to `always`.
+
 The gate decides when independent review is required. The separate
 `review.independentExecution` setting decides how it runs and defaults to
 `automatic`, which starts an isolated reviewer when the active adapter can prove

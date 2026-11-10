@@ -330,7 +330,9 @@ only when a safe meaningful direct observation exists. Existing `manual`,
 broad work is selected for independent review, while ordinary small features
 are not. Setting a workflow's independent review policy to `manual` disables
 automatic selection; an explicit `/audit independent current` still uses the
-configured execution method. A
+configured execution method. The spec check defaults to `manual` and runs only
+for `/feature <target> --check`; set `specCheck` to `always` to have a fresh
+reviewer check every new feature spec against the repository before approval. A
 missing file uses built-in defaults; an invalid file is reported by status and
 blocks mutating workflow skills until `/blueprint-doctor` identifies the repair.
 Configuration never grants permission to

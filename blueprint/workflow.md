@@ -33,6 +33,14 @@ The other conditional modes are `when-sensitive` for audit, `when-behavioral`
 for check, and `when-user-facing` for try guides. Existing `manual`, `always`,
 and `when-user-facing` try-guide policies remain supported.
 
+`specCheck` in each quality-gate set controls the optional spec check: after
+`/feature` writes a spec, a fresh reviewer reads it against the repository and
+reports mismatches, finished or unneeded parts, missing needs, and risky
+guesses. Feature fixes the clear gaps and lists real decisions as open
+questions before the review stop. The default, `manual`, runs it only when a
+run asks with `/feature <target> --check`; `always` runs it for every new
+feature spec. It costs one extra reviewer run per spec and never blocks review.
+
 `review.independentExecution` controls how a selected independent-review gate
 runs. Its default, `automatic`, uses a fresh isolated reviewer child when the
 active adapter can prove isolation, exact reviewer identity and model, and
