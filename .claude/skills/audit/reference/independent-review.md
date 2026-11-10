@@ -251,8 +251,8 @@ request and receipt keep both execution fields absent.
      adapter that can start with no builder transcript, disclose the exact
      reviewer adapter and model, and wait for completion. Spawn a generic fresh
      isolated child through the current runtime. Do not discover, select, or
-     depend on a globally installed role, skill, prompt, or another workflow
-     such as TraversyFlow. If the runtime cannot start that generic child from
+     depend on a globally installed role, skill, prompt, or another workflow.
+     If the runtime cannot start that generic child from
      project-local instructions, or capability, isolation, identity, model,
      completion, or access to the same ignored spec/snapshot inputs cannot be
      confirmed, use the manual path in the original checkout.

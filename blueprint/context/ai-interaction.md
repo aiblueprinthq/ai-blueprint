@@ -104,7 +104,7 @@ when you just want something done.
    before the final packet and `/complete`. Fixes still happen through
    `/implement` or `/fix`. The automatic path starts a generic child through the
    current runtime and instructs it from the project-local Audit skill and review
-   contract. It never depends on a global role, skill, prompt, or TraversyFlow.
+   contract. It never depends on a global role, skill, or prompt.
    The request records requested execution and the receipt records actual
    execution, including an explicit manual fallback when automatic review is not
    available.

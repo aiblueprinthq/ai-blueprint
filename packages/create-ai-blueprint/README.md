@@ -346,7 +346,7 @@ handoff. Set it to `manual` to always use that handoff. The setting changes
 execution only; `qualityGates` still decides when independent review is selected.
 The automatic reviewer is a generic child of the current runtime and reads the
 installed project's Audit skill and review contract. Blueprint does not require
-or discover a global agent role, skill, prompt, or TraversyFlow component.
+or discover a global agent role, skill, or prompt.
 New requests record requested execution and completed receipts record actual
 execution. Automatic-to-manual fallback is explicit, and legacy receipts remain
 compatible only as fresh-session manual reviews.
