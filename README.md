@@ -401,7 +401,7 @@ with the manual handoff instead of skipping review. Set execution to `manual` to
 always prepare the fresh-session handoff.
 The automatic reviewer is a generic child of the current runtime, instructed
 only by the installed project's Audit skill and review contract. No global agent
-role, skill, prompt, or TraversyFlow installation is required or discovered.
+role, skill, or prompt installation is required or discovered.
 New requests bind the selected execution mode and receipts bind what actually
 ran. This prevents an unbound subagent claim from satisfying the gate while
 preserving older fresh-session receipts.

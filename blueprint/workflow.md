@@ -49,7 +49,7 @@ handoff. This setting changes execution only; the quality-gate policy still
 decides whether review is selected.
 The automatic path spawns a generic child through the current runtime and gives
 it the installed project-local Audit skill and review contract. It never requires
-or discovers global agent roles, skills, prompts, or TraversyFlow components.
+or discovers global agent roles, skills, or prompts.
 New review requests record requested execution and completed receipts record
 actual execution. Manual uses `fresh session`; automatic uses `fresh subagent`;
 an explicit automatic fallback records actual manual with `fresh session`.
