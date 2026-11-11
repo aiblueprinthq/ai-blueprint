@@ -57,7 +57,6 @@ interface ProjectConfig {
   continuous: {
     maxFeatures: number | null;
     maxRepairAttempts: number;
-    finalIntegrationAudit: boolean;
   };
 }
 
@@ -110,8 +109,7 @@ function createDefaultProjectConfig(): ProjectConfig {
     },
     continuous: {
       maxFeatures: null,
-      maxRepairAttempts: 2,
-      finalIntegrationAudit: false
+      maxRepairAttempts: 2
     }
   };
 }
@@ -243,7 +241,12 @@ function parseProjectConfig(value: unknown): ProjectConfig {
   );
   assertKnownKeys(
     continuous,
-    ["maxFeatures", "maxRepairAttempts", "finalIntegrationAudit"],
+    [
+      "maxFeatures",
+      "maxRepairAttempts",
+      // Configs written before the final integration audit was removed may still carry this key.
+      "finalIntegrationAudit"
+    ],
     "continuous"
   );
 
@@ -327,11 +330,6 @@ function parseProjectConfig(value: unknown): ProjectConfig {
         "continuous.maxRepairAttempts",
         0,
         10
-      ),
-      finalIntegrationAudit: optionalBoolean(
-        continuous.finalIntegrationAudit,
-        defaults.continuous.finalIntegrationAudit,
-        "continuous.finalIntegrationAudit"
       )
     }
   };
@@ -477,18 +475,6 @@ function optionalBoundedInteger(
   }
 
   return value as number;
-}
-
-function optionalBoolean(value: unknown, fallback: boolean, label: string): boolean {
-  if (value === undefined) {
-    return fallback;
-  }
-
-  if (typeof value !== "boolean") {
-    throw new Error(`${label} must be true or false.`);
-  }
-
-  return value;
 }
 
 function getErrorCode(error: unknown): string | undefined {

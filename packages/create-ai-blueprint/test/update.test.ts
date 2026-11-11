@@ -11,14 +11,9 @@ import {
   findPackageRoot,
   formatMissingTemplateMessage,
   getTemplateEntries,
-  getGlobalCliInstallCommand,
-  getGlobalCliPrompt,
-  isGlobalCliInstallConfirmed,
   parseArgs,
   resolveAdapters,
-  resolveUpdateAdapters,
-  selectGlobalCliAction,
-  shouldOfferGlobalCliInstall
+  resolveUpdateAdapters
 } from "../bin/create-ai-blueprint.js";
 import {
   CONTROL_DIR,
@@ -78,6 +73,19 @@ test("retired rollback CLI input points to the fix AI chat command", () => {
     assert.throws(() => parseArgs(["rollback"], surface), (error: unknown) => {
       assert.ok(error instanceof Error);
       assert.match(error.message, /skill was removed/);
+      assert.ok(error.message.includes("`$fix` in Codex"));
+      assert.ok(error.message.includes("`/fix` in Claude Code"));
+      return true;
+    });
+  }
+});
+
+test("retired release CLI input points to build-plan features or the fix AI chat command", () => {
+  for (const surface of ["global", "package"] as const) {
+    assert.throws(() => parseArgs(["release"], surface), (error: unknown) => {
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /skill was removed/);
+      assert.ok(error.message.includes("build-plan feature"));
       assert.ok(error.message.includes("`$fix` in Codex"));
       assert.ok(error.message.includes("`/fix` in Claude Code"));
       return true;
@@ -315,59 +323,6 @@ test("update adapter flags add to the installed set and the prompt starts from i
     ],
     required: true
   });
-});
-
-test("global CLI installation is offered for published interactive installs and updates", () => {
-  assert.equal(shouldOfferGlobalCliInstall(parseArgs([]), true), false);
-  assert.equal(shouldOfferGlobalCliInstall(parseArgs([]), true, false), true);
-  assert.equal(shouldOfferGlobalCliInstall(parseArgs([]), false, false), false);
-  assert.equal(
-    shouldOfferGlobalCliInstall(parseArgs(["--yes"]), true, false),
-    false
-  );
-  assert.equal(
-    shouldOfferGlobalCliInstall(parseArgs(["update"]), true, false),
-    true
-  );
-  assert.equal(
-    shouldOfferGlobalCliInstall(parseArgs(["update"]), false, false),
-    false
-  );
-  assert.equal(
-    shouldOfferGlobalCliInstall(parseArgs(["update", "--yes"]), true, false),
-    false
-  );
-  assert.equal(isGlobalCliInstallConfirmed("y"), true);
-  assert.equal(isGlobalCliInstallConfirmed(" YES "), true);
-  assert.equal(isGlobalCliInstallConfirmed(""), false);
-  assert.equal(isGlobalCliInstallConfirmed("no"), false);
-  assert.equal(
-    getGlobalCliInstallCommand("0.9.0"),
-    "npm install --global create-ai-blueprint@0.9.0"
-  );
-  assert.equal(
-    getGlobalCliPrompt("install", null, "0.12.0"),
-    "\nInstall the optional global `blueprint` CLI command?\n" +
-      "This adds the shorter `blueprint status` and `blueprint dashboard` commands.\n" +
-      "Without it, use:\n" +
-      "  npx create-ai-blueprint@latest status\n" +
-      "  npx create-ai-blueprint@latest dashboard\n" +
-      "This runs: npm install --global create-ai-blueprint@0.12.0\n" +
-      "Continue? [y/N]: "
-  );
-  assert.equal(
-    getGlobalCliPrompt("update", "0.11.1", "0.12.0"),
-    "\nUpdate the optional global `blueprint` CLI from 0.11.1 to 0.12.0?\n" +
-      "This adds the shorter `blueprint status` and `blueprint dashboard` commands.\n" +
-      "Without it, use:\n" +
-      "  npx create-ai-blueprint@latest status\n" +
-      "  npx create-ai-blueprint@latest dashboard\n" +
-      "This runs: npm install --global create-ai-blueprint@0.12.0\n" +
-      "Continue? [y/N]: "
-  );
-  assert.equal(selectGlobalCliAction(null, "0.11.0"), "install");
-  assert.equal(selectGlobalCliAction("0.10.0", "0.11.0"), "update");
-  assert.equal(selectGlobalCliAction("0.11.0", "0.11.0"), null);
 });
 
 test("new installs record only Blueprint-owned managed files", async (t) => {
@@ -913,6 +868,45 @@ for (const customized of [false, true]) {
     assert.equal(await fs.readFile(path.join(targetDir, "AGENTS.md"), "utf8"), oldFiles["AGENTS.md"]);
   });
 }
+
+test("update prunes emptied retired skill folders and keeps folders with user files", async (t) => {
+  const workspace = await createWorkspace(t);
+  const oldTemplateRoot = path.join(workspace, "template-old");
+  const newTemplateRoot = path.join(workspace, "template-new");
+  const targetDir = path.join(workspace, "target");
+  const oldFiles: Record<string, string> = {};
+  const newFiles: Record<string, string> = {};
+  for (const adapter of [".agents", ".claude"]) {
+    oldFiles[`${adapter}/skills/release/SKILL.md`] = "Old release\n";
+    oldFiles[`${adapter}/skills/rollback/SKILL.md`] = "Old rollback\n";
+    oldFiles[`${adapter}/skills/rollback/reference/template.md`] = "Old template\n";
+    oldFiles[`${adapter}/skills/fix/SKILL.md`] = "Fix\n";
+    newFiles[`${adapter}/skills/fix/SKILL.md`] = "Fix\n";
+  }
+  await writeTemplateFiles(oldTemplateRoot, oldFiles);
+  await writeInstalledFiles(targetDir, oldFiles);
+  await writeInstallManifest({
+    targetDir, templateRoot: oldTemplateRoot, version: "1.0.0", adapters: ["codex", "claude"]
+  });
+  await writeFiles(targetDir, { ".claude/skills/release/notes.md": "My notes\n" });
+  await writeTemplateFiles(newTemplateRoot, newFiles);
+
+  const prepared = await prepareUpdate({
+    targetDir, templateRoot: newTemplateRoot, version: "1.1.0"
+  });
+  assert.equal(prepared.plan.conflicts.length, 0);
+  await applyPreparedUpdate(prepared);
+
+  for (const retired of [
+    ".agents/skills/release",
+    ".agents/skills/rollback",
+    ".claude/skills/rollback"
+  ]) {
+    await assert.rejects(fs.access(path.join(targetDir, retired)), { code: "ENOENT" });
+  }
+  assert.deepEqual(await fs.readdir(path.join(targetDir, ".claude/skills/release")), ["notes.md"]);
+  assert.equal(await fs.readFile(path.join(targetDir, ".agents/skills/fix/SKILL.md"), "utf8"), "Fix\n");
+});
 
 test("update removes an unchanged Blueprint README installed by an older version", async (t) => {
   const workspace = await createWorkspace(t);

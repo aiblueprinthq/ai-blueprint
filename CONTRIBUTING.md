@@ -89,7 +89,7 @@ creates a dependency-free Node app under `.sandbox/`, creates the initial Git
 commit, packs the current local Blueprint, installs that artifact through `npx`,
 then runs the app's test and build scripts. The Blueprint installer stays
 interactive by default so maintainers see
-the same adapter and optional global CLI prompts as a normal user. Internal pack,
+the same adapter prompts as a normal user. Internal pack,
 Git, config, and file-list details stay hidden.
 
 After Blueprint installation and verification pass, the command starts the

@@ -1,6 +1,6 @@
 ---
 name: ci
-description: Set up or normalize one project Verify command and matching GitHub Actions checks while preserving existing CI, with an optional local pre-push hook. Use for /ci, GitHub Actions setup, pull-request checks, automatic checks, pre-push hooks, or aligning typecheck, test, and build verification.
+description: Set up or normalize one project Verify command and matching GitHub Actions checks while preserving existing CI. Use for /ci, GitHub Actions setup, pull-request checks, automatic checks, or aligning typecheck, test, and build verification.
 disable-model-invocation: true
 ---
 
@@ -33,12 +33,9 @@ Keep the beginner explanation simple:
 - **GitHub Actions is the worker.** It runs the same recipe automatically.
 - **A GitHub ruleset is the lock.** That optional remote setting can require the
   worker to report green before merge.
-- **A pre-push hook is the early warning.** That optional local setting runs the
-  recipe before a push leaves the machine. It is a convenience, not the lock:
-  `git push --no-verify` skips it.
 
-This skill configures the recipe and worker, and adds the hook only when the
-user opts in. It never changes the remote ruleset, pushes, publishes, or deploys.
+This skill configures the recipe and worker. It never changes the remote
+ruleset, pushes, publishes, or deploys.
 
 ## Input
 
@@ -120,33 +117,6 @@ before writing the push trigger instead of guessing. Preserve all other workflow
 files. When another workflow overlaps, report the overlap and ask whether to
 reuse, align, or leave it alone.
 
-## Step 3b - offer a local pre-push hook (opt-in)
-
-After the workflow exists, ask one question and default to no:
-
-    Also add a local pre-push hook that runs Verify before every push? [y/N]
-
-Skip the question when the request already answered it (for example "/ci with
-hook" or "no hook"). When the answer is no, write nothing and move on. When it
-is yes:
-
-1. Write `.githooks/pre-push` (mode 755) that announces itself and then runs
-   the exact `Verify` command from `AGENTS.md` with `exec`, so the command's
-   exit code is the hook's exit code.
-2. Point git at the folder: `git config core.hooksPath .githooks`.
-3. For JavaScript and TypeScript projects, add a `prepare` script,
-   `git config core.hooksPath .githooks 2>/dev/null || true`, so a fresh
-   install wires the hook without a manual step. The `|| true` keeps installs
-   working where no git checkout exists, such as a deploy build. For other
-   stacks, document the `git config` line in the README instead.
-4. Run the hook once (`.githooks/pre-push`). If it fails, remove what this
-   step added and report the failing subcommand. Never leave a hook the
-   project cannot pass.
-
-The hook and the workflow run the same `Verify` command; if one changes, the
-other changes with it. Say in the report that `--no-verify` bypasses the hook,
-so the GitHub ruleset remains the lock.
-
 ## Step 4 - prove the setup locally
 
 Run the exact documented `Verify` command locally. The individual build, test,
@@ -174,7 +144,6 @@ Finish with a concise setup report:
 - checks included and checks omitted
 - test gate status
 - workflow path and triggers
-- whether a pre-push hook was added, and that `--no-verify` bypasses it
 - local Verify result and whether CI is only prepared locally or confirmed by a
   successful GitHub run
 - files changed
@@ -198,7 +167,6 @@ part of this skill.
 - Preserve existing CI and custom checks.
 - Never invent tests or install a runner as part of CI setup.
 - Never add coverage, browser tests, security scans, or matrices by default.
-- Add a git hook only through the Step 3b opt-in, never silently.
 - Never push or change a remote ruleset without separate explicit approval.
 - Keep one exact Verify command shared by local work and GitHub.
 
