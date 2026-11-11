@@ -95,13 +95,28 @@ configured browser evidence, or stop and ask the user to start the required
 server when live evidence cannot run automatically.
 
 With `workflow.stepReview: feature`, continue through passing steps and present
-one final review packet. With `workflow.stepReview: every`, stop after each step
-with the diff, a short explanation, evidence, and a manual try path when one
-exists. Continue only after approval.
+one final review packet, with no per-step choices. With `workflow.stepReview:
+every`, stop after each step with the diff, a short explanation, evidence, and a
+manual try path when one exists, then offer these choices:
 
-Checkpoint commits are offered only when `workflow.checkpointCommits` is
-`enabled` and the current review gate was approved. Never commit without current
-approval. `/complete` owns the final work-level commit and merge.
+1. Continue to the next step.
+2. Commit a checkpoint, then continue. Offer this only when
+   `workflow.checkpointCommits` is `enabled`.
+3. Walk me through this step.
+4. Stop here.
+
+Continue only after the user picks continue or a checkpoint. A reply asking for
+changes revises this step, then the choices return. A step walkthrough is a
+read-only tour of this step's diff: its purpose, key files and symbols, and
+non-obvious decisions; offer the choices again afterward. Stop here leaves the
+finished step checked so a later `/implement` resumes at the next one.
+
+The user's checkpoint pick is the commit approval for that step only. Before
+committing, run Verify, or the fallback build and tests, and stop if it fails.
+Commit the step's code, tests, and updated `current-feature.md` checkbox on the
+work branch with a conventional message such as `feat: checkpoint <step>`. Never
+commit without current approval. `/complete` owns the final work-level commit
+and merge.
 
 Do not create a separate tool round merely to narrate a passing internal step.
 Keep the durable checkbox current and continue. Split a step when its diff is too

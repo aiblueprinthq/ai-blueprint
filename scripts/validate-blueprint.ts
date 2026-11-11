@@ -805,7 +805,10 @@ async function validateVerificationContract(): Promise<void> {
         "never requires or discovers global agent roles",
         "Independent review defaults to `when-sensitive`",
         "Its default, `automatic`",
-        "Try guide defaults to `when-testable`"
+        "Try guide defaults to `when-testable`",
+        "run that exact command as the final automated gate",
+        "the same approval can finalize the local baseline",
+        "Try It Now is a user demonstration"
       ]
     ],
     [
@@ -834,13 +837,9 @@ async function validateVerificationContract(): Promise<void> {
     [
       "blueprint/context/ai-interaction.md",
       [
-        "run that exact command as the final automated gate",
         "Continuous Mode also exists only as an explicit opt-in command",
         "The initial Overview baseline also requires explicit approval",
-        "the same approval can finalize the local baseline",
-        "generic child through the current runtime",
-        "never depends on a global role",
-        "Try It Now is a user demonstration"
+        "Do NOT commit without permission or until Verify"
       ]
     ],
     [
