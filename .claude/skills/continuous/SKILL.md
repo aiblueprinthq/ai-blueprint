@@ -113,8 +113,7 @@ Do not fetch, pull, install dependencies, start an unauthorized server, alter
 remote settings, or clean unrelated work during preflight. A known-behind
 default branch is a stop, not permission to pull.
 
-Record the starting default-branch commit. This bounds the optional final
-integration audit and the final report.
+Record the starting default-branch commit. This bounds the final report.
 
 The initial `blueprint/.state/run.json` record required by the first action must
 already show command `continuous` and status `running` before preflight begins.
@@ -304,26 +303,7 @@ from a clean default branch records that current tip as its new run boundary;
 already-completed work at or before it does not count toward the new run or
 require reconstruction of an older run's count.
 
-## Step 3 - optional final integration audit
-
-After the loop reaches its feature limit or the end of the build plan, run this
-step only when `continuous.finalIntegrationAudit` is `true`.
-
-Audit the combined default-branch diff from the recorded starting commit through
-the current `HEAD`, focusing on cross-feature contracts, integration seams,
-security boundaries, regression risk, and missing tests. Record findings in the
-ledger.
-
-For a confirmed P0 or P1 introduced by this run, automatic repair may use one
-dedicated configured fix branch and the same repair-attempt limit only when no
-product decision or scope expansion is required. Spec, verify, archive, locally
-squash-merge, and delete that fix branch like normal Blueprint fix work. Re-audit
-the repair before closing the finding.
-
-Otherwise stop with the finding open. Do not hide it, widen into general
-hardening, or present the run as fully ready.
-
-## Step 4 - stop and report
+## Step 3 - stop and report
 
 A successful stop occurs when:
 

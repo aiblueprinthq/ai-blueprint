@@ -34,7 +34,6 @@
   },
   "continuous": {
     "maxFeatures": null,
-    "maxRepairAttempts": 2,
-    "finalIntegrationAudit": false
+    "maxRepairAttempts": 2
   }
 }

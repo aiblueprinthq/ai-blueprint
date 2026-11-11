@@ -58,8 +58,8 @@ Gather these, then summarize. Do not dump file contents.
    - Read `blueprint/config.json` when present. Missing is healthy and means
      built-in defaults. When present, require a regular non-symbolic-link JSON
      file with `schemaVersion: 1`. Reject unknown keys and unsupported values.
-     An obsolete `git.rollbackBranchPrefix` is ignored, not invalid; mention
-     that it can be removed.
+     An obsolete `git.rollbackBranchPrefix` or `continuous.finalIntegrationAudit`
+     is ignored, not invalid; mention that it can be removed.
      Report the effective workflow, git, verification, review execution, regular
      quality-gate, Continuous quality-gate, and Continuous Mode settings. Confirm each audit,
      independent-review, check, try-guide, and spec-check gate uses its

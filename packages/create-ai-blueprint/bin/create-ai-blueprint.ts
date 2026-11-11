@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import checkbox from "@inquirer/checkbox";
-import { spawn } from "node:child_process";
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import path from "node:path";
@@ -33,7 +32,7 @@ const ALL_ADAPTERS = adapterListFromMode("all");
 const AI_SKILLS = new Set([
   "adopt", "audit", "autopilot", "blueprint-doctor", "blueprint-status", "brief",
   "check", "ci", "complete", "continuous", "debug", "discovery", "explore", "feature",
-  "fix", "implement", "onboard", "overview", "prototype", "release", "tests"
+  "fix", "implement", "onboard", "overview", "prototype", "tests"
 ]);
 
 interface AdapterCheckboxChoice {
@@ -70,7 +69,6 @@ interface TemplateEntry {
   target: string;
 }
 
-type GlobalCliAction = "install" | "update" | null;
 type CliSurface = "package" | "global";
 
 const adapterChoices = new Set<Adapter>(ALL_ADAPTERS);
@@ -171,7 +169,6 @@ async function runCli(
       options.force || (await confirmUpdateConflicts(prepared, options));
     const result = await applyPreparedUpdate(prepared, { replaceConflicts });
     printUpdateSuccess(prepared, result);
-    await offerGlobalCliInstall(options, version);
     return;
   }
 
@@ -209,7 +206,6 @@ async function runCli(
   });
 
   printSuccess(targetDir, adapters, entries, existingEntries, presentation);
-  await offerGlobalCliInstall(options, version);
   printOnboardingNextSteps(adapters, presentation);
 }
 
@@ -346,6 +342,12 @@ function parseArgs(args: readonly string[], surface: CliSurface = "package"): Cl
     if (!commandSeen && arg === "rollback") {
       throw new Error(
         "The rollback skill was removed. Open your project in your AI chat and remove the feature with `$fix` in Codex or `/fix` in Claude Code."
+      );
+    }
+
+    if (!commandSeen && arg === "release") {
+      throw new Error(
+        "The release skill was removed. Open your project in your AI chat and add deployment setup as a build-plan feature, or as a small change with `$fix` in Codex or `/fix` in Claude Code."
       );
     }
 
@@ -914,200 +916,6 @@ function printClaudeRestartNote(adapters: readonly Adapter[]): void {
   );
 }
 
-async function offerGlobalCliInstall(
-  options: CliOptions,
-  version: string
-): Promise<void> {
-  if (!shouldOfferGlobalCliInstall(options)) {
-    return;
-  }
-
-  const installedVersion = await readGlobalCliVersion();
-  const action = selectGlobalCliAction(installedVersion, version);
-
-  if (!action) {
-    return;
-  }
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  let answer = "";
-
-  try {
-    answer = await rl.question(getGlobalCliPrompt(action, installedVersion, version));
-  } finally {
-    rl.close();
-  }
-
-  if (!isGlobalCliInstallConfirmed(answer)) {
-    return;
-  }
-
-  try {
-    await installGlobalCli(version);
-    console.log("\nOptional global CLI ready.");
-  } catch (error: unknown) {
-    console.error(
-      `\nGlobal CLI was not installed or updated: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
-}
-
-function selectGlobalCliAction(
-  installedVersion: string | null,
-  targetVersion: string
-): GlobalCliAction {
-  if (installedVersion === targetVersion) {
-    return null;
-  }
-
-  return installedVersion ? "update" : "install";
-}
-
-async function readGlobalCliVersion(): Promise<string | null> {
-  const npmExecPath = process.env.npm_execpath;
-  const command = npmExecPath
-    ? process.execPath
-    : process.platform === "win32"
-      ? "npm.cmd"
-      : "npm";
-  const args = npmExecPath
-    ? [npmExecPath, "root", "--global"]
-    : ["root", "--global"];
-
-  try {
-    const globalRoot = (await readCommandOutput(command, args)).trim();
-    if (!globalRoot) {
-      return null;
-    }
-
-    const packageJson = await fs.readFile(
-      path.join(globalRoot, "create-ai-blueprint", "package.json"),
-      "utf8"
-    );
-    const metadata: unknown = JSON.parse(packageJson);
-
-    return typeof metadata === "object" &&
-      metadata !== null &&
-      typeof (metadata as { version?: unknown }).version === "string"
-      ? (metadata as { version: string }).version
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-async function readCommandOutput(
-  command: string,
-  args: readonly string[]
-): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    const child = spawn(command, args, {
-      env: process.env,
-      stdio: ["ignore", "pipe", "ignore"]
-    });
-    let output = "";
-
-    child.stdout?.setEncoding("utf8");
-    child.stdout?.on("data", (chunk: string) => {
-      output += chunk;
-    });
-    child.once("error", reject);
-    child.once("exit", (code, signal) => {
-      if (code === 0) {
-        resolve(output);
-        return;
-      }
-
-      reject(
-        new Error(
-          signal
-            ? `npm stopped with signal ${signal}`
-            : `npm exited with code ${code ?? "unknown"}`
-        )
-      );
-    });
-  });
-}
-
-function shouldOfferGlobalCliInstall(
-  options: CliOptions,
-  isTTY: boolean | undefined = process.stdin.isTTY,
-  sourceCheckout: boolean = isSourceCheckout()
-): boolean {
-  return (
-    (options.command === "install" || options.command === "update") &&
-    !options.yes &&
-    isTTY === true &&
-    !sourceCheckout
-  );
-}
-
-function isGlobalCliInstallConfirmed(answer: string): boolean {
-  const normalized = answer.trim().toLowerCase();
-  return normalized === "y" || normalized === "yes";
-}
-
-function getGlobalCliInstallCommand(version: string): string {
-  return `npm install --global create-ai-blueprint@${version}`;
-}
-
-function getGlobalCliPrompt(
-  action: Exclude<GlobalCliAction, null>,
-  installedVersion: string | null,
-  targetVersion: string
-): string {
-  const question = action === "install"
-    ? "Install the optional global `blueprint` CLI command?"
-    : `Update the optional global \`blueprint\` CLI from ${installedVersion} to ${targetVersion}?`;
-
-  return `\n${question}
-This adds the shorter \`blueprint status\` and \`blueprint dashboard\` commands.
-Without it, use:
-  npx create-ai-blueprint@latest status
-  npx create-ai-blueprint@latest dashboard
-This runs: ${getGlobalCliInstallCommand(targetVersion)}
-Continue? [y/N]: `;
-}
-
-async function installGlobalCli(version: string): Promise<void> {
-  const npmExecPath = process.env.npm_execpath;
-  const packageSpec = `create-ai-blueprint@${version}`;
-  const command = npmExecPath
-    ? process.execPath
-    : process.platform === "win32"
-      ? "npm.cmd"
-      : "npm";
-  const args = npmExecPath
-    ? [npmExecPath, "install", "--global", packageSpec]
-    : ["install", "--global", packageSpec];
-
-  await new Promise<void>((resolve, reject) => {
-    const child = spawn(command, args, {
-      env: process.env,
-      stdio: "inherit"
-    });
-
-    child.once("error", reject);
-    child.once("exit", (code, signal) => {
-      if (code === 0) {
-        resolve();
-        return;
-      }
-
-      reject(
-        new Error(
-          signal
-            ? `npm stopped with signal ${signal}`
-            : `npm exited with code ${code ?? "unknown"}`
-        )
-      );
-    });
-  });
-}
-
 async function waitForShutdown(): Promise<void> {
   await new Promise<void>((resolve) => {
     const stop = (): void => {
@@ -1306,10 +1114,6 @@ function findPackageRoot(startDir: string): string {
   }
 }
 
-function isSourceCheckout(root: string = packageRoot): boolean {
-  return fsSync.existsSync(path.join(root, "scripts", "prepare-template.ts"));
-}
-
 function formatMissingTemplateMessage(templateRoot: string): string {
   return `Installer template is missing.
 Looked in: ${templateRoot}
@@ -1349,14 +1153,9 @@ export {
   ADAPTER_PROMPT,
   findPackageRoot,
   formatMissingTemplateMessage,
-  getGlobalCliInstallCommand,
-  getGlobalCliPrompt,
   getTemplateEntries,
-  isGlobalCliInstallConfirmed,
   parseArgs,
   resolveAdapters,
   resolveUpdateAdapters,
-  runCli,
-  selectGlobalCliAction,
-  shouldOfferGlobalCliInstall
+  runCli
 };

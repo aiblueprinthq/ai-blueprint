@@ -38,7 +38,8 @@ state.
    missing file is healthy and means defaults. Invalid JSON, schema versions,
    keys, values, non-file paths, or symbolic links are a warning and make
    `/blueprint-doctor` the next action before any mutating workflow command. An
-   obsolete `git.rollbackBranchPrefix` is ignored, not invalid. Report the
+   obsolete `git.rollbackBranchPrefix` or `continuous.finalIntegrationAudit` is
+   ignored, not invalid. Report the
    effective regular and Continuous audit, independent-review, check,
    try-guide, and spec-check policies, plus `review.independentExecution`. Explain that
    independent review defaults to `when-sensitive` for both workflows and

@@ -266,7 +266,7 @@ does not prove the application works.
 
 ## Command map
 
-All 21 skills are installed for each selected adapter. These groups help you
+All 20 skills are installed for each selected adapter. These groups help you
 find a command; they do not add installation modes or configuration. Examples
 use Claude Code slash commands in AI chat. Codex uses the matching `$skill` form,
 and other adapters can run the named skill through plain language.
@@ -301,14 +301,13 @@ and other adapters can run the named skill through plain language.
 | **/overview** | Generate durable project context from both planning documents. |
 | **/prototype** | Create throwaway static mockups before implementation. |
 | **/tests** | Set up unit testing with `/tests` or `/tests unit`; explicitly set up a browser harness with `/tests browser`. |
-| **/ci** | Align one project Verify command with GitHub checks, plus an optional pre-push hook. |
+| **/ci** | Align one project Verify command with GitHub checks. |
 
-### Recover and release
+### Recover
 
 | Skill | Purpose |
 | --- | --- |
 | **/fix** | Write a spec for a small unplanned change or confirmed bug. |
-| **/release** | Prepare local Render or Vercel configuration and readiness checks; deployment needs separate approval. |
 
 ### Automation
 
@@ -423,10 +422,6 @@ requests and default-branch pushes. Blueprint does not invent a test runner,
 coverage target, browser suite, security scan, or version matrix just to fill
 the workflow.
 
-At the end, `ci` offers an optional local pre-push hook that runs the same
-Verify command before each push. The offer defaults to no, and
-`git push --no-verify` bypasses the hook, so a GitHub ruleset remains the lock.
-
 Read [CI Setup](https://ai-blueprint.dev/docs/commands/ci/) for the full contract.
 
 ## Optional automation
@@ -521,6 +516,8 @@ Some standalone skills have been removed or renamed:
 | `/try` | `/check guide` (Codex: `$check guide`) |
 | `/status` | `/blueprint-status` (Codex: `$blueprint-status`) |
 | `/doctor` | `/blueprint-doctor` (Codex: `$blueprint-doctor`) |
+| `/rollback` | `/fix`, written to remove the feature (Codex: `$fix`) |
+| `/release` | A build-plan feature, or `/fix`, that adds the deployment setup (Codex: `$fix`) |
 
 `/status` and `/doctor` were renamed so they no longer hide the Claude Code
 built-in commands with the same names. The `blueprint status` terminal command
@@ -532,7 +529,8 @@ preserving them until you resolve or explicitly replace them. Review old referen
 project instructions. The `qualityGates.regular.tryGuide` and
 `qualityGates.continuous.tryGuide` keys still select `/check guide`. Existing
 policy values remain compatible, and new projects default to `when-testable`.
-No configuration migration is needed.
+Old `git.rollbackBranchPrefix` and `continuous.finalIntegrationAudit` keys are
+accepted and ignored. No configuration migration is needed.
 
 ### If latest runs an older version
 

@@ -27,7 +27,7 @@ test("default config reviews sensitive work and guides testable work automatical
   assert.equal(defaults.workflow.checkpointCommits, "disabled");
   assert.equal(defaults.git.landing, "local-merge");
   assert.equal(defaults.review.independentExecution, "automatic");
-  assert.equal(defaults.continuous.finalIntegrationAudit, false);
+  assert.equal("finalIntegrationAudit" in defaults.continuous, false);
 });
 
 test("manual independent review policy and execution remain valid overrides", () => {
@@ -121,6 +121,24 @@ test("readProjectConfig accepts and ignores the retired rollback branch prefix",
   assert.equal(result.state, "project");
   assert.equal(result.values.git.fixBranchPrefix, "bugfix/");
   assert.equal("rollbackBranchPrefix" in result.values.git, false);
+  assert.deepEqual(result.warnings, []);
+});
+
+test("readProjectConfig accepts and ignores the retired final integration audit", async (t) => {
+  const projectRoot = await createProject(t);
+  await writeConfig(projectRoot, {
+    schemaVersion: 1,
+    continuous: {
+      maxRepairAttempts: 3,
+      finalIntegrationAudit: true
+    }
+  });
+
+  const result = await readProjectConfig(projectRoot);
+
+  assert.equal(result.state, "project");
+  assert.equal(result.values.continuous.maxRepairAttempts, 3);
+  assert.equal("finalIntegrationAudit" in result.values.continuous, false);
   assert.deepEqual(result.warnings, []);
 });
 

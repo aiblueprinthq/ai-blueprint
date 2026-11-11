@@ -217,7 +217,7 @@ does not prove the application works.
 
 ## Command map
 
-All 21 skills are installed for each selected adapter. These groups organize the
+All 20 skills are installed for each selected adapter. These groups organize the
 reference without adding configuration or optional installation modes. Use the
 matching `$` form in Codex.
 
@@ -251,14 +251,13 @@ matching `$` form in Codex.
 | **/overview** | Generate durable project context from both planning documents. |
 | **/prototype** | Create throwaway static mockups before implementation. |
 | **/tests** | Set up unit testing with `/tests` or `/tests unit`; explicitly set up a browser harness with `/tests browser`. |
-| **/ci** | Align one project Verify command with GitHub checks, plus an optional pre-push hook. |
+| **/ci** | Align one project Verify command with GitHub checks. |
 
-### Recover and release
+### Recover
 
 | Skill | Purpose |
 | --- | --- |
 | **/fix** | Write a spec for a small unplanned change or confirmed bug. |
-| **/release** | Prepare local Render or Vercel configuration and readiness checks; deployment needs separate approval. |
 
 ### Automation
 
@@ -468,20 +467,11 @@ constructing `run.json` directly. The helper validates every field before an
 atomic replacement. Invalid updates fail without replacing the previous valid
 state, and the next tracked command safely replaces malformed legacy state.
 
-After an interactive Blueprint install or update, the installer checks the
-global CLI version. It offers to run the following command only when the CLI is
-missing or does not match the npx package version:
-
-```bash
-npm install --global create-ai-blueprint@latest
-```
-
-The prompt defaults to no and is skipped for matching versions, non-interactive
-runs, `--yes` runs, and runs from a source checkout of this repository.
-Accepting it installs or refreshes the CLI at the same version used by the npx
-command. Global installation exposes the shorter forms `blueprint status`,
-`blueprint status --json`, and `blueprint dashboard`. Use `--target ./my-app` to
-inspect an explicit project directory. Status never edits project or Git state.
+If you install the package globally yourself with
+`npm install --global create-ai-blueprint@latest`, it also exposes the shorter
+forms `blueprint status`, `blueprint status --json`, and `blueprint dashboard`.
+Use `--target ./my-app` to inspect an explicit project directory. Status never
+edits project or Git state.
 
 ### Command migration
 
@@ -493,6 +483,8 @@ Some standalone skills have been removed or renamed:
 | `/try` | `/check guide` (Codex: `$check guide`) |
 | `/status` | `/blueprint-status` (Codex: `$blueprint-status`) |
 | `/doctor` | `/blueprint-doctor` (Codex: `$blueprint-doctor`) |
+| `/rollback` | `/fix`, written to remove the feature (Codex: `$fix`) |
+| `/release` | A build-plan feature, or `/fix`, that adds the deployment setup (Codex: `$fix`) |
 
 `/status` and `/doctor` were renamed so they no longer hide the Claude Code
 built-in commands with the same names. The `blueprint status` terminal command
@@ -504,7 +496,8 @@ preserving them until you resolve or explicitly replace them. Review old referen
 project instructions. The `qualityGates.regular.tryGuide` and
 `qualityGates.continuous.tryGuide` keys still select `/check guide`. Existing
 policy values remain compatible, and new projects default to `when-testable`.
-No configuration migration is needed.
+Old `git.rollbackBranchPrefix` and `continuous.finalIntegrationAudit` keys are
+accepted and ignored. No configuration migration is needed.
 
 ## Opening the local dashboard
 
@@ -512,7 +505,7 @@ Run the on-demand read-only dashboard from a Blueprint project or any directory
 inside it:
 
 ```bash
-blueprint dashboard
+npx create-ai-blueprint@latest dashboard
 ```
 
 The command binds to `127.0.0.1` on an available port, opens the dashboard in
@@ -524,9 +517,8 @@ next action, then shows recorded command activity, active work and build steps,
 the build-plan roadmap, project and Git state, findings, completion blockers,
 and archived work. Autopilot and Continuous runs include their mode, progress,
 configured gates, local boundary, and safe resume command when one is available.
-Press Ctrl+C to stop it. Use `blueprint dashboard --no-open` when you want the
-URL without opening a browser. The older `blueprint ui` form remains as a
-deprecated alias.
+Press Ctrl+C to stop it. Add `--no-open` when you want the URL without opening
+a browser. The older `ui` form remains as a deprecated alias.
 
 The optional global `blueprint` command is limited to read-only project status
 and this local dashboard. Continue to use `npx create-ai-blueprint@latest` for

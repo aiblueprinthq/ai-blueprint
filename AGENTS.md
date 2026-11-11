@@ -68,8 +68,8 @@ the matching `SKILL.md` when asked.
 
 Skills: `adopt`, `audit`, `blueprint-doctor`, `blueprint-status`, `brief`,
 `check`, `ci`, `complete`, `debug`, `discovery`, `explore`, `feature`, `fix`,
-`implement`, `onboard`, `overview`, `prototype`, `release`, and `tests`, plus
-the explicit-only `autopilot` and `continuous`.
+`implement`, `onboard`, `overview`, `prototype`, and `tests`, plus the
+explicit-only `autopilot` and `continuous`.
 
 - Keep one active work item per checkout. Parallel work needs its own clone or
   Git worktree and branch; never replace another worker's active spec.

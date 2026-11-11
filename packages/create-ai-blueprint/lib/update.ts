@@ -538,6 +538,7 @@ async function applyPreparedUpdate(
 
     for (const operation of removals) {
       await fs.rm(targetPath(prepared.targetDir, operation.path), { force: true });
+      await pruneEmptyParents(prepared.targetDir, operation.path);
     }
 
     for (const root of removedRoots) {
@@ -612,6 +613,24 @@ async function pruneRemovedRoot(targetDir: string, root: string): Promise<void> 
     await fs.rmdir(path.dirname(targetPath(targetDir, root)));
   } catch (error: unknown) {
     if (!["ENOENT", "ENOTEMPTY"].includes(getErrorCode(error) ?? "")) {
+      throw error;
+    }
+  }
+}
+
+async function pruneEmptyParents(targetDir: string, relativePath: string): Promise<void> {
+  for (
+    let directory = path.posix.dirname(relativePath);
+    directory !== ".";
+    directory = path.posix.dirname(directory)
+  ) {
+    try {
+      await fs.rmdir(targetPath(targetDir, directory));
+    } catch (error: unknown) {
+      if (["ENOENT", "ENOTEMPTY"].includes(getErrorCode(error) ?? "")) {
+        return;
+      }
+
       throw error;
     }
   }

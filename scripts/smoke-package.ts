@@ -586,9 +586,11 @@ async function validateInstall(
   await requireMissing(path.join(targetDir, ".agents/skills/browser-tests"));
   await requireMissing(path.join(targetDir, ".agents/skills/try"));
   await requireMissing(path.join(targetDir, ".agents/skills/rollback"));
+  await requireMissing(path.join(targetDir, ".agents/skills/release"));
   await requireMissing(path.join(targetDir, ".claude/skills/browser-tests"));
   await requireMissing(path.join(targetDir, ".claude/skills/try"));
   await requireMissing(path.join(targetDir, ".claude/skills/rollback"));
+  await requireMissing(path.join(targetDir, ".claude/skills/release"));
   await requireMissing(path.join(targetDir, "README.md"));
   await requireMissing(path.join(targetDir, "blueprint", "README.md"));
   await requireMissing(path.join(targetDir, ".ai-blueprint"));

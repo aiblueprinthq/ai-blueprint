@@ -7,6 +7,6 @@
   ],
   "negative": [
     { "prompt": "Run /tests and add a unit test runner to this app", "owner": "tests" },
-    { "prompt": "Run /release to prepare the app for a Vercel deployment", "owner": "release" }
+    { "prompt": "Run /complete to archive the feature and open its pull request", "owner": "complete" }
   ]
 }

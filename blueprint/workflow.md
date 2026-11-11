@@ -166,12 +166,11 @@ Core skills:
   baseline commit before Feature 1
 - `prototype` - optional, pre-build static mockups to lock the look
 - `tests` - set up unit testing by default, or a repeatable browser harness with `tests browser`
-- `ci` - explicitly set up one project-specific Verify command and matching automatic GitHub checks, with an optional local pre-push hook
+- `ci` - explicitly set up one project-specific Verify command and matching automatic GitHub checks
 
-### Recover and release
+### Recover
 
 - `fix` - document an ad-hoc bug or change into `blueprint/context/current-feature.md`, including removing a completed feature
-- `release` - optional Render or Vercel deployment readiness, local config, env review, and smoke-test planning
 
 In Codex, invoke these as skills (`$onboard`, `$discovery`, `$overview`, `$feature`,
 `$implement`, and so on) or ask naturally, such as "run the overview." In Claude
@@ -200,10 +199,6 @@ per feature, applies the Continuous quality gates, archives and merges serially,
 and stops on decisions or failed safety gates. It never pushes, deploys,
 publishes, sends, or performs destructive actions.
 
-Deployment is also explicit. `/release` can prepare local Render or Vercel config
-and run readiness checks, but it must stop before deploy, remote service changes,
-push, or publish unless the user gives a separate yes in the current chat.
-
 ## Dashboard activity
 
 The dashboard can show the active or most recent substantial Blueprint command
@@ -212,10 +207,10 @@ Git, and never part of a feature commit.
 
 Commands with meaningful progress or a durable handoff should write it when the
 state directory exists: `onboard`, `adopt`, `discovery`, `overview`, `feature`,
-`fix`, `implement`, `debug`, `check`, `audit`, `tests`,
-`ci`, `prototype`, `autopilot`, `continuous`, `complete`, and
-`release`. Short orientation commands such as `explore`, `brief`,
-`blueprint-status`, and `blueprint-doctor` do not write activity state. The
+`fix`, `implement`, `debug`, `check`, `audit`, `tests`, `ci`, `prototype`,
+`autopilot`, `continuous`, and `complete`. Short orientation commands such as
+`explore`, `brief`, `blueprint-status`, and `blueprint-doctor` do not write
+activity state. The
 `check guide` mode also never writes activity state; select the Check mode
 before any activity call. Doctor's optional approved reset removes malformed
 activity instead of recording another run.
@@ -283,9 +278,7 @@ The optional `.github/workflows/verify.yml` must run that same command for pull
 requests and pushes to the default branch. Preserve existing workflows, use the
 project's real runtime and install command, and grant only `contents: read` by
 default. This setup does not add coverage, browser tests, security scans, or
-version matrices; those remain later project choices. A local pre-push hook that
-runs the same `Verify` command is offered as an opt-in at the end of `/ci`, and
-`git push --no-verify` still bypasses it, so the remote ruleset stays the lock.
+version matrices; those remain later project choices.
 
 GitHub branch protection or a ruleset can require the check after the repository
 is pushed, but that is a separate remote setting. Missing automatic GitHub
