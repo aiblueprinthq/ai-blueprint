@@ -119,6 +119,24 @@ Audit reviews code and records findings. Showing both in this path does not
 change configured gates or make Audit mandatory. `/check guide` only generates
 manual instructions and never performs verification or records acceptance.
 
+If `AGENTS.md` declares a `Verify` command, run that exact command as the final
+automated gate. It wraps only the checks the project actually has. If no Verify
+command exists, run the documented build command and the test command when
+configured. `/check` proves behavior from the agent side; Try It Now is a user
+demonstration and never replaces tests, Verify, or Check.
+
+Progress lives in files, not the chat: `current-feature.md` holds the spec with
+each step checked off as it's done, and Git holds the code. After a context
+clear, a fresh `/implement` or `$implement` run continues from the first
+unchecked step, so no separate save or load command is needed.
+
+After the first successful `/overview`, Blueprint offers a reviewed local commit
+for the initial workflow setup and plans before Feature 1. It shows the exact
+candidate diff and asks first. It skips local-only installations and stops
+rather than mixing app source or unrelated work into the baseline. When setup
+work is on a dedicated branch, the same approval can finalize the local baseline
+and fast-forward it into the unchanged default branch. It never pushes.
+
 Core skills:
 
 ### Build
