@@ -3,7 +3,7 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
-## [Unreleased]
+## [1.16.0] - 2026-11-12
 
 ### Added
 
@@ -14,6 +14,62 @@ published `create-ai-blueprint` package.
   Off by default: run it for one feature with `/feature <target> --check`, or
   set `qualityGates.regular.specCheck` and `qualityGates.continuous.specCheck`
   to `always`. Autopilot and Continuous apply the same gate.
+- Per-step choices in `/implement`. With `workflow.stepReview: every`, each
+  step now ends with four choices: continue, commit a checkpoint, walk me
+  through this step, or stop here. The checkpoint choice appears only when
+  `workflow.checkpointCommits` is `enabled`, runs Verify first, and approves
+  that one commit. The default `feature` cadence still works straight through
+  with no per-step menu.
+
+### Changed
+
+- Removing a shipped feature is now ordinary fix work. `/fix` handles it and
+  keeps the original feature archive. To build the feature again, uncheck its
+  build-plan item; `/feature` now refuses an item that is already checked. A
+  rebuild's attempt number is one greater than the highest archived attempt
+  for that feature ID.
+- `blueprint/context/ai-interaction.md` no longer repeats the feature loop that
+  `blueprint/workflow.md` and the skills already define, so new projects get a
+  6 KB file instead of 14 KB and the skills that read it for output formatting
+  load less. The few paragraphs that lived only there moved to
+  `blueprint/workflow.md`. Updates never rewrite `ai-interaction.md`, so
+  existing projects keep their copy.
+- Removed the last mentions of TraversyFlow from the READMEs and shipped
+  workflow files.
+
+### Removed
+
+- `/rollback`. Remove a shipped feature with `/fix` (`$fix` in Codex) instead.
+  Finish or abandon any in-progress rollback before updating; a leftover
+  rollback spec makes `/implement` and `/complete` stop and point to `/fix`.
+  Existing rollback archives still appear in status and dashboard history, and
+  `create-ai-blueprint rollback` explains the removal.
+- `/release`. Add deployment setup as a build-plan feature, or as a small
+  change with `/fix`. `create-ai-blueprint release` explains the removal.
+- The offer to install the `blueprint` command globally after install and
+  update. The command still works if you install the package globally
+  yourself, and `npx create-ai-blueprint@latest status` and `dashboard` cover
+  everyone else.
+- `continuous.finalIntegrationAudit` and the optional final integration audit
+  step in `/continuous`.
+- The `/ci` offer to add a local pre-push hook. Hooks that projects already
+  installed are left alone.
+
+Updates remove unchanged copies of the removed skills and report customized
+copies as conflicts. Old `git.rollbackBranchPrefix` and
+`continuous.finalIntegrationAudit` keys are accepted and ignored, so no
+configuration migration is needed.
+
+### Fixed
+
+- `/blueprint-doctor` checked the pre-1.15 path for the dashboard activity
+  helper and reported it missing on every install. It now checks
+  `blueprint-doctor/scripts/run-state.mjs`.
+- Updates now remove skill folders that a removal leaves empty, and keep any
+  folder that still holds your files.
+- Local `npm pack`, `npm run link:local`, smoke, and sandbox runs now package
+  only Git-tracked Blueprint files, so ignored worktrees no longer end up in a
+  local template. Published packages were not affected.
 
 ## [1.15.0] - 2026-10-30
 
