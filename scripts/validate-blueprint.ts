@@ -471,6 +471,16 @@ async function validateVerificationContract(): Promise<void> {
         "run checks or the app",
         "A guide\nnever counts as acceptance evidence",
         "For `latest`, use the most recent archive even when an active spec exists",
+        "../../check/reference/try-it-now.md",
+        "explicitly route to `/check`"
+      ]
+    ],
+    [
+      ".agents/skills/check/reference/try-it-now.md",
+      [
+        "Writing the proof is read-only",
+        "never treat it as acceptance evidence",
+        "When the work removed behavior, lead with the path that proves it is gone",
         "For `when-testable`, generate Try It Now only when one safe, meaningful path",
         "**CLI**",
         "**Library**",
@@ -482,8 +492,7 @@ async function validateVerificationContract(): Promise<void> {
         "omit the `## Try it now` section",
         "Never start a development server in guide mode",
         "Prefer an API, MCP, or CLI demonstration",
-        "## Try it now",
-        "explicitly route to `/check`"
+        "## Try it now"
       ]
     ],
     [
@@ -552,6 +561,7 @@ async function validateVerificationContract(): Promise<void> {
         "receiving current explicit commit approval",
         "Treat an existing request without `Requested execution` as legacy manual-only",
         "After final Verify and required Check pass, apply the selected try-guide policy",
+        "follow only `../check/reference/try-it-now.md`",
         "Include the generated `## Try it now` section verbatim"
       ]
     ],
@@ -674,6 +684,7 @@ async function validateVerificationContract(): Promise<void> {
         "Before requiring a real active spec",
         "reference/completion-screen.md",
         "reference/completion-recovery.md",
+        "reference/completion-archive.md",
         "git.landing",
         "With `git.landing: \"pull-request\"`",
         "Never merge the pull request",
@@ -684,12 +695,21 @@ async function validateVerificationContract(): Promise<void> {
       ]
     ],
     [
-      ".agents/skills/complete/reference/completion-recovery.md",
+      ".agents/skills/complete/reference/completion-archive.md",
       [
+        "## Prepare one recoverable archive",
         '"specBytes"',
         '"sourceTree"',
         '"landing"',
         '"absentOptional"',
+        "## Verify a local squash merge",
+        "git diff --exit-code <workCommit>^{tree} <defaultTip>^{tree}"
+      ]
+    ],
+    [
+      ".agents/skills/complete/reference/completion-recovery.md",
+      [
+        "../../complete/reference/completion-archive.md",
         "../../complete/reference/completion-screen.md",
         "never allocate a new attempt on resume",
         "## Interrupted archival, before the work commit",
