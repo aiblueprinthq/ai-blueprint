@@ -156,11 +156,12 @@ Apply configured regular gates:
   direct observation under `when-testable`, or when explicitly requested.
 
 After final Verify and required Check pass, apply the selected try-guide policy.
-For `when-testable`, let `/check guide` perform its conservative classification.
-Keep its generated `## Try it now` section for the final packet. When no safe,
-meaningful direct observation exists, record that the gate was skipped and do
-not fabricate a section. Guide output never counts as verification or user
-acceptance.
+For `when-testable`, follow only `../check/reference/try-it-now.md` for its
+conservative classification; the full guide is not needed. Other selected
+policies run `/check guide`. Keep the generated `## Try it now` section for the
+final packet. When no safe, meaningful direct observation exists, record that
+the gate was skipped and do not fabricate a section. Guide output never counts
+as verification or user acceptance.
 
 Do not start a dev server. When a required runtime check needs one, ask the user
 to start it. Build output does not prove visual, persisted-data, authenticated,

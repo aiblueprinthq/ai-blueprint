@@ -192,7 +192,7 @@ owns the final safety pass.
 
 ## Step 1 - log the work
 
-Follow `reference/completion-recovery.md` to capture the source tree and compact
+Follow `reference/completion-archive.md` to capture the source tree and compact
 archive annotation before any logging edits. Preserve the exact verified spec
 prefix, its UTF-8 byte length and SHA-256, branch, original HEAD, and local base.
 Record the reference's narrow `absentOptional` proof before creating any optional
@@ -330,7 +330,7 @@ With `git.landing: "local-merge"`:
    explicit go-ahead, so the work lands as one clean commit regardless of how many
    checkpoints the branch carried.
 2. Verify the resulting default-branch commit, parent, archive, and full tree
-   using `reference/completion-recovery.md`, then perform approved branch cleanup.
+   using `reference/completion-archive.md`, then perform approved branch cleanup.
 3. Stop and ask whether to push the local default branch to its upstream. The
    merge approval does not count as push approval.
 4. Push the default branch only after a separate explicit yes in the current

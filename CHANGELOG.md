@@ -3,6 +3,18 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [Unreleased]
+
+### Changed
+
+- Trimmed what a normal feature loop loads. Complete now reads a small
+  completion-archive reference for the source-tree capture, archive annotation,
+  and local squash-merge check, and reads the full completion-recovery
+  reference only for an actual recovery. Implement reads a short Try It Now
+  reference for the default `when-testable` policy instead of the full
+  `/check guide` reference. Together this saves about 7,000 tokens per loop
+  with no change in behavior.
+
 ## [1.16.0] - 2026-11-12
 
 ### Added
