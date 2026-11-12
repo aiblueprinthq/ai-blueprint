@@ -303,9 +303,11 @@ Apply `qualityGates.regular.tryGuide`:
 - `when-user-facing` - run `/check guide` when the change affects UI,
   navigation, copy, a public API or CLI, output, or another workflow a person
   directly uses.
-- `when-testable` - run `/check guide` after Verify and required Check. Guide
-  mode emits `## Try it now` only when it finds a safe, meaningful direct
-  observation and otherwise records a skip without inventing instructions.
+- `when-testable` - after Verify and required Check, follow only
+  `../check/reference/try-it-now.md` for its conservative classification; the
+  full guide is not needed. Guide mode emits `## Try it now` only when it finds
+  a safe, meaningful direct observation and otherwise records a skip without
+  inventing instructions.
 - `always` - generate a guide for every work item.
 
 The guide is a review artifact, not proof. Never claim the user performed it.

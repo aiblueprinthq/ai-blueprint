@@ -770,7 +770,8 @@ async function validateVerificationContract(): Promise<void> {
         "Do not create an empty commit for ignored spec changes",
         "The request records `Requested execution`",
         "pending request without `Requested execution` is legacy manual-only",
-        "`when-testable` - run `/check guide` after Verify and required Check",
+        "`when-testable` - after Verify and required Check, follow only",
+        "follow only `../check/reference/try-it-now.md`",
         "the generated `## Try it now` section when one exists"
       ]
     ],
@@ -792,6 +793,7 @@ async function validateVerificationContract(): Promise<void> {
         "../complete/reference/completion-recovery.md",
         "never counts the same completion twice",
         "Use the exact `**Branch:**` frozen in the spec",
+        "follow only `../check/reference/try-it-now.md`",
         "`when-testable` runs after Verify",
         "generated `## Try it now` sections"
       ]
