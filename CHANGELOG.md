@@ -3,7 +3,7 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
-## [Unreleased]
+## [1.16.1] - 2026-11-13
 
 ### Changed
 
@@ -14,6 +14,10 @@ published `create-ai-blueprint` package.
   reference for the default `when-testable` policy instead of the full
   `/check guide` reference. Together this saves about 7,000 tokens per loop
   with no change in behavior.
+- Autopilot and Continuous now read the same short Try It Now reference for
+  the default `when-testable` try guide policy instead of the full
+  `/check guide` reference. This saves about 3,200 tokens per run that
+  reaches the try guide. Other try guide policies are unchanged.
 
 ## [1.16.0] - 2026-11-12
 
