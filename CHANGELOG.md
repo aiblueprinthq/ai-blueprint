@@ -3,6 +3,16 @@
 Notable changes to AI Blueprint are documented here. Release dates reflect the
 published `create-ai-blueprint` package.
 
+## [Unreleased]
+
+### Fixed
+
+- Implement's closing commit rule now names both commits it may make: an
+  approved step checkpoint from the Build loop and the one independent-review
+  checkpoint. It no longer contradicts the per-step checkpoint choice.
+- Feature now writes checkpoint commits into the spec's Build loop as a
+  per-step choice the user picks in `/implement`, never as an automatic step.
+
 ## [1.16.1] - 2026-11-13
 
 ### Changed

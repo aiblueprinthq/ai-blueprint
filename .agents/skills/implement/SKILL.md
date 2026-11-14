@@ -234,8 +234,9 @@ named area. If the feature spans too many distinct areas for one useful pass,
 name the sections first and let the user choose where to begin. Remain read-only
 unless the user separately requests changes.
 
-Never create an ordinary step, product, or work-level commit from this skill.
-The sole exception is exactly one immutable independent-review checkpoint after
-showing its exact candidate and receiving current explicit commit approval.
-Configuration never supplies that approval. Never merge, push, deploy, publish,
-or start unrelated work from this skill.
+The only commits this skill may make are an approved step checkpoint from the
+Build loop and exactly one immutable independent-review checkpoint after showing
+its exact candidate and receiving current explicit commit approval.
+Configuration never supplies either approval. Never create any other commit,
+including a product or work-level commit, and never merge, push, deploy,
+publish, or start unrelated work from this skill.

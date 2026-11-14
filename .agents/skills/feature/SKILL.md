@@ -151,8 +151,9 @@ Then use these section headings:
 Build steps are ordered checklist items. Each step must leave the project
 working, stay small enough to review, and end with a concrete `Done when` that
 names observable behavior and the relevant check. Follow `workflow.stepReview`
-and `workflow.checkpointCommits` from config in the Build loop. `/complete`
-creates the final feature commit.
+and `workflow.checkpointCommits` from config in the Build loop, and describe a
+checkpoint commit as a per-step choice the user picks in `/implement`, never an
+automatic step. `/complete` creates the final feature commit.
 
 The spec must preserve every explicit contract in the feature packet, including
 applicable project-wide UX and security requirements. Do not discard a required

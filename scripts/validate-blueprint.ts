@@ -557,7 +557,8 @@ async function validateVerificationContract(): Promise<void> {
         "never grants commit permission",
         "local `Spec snapshot` contract without changing visibility",
         "Do not create an empty commit for ignored spec changes",
-        "sole exception is exactly one immutable independent-review checkpoint",
+        "The only commits this skill may make are an approved step checkpoint from the Build loop",
+        "exactly one immutable independent-review checkpoint",
         "receiving current explicit commit approval",
         "Treat an existing request without `Requested execution` as legacy manual-only",
         "After final Verify and required Check pass, apply the selected try-guide policy",
@@ -585,6 +586,7 @@ async function validateVerificationContract(): Promise<void> {
         "feature/export-reports--build-2",
         "Record `**Branch:**` with the",
         "Do not bury repair inside this feature",
+        "checkpoint commit as a per-step choice the user picks in `/implement`, never an automatic step",
         "Never implement from this skill"
       ]
     ],
