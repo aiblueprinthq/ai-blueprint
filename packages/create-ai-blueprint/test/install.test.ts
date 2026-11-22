@@ -152,7 +152,8 @@ const linkedDestinations = [
   { relativePath: ".claude/skills/check/SKILL.md", adapter: "--claude" },
   { relativePath: "blueprint/.state", adapter: "--codex", directory: true, child: "manifest.json" },
   { relativePath: "blueprint/.state/manifest.json", adapter: "--codex" },
-  { relativePath: "blueprint/.state/.gitignore", adapter: "--codex", dangling: true }
+  { relativePath: "blueprint/.state/.gitignore", adapter: "--codex", dangling: true },
+  { relativePath: "blueprint/.state/backups", adapter: "--codex", directory: true, child: "keep.txt" }
 ];
 
 for (const scenario of linkedDestinations) {
@@ -275,10 +276,16 @@ test("clean and forced installs preserve untouched links and support parent dire
   }
   await fs.writeFile(path.join(project, "AGENTS.md"), "Old instructions\n");
   await fs.writeFile(path.join(project, "blueprint/.state/.gitignore"), "Old ignore rules\n");
+  await fs.rm(manifestFile);
 
   const forced = runInstaller(project, "--codex", "--force");
   assert.equal(forced.status, 0, forced.stderr);
   assert.equal(await fs.readFile(path.join(project, "AGENTS.md"), "utf8"), templateFiles["AGENTS.md"]);
+  const [backup] = await fs.readdir(path.join(project, "blueprint/.state/backups"));
+  assert.equal(
+    await fs.readFile(path.join(project, "blueprint/.state/backups", backup, "files/AGENTS.md"), "utf8"),
+    "Old instructions\n"
+  );
   assert.equal(await fs.readFile(path.join(project, "blueprint/.state/.gitignore"), "utf8"), "backups/\nstaging/\nrun.json\n");
   assert.equal(await fs.readFile(outside, "utf8"), "Keep unrelated content\n");
   for (const relativePath of untouchedLinks) {
@@ -295,6 +302,91 @@ test("install names adopt next to onboard for an existing app", async () => {
     /Next: run onboard for a new or early app\n- Codex: \$onboard\n- Claude Code: \/onboard\nFor an existing app with shipped features, run adopt instead\n- Codex: \$adopt\n- Claude Code: \/adopt\n/
   );
   assert.match(result.stdout, /so \/onboard and \/adopt appear\./);
+});
+
+test("install keeps an existing CLAUDE.md and adds the AGENTS.md import only when missing", async () => {
+  for (const [original, expected] of [
+    ["# Shop\n\nOwn notes\n", "# Shop\n\nOwn notes\n\n@AGENTS.md\n"],
+    ["# Shop", "# Shop\n\n@AGENTS.md\n"],
+    ["# Shop\n@AGENTS.md\n", "# Shop\n@AGENTS.md\n"]
+  ]) {
+    const { target } = await createTarget();
+    const claude = path.join(target, "CLAUDE.md");
+    await writeFile(claude, original);
+    await writeFile(path.join(target, ".claude/settings.json"), "{}\n");
+
+    const preview = runInstaller(target, "--claude", "--dry-run");
+    assert.equal(preview.status, 0, preview.stderr);
+    assert.match(preview.stdout, /Would keep the existing CLAUDE\.md/);
+    assert.doesNotMatch(preview.stdout, /^- CLAUDE\.md$|Would back up/m);
+
+    const result = runInstaller(target, "--claude");
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(await fs.readFile(claude, "utf8"), expected);
+    assert.match(result.stdout, /Kept the existing CLAUDE\.md/);
+    assert.equal(await fs.readFile(path.join(target, ".claude/settings.json"), "utf8"), "{}\n");
+    assert.equal(
+      await fs.readFile(path.join(target, ".claude/skills/check/SKILL.md"), "utf8"),
+      templateFiles[".claude/skills/check/SKILL.md"]
+    );
+    await assertMissing(path.join(target, "blueprint/.state/backups"));
+  }
+});
+
+test("install backs up an existing AGENTS.md before replacing it", async () => {
+  const { target } = await createTarget();
+  const agents = path.join(target, "AGENTS.md");
+  await writeFile(agents, "Own agent notes\n");
+
+  const preview = runInstaller(target, "--codex", "--dry-run");
+  assert.equal(preview.status, 0, preview.stderr);
+  assert.match(preview.stdout, /Would back up to blueprint\/\.state\/backups\/ and replace:\n- AGENTS\.md\n/);
+
+  const refused = runInstaller(target, "--codex");
+  assert.equal(refused.status, 1, refused.stderr);
+  assert.match(
+    refused.stderr,
+    /Existing files would be replaced: AGENTS\.md\. Re-run with --force to back them up and replace them\./
+  );
+  assert.equal(await fs.readFile(agents, "utf8"), "Own agent notes\n");
+  await assertMissing(path.join(target, "blueprint"));
+
+  const forced = runInstaller(target, "--codex", "--force");
+  assert.equal(forced.status, 0, forced.stderr);
+  assert.equal(await fs.readFile(agents, "utf8"), templateFiles["AGENTS.md"]);
+  const backups = await fs.readdir(path.join(target, "blueprint/.state/backups"));
+  assert.equal(backups.length, 1);
+  assert.equal(
+    await fs.readFile(path.join(target, "blueprint/.state/backups", backups[0], "files/AGENTS.md"), "utf8"),
+    "Own agent notes\n"
+  );
+  assert.ok(
+    forced.stdout.includes(
+      `Replaced 1 existing file. Backup: ${path.join("blueprint", ".state", "backups", backups[0])}`
+    ),
+    forced.stdout
+  );
+  assert.match(forced.stdout, /old AGENTS\.md in the backup/);
+});
+
+test("install refuses an existing Blueprint project and points to update", async () => {
+  const { target } = await createTarget();
+  const first = runInstaller(target, "--codex");
+  assert.equal(first.status, 0, first.stderr);
+  const plan = path.join(target, "blueprint/project-plan.md");
+  await fs.writeFile(plan, "My plan\n");
+
+  for (const flag of ["--force", "--dry-run"]) {
+    const result = runInstaller(target, "--codex", flag);
+    assert.equal(result.status, 1, result.stderr);
+    assert.match(
+      result.stderr,
+      /already installed here\. Run `npx create-ai-blueprint@latest update` instead/
+    );
+    assert.equal(result.stdout, "");
+  }
+
+  assert.equal(await fs.readFile(plan, "utf8"), "My plan\n");
 });
 
 async function createTarget(): Promise<{ root: string; target: string }> {
