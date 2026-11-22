@@ -938,6 +938,7 @@ function isReplaceConflict(operation: ConflictOperation): operation is ConflictO
 }
 
 export {
+  CLAUDE_ENTRYPOINT_PATH,
   CONTROL_DIR,
   MANAGED_ROOTS,
   MANIFEST_PATH,
@@ -946,6 +947,7 @@ export {
   collectManagedTemplateFiles,
   createManifest,
   findStaleClaudeImports,
+  formatTimestamp,
   managedRootsForAdapters,
   prepareUpdate,
   readInstalledAdapters,

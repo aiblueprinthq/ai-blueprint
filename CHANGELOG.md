@@ -21,6 +21,16 @@ published `create-ai-blueprint` package.
 
 ### Fixed
 
+- Installing into a project that has its own `CLAUDE.md` or `AGENTS.md` no
+  longer wipes them. The installer keeps an existing `CLAUDE.md` and adds an
+  `@AGENTS.md` import line only if it has none. Any other file the install
+  would replace, such as your own `AGENTS.md`, is listed first and backed up
+  to `blueprint/.state/backups/` before it is replaced. A file is listed only
+  when the install would actually replace it, so a project's own
+  `.claude/settings.json` no longer needs `--force`. Running install in a
+  project that already has Blueprint now stops and points you to `update`,
+  even with `--force`, instead of resetting your plans and context to the
+  templates.
 - Implement's closing commit rule now names both commits it may make: an
   approved step checkpoint from the Build loop and the one independent-review
   checkpoint. It no longer contradicts the per-step checkpoint choice.

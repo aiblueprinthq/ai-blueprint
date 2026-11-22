@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import checkbox from "@inquirer/checkbox";
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import path from "node:path";
@@ -13,10 +14,12 @@ import {
   shouldUseColor
 } from "../lib/status.js";
 import {
+  CLAUDE_ENTRYPOINT_PATH,
   CONTROL_DIR,
   MANIFEST_PATH,
   adapterListFromMode,
   applyPreparedUpdate,
+  formatTimestamp,
   managedRootsForAdapters,
   prepareUpdate,
   readInstalledAdapters,
@@ -28,6 +31,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = findPackageRoot(__dirname);
 const templateRoot = path.join(packageRoot, "template");
 const ADAPTER_PROMPT = "Select AI tool adapters";
+const AGENTS_IMPORT = /^\s*@(?:\.\/)?AGENTS\.md\s*$/m;
 const ALL_ADAPTERS = adapterListFromMode("all");
 const AI_SKILLS = new Set([
   "adopt", "audit", "autopilot", "blueprint-doctor", "blueprint-status", "brief",
@@ -67,6 +71,13 @@ interface CliOptions {
 interface TemplateEntry {
   source: string;
   target: string;
+}
+
+interface InstallOutcome {
+  backupDir: string | null;
+  replacedFiles: readonly string[];
+  keepsClaudeEntrypoint: boolean;
+  addedClaudeImport: boolean;
 }
 
 type CliSurface = "package" | "global";
@@ -172,6 +183,8 @@ async function runCli(
     return;
   }
 
+  await assertNotInstalled(targetDir);
+
   const presentation =
     process.stdin.isTTY === true &&
     process.stdout.isTTY === true &&
@@ -181,22 +194,27 @@ async function runCli(
   }
 
   const adapters = await resolveAdapters(options);
-  const entries = getTemplateEntries(adapters);
-  await validateInstallDestinations(entries, targetDir);
-  const existingEntries = entries.filter((entry) =>
-    fsSync.existsSync(path.join(targetDir, entry.target))
-  );
+  const templateEntries = getTemplateEntries(adapters);
+  const existingFiles = await validateInstallDestinations(templateEntries, targetDir);
+  const keepsClaudeEntrypoint = existingFiles.includes(CLAUDE_ENTRYPOINT_PATH);
+  const entries = keepsClaudeEntrypoint
+    ? templateEntries.filter((entry) => entry.target !== CLAUDE_ENTRYPOINT_PATH)
+    : templateEntries;
+  const replacedFiles = existingFiles.filter((file) => file !== CLAUDE_ENTRYPOINT_PATH);
 
   if (options.dryRun) {
-    printPlan(targetDir, adapters, entries, existingEntries);
+    printPlan(targetDir, adapters, entries, replacedFiles, keepsClaudeEntrypoint);
     return;
   }
 
-  await confirmOverwrite(existingEntries, options);
+  await confirmReplace(replacedFiles, options);
+  const backupDir = await backUpReplacedFiles(replacedFiles, targetDir);
 
   for (const entry of entries) {
     await copyTemplateEntry(entry, targetDir);
   }
+
+  const addedClaudeImport = keepsClaudeEntrypoint && (await ensureClaudeImport(targetDir));
 
   await writeInstallManifest({
     targetDir,
@@ -205,7 +223,12 @@ async function runCli(
     adapters
   });
 
-  printSuccess(targetDir, adapters, entries, existingEntries, presentation);
+  printSuccess(targetDir, adapters, entries, presentation, {
+    backupDir,
+    replacedFiles,
+    keepsClaudeEntrypoint,
+    addedClaudeImport
+  });
   printOnboardingNextSteps(adapters, presentation);
 }
 
@@ -490,19 +513,29 @@ function getTemplateEntries(adapters: readonly Adapter[]): TemplateEntry[] {
   return entries;
 }
 
-async function confirmOverwrite(
-  existingEntries: readonly TemplateEntry[],
+async function assertNotInstalled(targetDir: string): Promise<void> {
+  await assertDestinationType(targetDir, "directory");
+  await assertDestinationType(path.join(targetDir, "blueprint"), "directory");
+  await assertDestinationType(path.join(targetDir, CONTROL_DIR), "directory");
+
+  if (await assertDestinationType(path.join(targetDir, MANIFEST_PATH), "file")) {
+    throw new Error(
+      "AI Blueprint is already installed here. Run `npx create-ai-blueprint@latest update` instead; a fresh install would reset your plans and context."
+    );
+  }
+}
+
+async function confirmReplace(
+  replacedFiles: readonly string[],
   options: CliOptions
 ): Promise<void> {
-  if (existingEntries.length === 0 || options.force) {
+  if (replacedFiles.length === 0 || options.force) {
     return;
   }
 
   if (options.yes || !process.stdin.isTTY) {
     throw new Error(
-      `Existing Blueprint files found: ${existingEntries
-        .map((entry) => entry.target)
-        .join(", ")}. Re-run with --force to overwrite them.`
+      `Existing files would be replaced: ${replacedFiles.join(", ")}. Re-run with --force to back them up and replace them.`
     );
   }
 
@@ -512,12 +545,13 @@ async function confirmOverwrite(
   });
 
   try {
-    console.log("Existing Blueprint files found:");
-    for (const entry of existingEntries) {
-      console.log(`- ${entry.target}`);
+    console.log("These existing files would be replaced:");
+    for (const file of replacedFiles) {
+      console.log(`- ${file}`);
     }
+    console.log(`They are backed up to ${CONTROL_DIR}/backups/ first.`);
 
-    const answer = await rl.question("Overwrite matching Blueprint files? [y/N] ");
+    const answer = await rl.question("Back up and replace them? [y/N] ");
 
     if (!["y", "yes"].includes(answer.trim().toLowerCase())) {
       throw new Error("Install cancelled.");
@@ -525,6 +559,41 @@ async function confirmOverwrite(
   } finally {
     rl.close();
   }
+}
+
+async function backUpReplacedFiles(
+  replacedFiles: readonly string[],
+  targetDir: string
+): Promise<string | null> {
+  if (replacedFiles.length === 0) {
+    return null;
+  }
+
+  const identifier = `${formatTimestamp(new Date())}-install-${crypto
+    .randomBytes(4)
+    .toString("hex")}`;
+  const backupDir = path.join(targetDir, CONTROL_DIR, "backups", identifier);
+
+  for (const file of replacedFiles) {
+    const backupFile = path.join(backupDir, "files", ...file.split("/"));
+    await fs.mkdir(path.dirname(backupFile), { recursive: true });
+    await fs.copyFile(path.join(targetDir, file), backupFile);
+  }
+
+  return backupDir;
+}
+
+async function ensureClaudeImport(targetDir: string): Promise<boolean> {
+  const file = path.join(targetDir, CLAUDE_ENTRYPOINT_PATH);
+  const content = await fs.readFile(file, "utf8");
+
+  if (AGENTS_IMPORT.test(content)) {
+    return false;
+  }
+
+  const separator = content === "" ? "" : content.endsWith("\n") ? "\n" : "\n\n";
+  await fs.appendFile(file, `${separator}@AGENTS.md\n`);
+  return true;
 }
 
 async function confirmUpdateConflicts(
@@ -567,36 +636,55 @@ async function copyTemplateEntry(entry: TemplateEntry, targetDir: string): Promi
 async function validateInstallDestinations(
   entries: readonly TemplateEntry[],
   targetDir: string
-): Promise<void> {
+): Promise<string[]> {
+  const existingFiles: string[] = [];
   await assertDestinationType(targetDir, "directory");
 
   for (const entry of entries) {
     await validateTemplateDestination(
       path.join(templateRoot, entry.source),
-      path.join(targetDir, entry.target)
+      targetDir,
+      entry.target,
+      existingFiles
     );
   }
 
   await assertDestinationType(path.join(targetDir, CONTROL_DIR), "directory");
+  await assertDestinationType(path.join(targetDir, CONTROL_DIR, "backups"), "directory");
   await assertDestinationType(path.join(targetDir, MANIFEST_PATH), "file");
   await assertDestinationType(path.join(targetDir, CONTROL_DIR, ".gitignore"), "file");
+  return existingFiles;
 }
 
-async function validateTemplateDestination(source: string, target: string): Promise<void> {
+async function validateTemplateDestination(
+  source: string,
+  targetDir: string,
+  relativePath: string,
+  existingFiles: string[]
+): Promise<void> {
   const stats = await fs.stat(source);
+  const target = path.join(targetDir, relativePath);
 
   if (stats.isDirectory()) {
     await assertDestinationType(target, "directory");
 
     for (const child of await fs.readdir(source)) {
-      await validateTemplateDestination(path.join(source, child), path.join(target, child));
+      await validateTemplateDestination(
+        path.join(source, child),
+        targetDir,
+        path.posix.join(relativePath, child),
+        existingFiles
+      );
     }
-  } else if (stats.isFile()) {
-    await assertDestinationType(target, "file");
+  } else if (stats.isFile() && (await assertDestinationType(target, "file"))) {
+    existingFiles.push(relativePath);
   }
 }
 
-async function assertDestinationType(target: string, expected: "directory" | "file"): Promise<void> {
+async function assertDestinationType(
+  target: string,
+  expected: "directory" | "file"
+): Promise<boolean> {
   let stats;
 
   try {
@@ -629,7 +717,7 @@ async function assertDestinationType(target: string, expected: "directory" | "fi
           }
         }
 
-        return;
+        return false;
       }
 
       if (error.code === "ENOTDIR") {
@@ -647,6 +735,8 @@ async function assertDestinationType(target: string, expected: "directory" | "fi
   if (expected === "directory" ? !stats.isDirectory() : !stats.isFile()) {
     throw new Error(`Refusing to install at ${target}: expected a ${expected}.`);
   }
+
+  return true;
 }
 
 async function copyPath(source: string, target: string): Promise<void> {
@@ -673,7 +763,8 @@ function printPlan(
   targetDir: string,
   adapters: readonly Adapter[],
   entries: readonly TemplateEntry[],
-  existingEntries: readonly TemplateEntry[]
+  replacedFiles: readonly string[],
+  keepsClaudeEntrypoint: boolean
 ): void {
   console.log(`Target: ${targetDir}`);
   console.log(`Adapters: ${adapters.join(", ")}`);
@@ -683,10 +774,14 @@ function printPlan(
     console.log(`- ${entry.target}`);
   }
 
-  if (existingEntries.length > 0) {
-    console.log("Would overwrite matching files under:");
-    for (const entry of existingEntries) {
-      console.log(`- ${entry.target}`);
+  if (keepsClaudeEntrypoint) {
+    console.log("Would keep the existing CLAUDE.md and add an @AGENTS.md import if it is missing.");
+  }
+
+  if (replacedFiles.length > 0) {
+    console.log(`Would back up to ${CONTROL_DIR}/backups/ and replace:`);
+    for (const file of replacedFiles) {
+      console.log(`- ${file}`);
     }
   }
 }
@@ -793,8 +888,8 @@ function printSuccess(
   targetDir: string,
   adapters: readonly Adapter[],
   entries: readonly TemplateEntry[],
-  existingEntries: readonly TemplateEntry[],
-  presentation: boolean
+  presentation: boolean,
+  outcome: InstallOutcome
 ): void {
   if (presentation) {
     console.log("");
@@ -813,8 +908,23 @@ function printSuccess(
   }
   console.log(`- ${MANIFEST_PATH}`);
 
-  if (existingEntries.length > 0) {
-    console.log("Overwrote matching Blueprint files where paths already existed.");
+  if (outcome.keepsClaudeEntrypoint) {
+    console.log(
+      outcome.addedClaudeImport
+        ? "Kept the existing CLAUDE.md and added an @AGENTS.md import line."
+        : "Kept the existing CLAUDE.md; it already imports @AGENTS.md."
+    );
+  }
+
+  if (outcome.backupDir) {
+    const count = outcome.replacedFiles.length;
+    console.log(
+      `Replaced ${count} existing file${count === 1 ? "" : "s"}. Backup: ${path.relative(targetDir, outcome.backupDir)}`
+    );
+
+    if (outcome.replacedFiles.includes("AGENTS.md")) {
+      console.log("Move anything you still need from the old AGENTS.md in the backup into the new one.");
+    }
   }
 
   console.log("");
@@ -1066,7 +1176,7 @@ Options:
   --all            Install every supported adapter
   --both           Deprecated alias for --all
   --target, -t     Target directory, defaults to the current directory
-  --force, -f      Install: overwrite matching files. Update: back up and replace managed conflicts
+  --force, -f      Back up and replace existing files on install, or managed conflicts on update
   --yes, -y        Use defaults in non-interactive installs
   --dry-run        Print what would be copied without writing files
   --json            Print status as one JSON object

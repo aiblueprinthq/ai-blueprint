@@ -60,7 +60,8 @@ The installer copies the Blueprint workflow files into the current directory:
 - `.claude/`
 - `blueprint/`
 
-It keeps the app's root `README.md` alone.
+It keeps the app's root `README.md` alone. It also keeps an existing
+`CLAUDE.md`, adding an `@AGENTS.md` import line only if the file has none.
 
 See [Commit and PR attribution](https://github.com/aiblueprinthq/ai-blueprint/blob/main/blueprint/context/ai-interaction.md#commit-and-pr-attribution)
 for the rule for all AI tools and optional settings that reduce unwanted AI signatures.
@@ -187,9 +188,12 @@ does not manage `.github/copilot-instructions.md`. Google Antigravity uses those
 same `AGENTS.md` and `.agents/skills/` files. OpenCode reuses a compatible tree
 instead of creating duplicate `.opencode/skills/` files.
 
-Use `--force` to overwrite existing Blueprint files. Without `--force`, the
-installer asks before overwriting in an interactive terminal and exits in
-non-interactive runs.
+If the install would replace existing files, such as your own `AGENTS.md`, it
+lists them and backs them up to `blueprint/.state/backups/` before replacing
+them. Without `--force`, the installer asks first in an interactive terminal
+and exits in non-interactive runs. In a project that already has Blueprint,
+install stops and points you to `update`, even with `--force`, so it never
+resets your plans and context.
 
 ## What do you need?
 
