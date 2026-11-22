@@ -361,7 +361,9 @@ test("install backs up an existing AGENTS.md before replacing it", async () => {
     "Own agent notes\n"
   );
   assert.ok(
-    forced.stdout.includes(`Replaced 1 existing file. Backup: blueprint/.state/backups/${backups[0]}`),
+    forced.stdout.includes(
+      `Replaced 1 existing file. Backup: ${path.join("blueprint", ".state", "backups", backups[0])}`
+    ),
     forced.stdout
   );
   assert.match(forced.stdout, /old AGENTS\.md in the backup/);
