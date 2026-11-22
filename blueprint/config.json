@@ -22,14 +22,16 @@
       "independentReview": "when-sensitive",
       "check": "manual",
       "tryGuide": "when-testable",
-      "specCheck": "manual"
+      "specCheck": "manual",
+      "demo": "manual"
     },
     "continuous": {
       "audit": "manual",
       "independentReview": "when-sensitive",
       "check": "manual",
       "tryGuide": "when-testable",
-      "specCheck": "manual"
+      "specCheck": "manual",
+      "demo": "manual"
     }
   },
   "continuous": {

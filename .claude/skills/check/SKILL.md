@@ -1,6 +1,6 @@
 ---
 name: check
-description: Check the running app, CLI, or server against the active spec's done-when criteria and capture observable pass or fail evidence without editing source. Use /check to verify real feature behavior, or /check guide [latest|scope] for a read-only manual walkthrough: how to test manually, where to click, expected and incorrect results, or a human review path.
+description: Check the running app, CLI, or server against the active spec's done-when criteria and capture pass or fail evidence without editing source. Use /check to verify real behavior, /check guide [latest|scope] for a read-only walkthrough of how to test manually (where to click, expected and incorrect results), or /check demo [latest|scope] to watch it run live in a browser with narration.
 disable-model-invocation: true
 ---
 
@@ -18,18 +18,32 @@ disable-model-invocation: true
 - A natural-language request for instructions on how the user can manually test
   or review a change also selects guide mode. If the request mixes a guide with
   agent verification, clarify which mode to run first before any activity.
+- `/check demo` or `$check demo`: run the work's Try It Now path live in a
+  browser the user can watch, narrating each step. Pass remaining arguments
+  such as `latest`, an archive path, a step, or a route to `reference/demo.md`.
+  Read and follow that reference only. Do not write activity state, edit files,
+  update spec status, or produce verification receipts.
+- A natural-language request to watch the work run, such as "show me it
+  working" or "walk me through it live", also selects demo mode. A request for
+  proof that it works selects verification.
 - `/check` or `$check`, optionally with a verification scope: verify observed
   behavior against the spec. Follow verification startup below, then read and
   follow `reference/verify.md` only.
 
-Load only the selected reference. Do not read both references preemptively.
-Guide generation never satisfies a verification gate. The existing
+Load only the selected reference. Do not read the other references
+preemptively. Guide generation never satisfies a verification gate. The existing
 `qualityGates.regular.tryGuide` and `qualityGates.continuous.tryGuide` keys now
 select `/check guide`. `manual`, `always`, and `when-user-facing` retain their
 existing behavior. `when-testable` asks guide mode to classify whether the work
 has a safe, meaningful observation path and generate a compact `## Try it now`
 section only when one exists. The separate `check` gates continue to select
 verification mode.
+
+A demo is not verification either: it never marks a done-when passed, changes
+the spec status, or counts as UI evidence or the user's acceptance. The
+`qualityGates.regular.demo` and `qualityGates.continuous.demo` keys select
+automatic demos in Complete and Continuous. `manual`, the default, runs one only
+on request; `when-available` runs one when demo mode's live conditions hold.
 
 ## Verification startup (verification mode only)
 
@@ -43,5 +57,5 @@ exists, `node .agents/skills/blueprint-doctor/scripts/run-state.mjs` or
 blocked --resume <command>` for a blocker, and `finish --status ready|completed`
 at the end; `--help` lists every option and `blueprint/workflow.md` has the full
 activity contract. A missing or failing helper is a warning, not a blocker. This
-precedes reading the verification reference. Guide mode must skip this startup
-entirely.
+precedes reading the verification reference. Guide and demo modes must skip this
+startup entirely.

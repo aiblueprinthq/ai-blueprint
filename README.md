@@ -177,6 +177,7 @@ Other work enters the same control loop:
 - Use `debug` first when the cause is unclear.
 - Use `fix` to remove a completed feature. Its original archive stays in history.
 - Use `check guide` when you want a human manual-review guide.
+- Use `check demo` to watch the Try It Now path run live in a browser you can see.
 
 Read [Core Workflow](https://ai-blueprint.dev/docs/core-workflow/) for the full
 lifecycle and command-specific behavior.
@@ -251,6 +252,7 @@ full tour and command options.
 | "I know the bug or small change we need." | `/fix` |
 | "Show that this feature works." | `/check` |
 | "Tell me how to test it myself." | `/check guide` |
+| "Show me it working, live." | `/check demo` |
 | "Review the implementation for defects." | `/audit current` |
 | "Where did we leave off?" | `/blueprint-status` |
 | "Is Blueprint set up correctly?" | `/blueprint-doctor` |
@@ -261,8 +263,10 @@ project code. Verify runs the project's repeatable automated gate. Check
 exercises behavior against the spec. Check guide produces one small Try It Now
 demonstration when the work is testable and can provide a deeper walkthrough on
 request. It never runs checks, writes activity state, records acceptance, or
-marks work verified. Audit reviews the code and records findings; a clean review
-does not prove the application works.
+marks work verified. Check demo runs that Try It Now path live in a browser you
+can watch, narrating each step. It is a demo, not a check: it never marks work
+verified or counts as your acceptance. Audit reviews the code and records
+findings; a clean review does not prove the application works.
 
 ## Command map
 
@@ -277,7 +281,7 @@ and other adapters can run the named skill through plain language.
 | --- | --- |
 | **/feature** | Turn one build-plan item into a spec for your approval. |
 | **/implement** | Build the approved spec, then offer a code walkthrough. |
-| **/check** | Verify real behavior against the spec. Use `/check guide` for a read-only manual walkthrough, or `/check guide latest` for completed work. |
+| **/check** | Verify real behavior against the spec. Use `/check guide` for a read-only manual walkthrough, `/check guide latest` for completed work, or `/check demo` to watch it run live in a browser. |
 | **/complete** | Run final gates, archive the work, and request approval for local merge or pull-request landing. |
 
 ### Understand and review
@@ -364,6 +368,10 @@ Blueprint separates several kinds of proof that are easy to blur together:
   tests, with focused lenses when needed.
 - **Independent Audit:** a fresh reviewer session or configured isolated
   reviewer child inspects an approved checkpoint using an exact adapter and model.
+- **Check demo:** `/check demo` runs the Try It Now path live in a browser you
+  can see, narrating each step. It shows the feature working but never counts
+  as Check, UI evidence, or your acceptance. Without a visible browser or a web
+  UI path, it prints the written Try It Now section instead.
 - **Check guide:** `/check guide` generates Try It Now and, when requested, a
   deeper read-only manual walkthrough for human review.
 
@@ -391,6 +399,13 @@ open questions, so you read one short note instead of a raw findings list. It
 defaults to `manual`: run it for one feature with `/feature <target> --check`,
 or set `qualityGates.regular.specCheck` (and `qualityGates.continuous.specCheck`
 for Continuous Mode) to `always`.
+
+The watched demo is off by default. Run `/check demo` any time, or set
+`qualityGates.regular.demo` (and `qualityGates.continuous.demo` for Continuous
+Mode) to `when-available`. Complete then runs one before its commit and landing
+questions, and Continuous runs one at a successful stop. It runs only against a
+local development server with a throwaway account, and skips with one line when
+it can't run live.
 
 The gate decides when independent review is required. The separate
 `review.independentExecution` setting decides how it runs and defaults to

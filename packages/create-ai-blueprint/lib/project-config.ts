@@ -22,6 +22,7 @@ type TryGuideGatePolicy =
   | "when-testable"
   | "when-user-facing";
 type SpecCheckGatePolicy = "always" | "manual";
+type DemoGatePolicy = "manual" | "when-available";
 type ProjectConfigState = "defaults" | "invalid" | "project";
 
 interface QualityGatePolicy {
@@ -30,6 +31,7 @@ interface QualityGatePolicy {
   check: CheckGatePolicy;
   tryGuide: TryGuideGatePolicy;
   specCheck: SpecCheckGatePolicy;
+  demo: DemoGatePolicy;
 }
 
 interface ProjectConfig {
@@ -97,14 +99,16 @@ function createDefaultProjectConfig(): ProjectConfig {
         independentReview: "when-sensitive",
         check: "manual",
         tryGuide: "when-testable",
-        specCheck: "manual"
+        specCheck: "manual",
+        demo: "manual"
       },
       continuous: {
         audit: "manual",
         independentReview: "when-sensitive",
         check: "manual",
         tryGuide: "when-testable",
-        specCheck: "manual"
+        specCheck: "manual",
+        demo: "manual"
       }
     },
     continuous: {
@@ -231,12 +235,12 @@ function parseProjectConfig(value: unknown): ProjectConfig {
   assertKnownKeys(qualityGates, ["regular", "continuous"], "qualityGates");
   assertKnownKeys(
     regularGates,
-    ["audit", "independentReview", "check", "tryGuide", "specCheck"],
+    ["audit", "independentReview", "check", "tryGuide", "specCheck", "demo"],
     "qualityGates.regular"
   );
   assertKnownKeys(
     continuousGates,
-    ["audit", "independentReview", "check", "tryGuide", "specCheck"],
+    ["audit", "independentReview", "check", "tryGuide", "specCheck", "demo"],
     "qualityGates.continuous"
   );
   assertKnownKeys(
@@ -370,6 +374,12 @@ function parseQualityGatePolicy(
       ["always", "manual"],
       defaults.specCheck,
       `${label}.specCheck`
+    ),
+    demo: optionalEnum(
+      value.demo,
+      ["manual", "when-available"],
+      defaults.demo,
+      `${label}.demo`
     )
   };
 }

@@ -210,6 +210,9 @@ Use `qualityGates.continuous`, not the regular or Autopilot gates:
   and required Check, emitting `## Try it now` only for a safe meaningful direct
   observation and recording a skip otherwise; `always` generates one for every
   feature.
+- **Demo (`qualityGates.continuous.demo`):** Continuous never pauses a feature
+  for a demo. `manual` skips it; `when-available` runs `/check demo` at a
+  successful stop, as Step 3 describes.
 
 Run required gates in this order: check, review, then try guide. Use independent
 review instead of a builder-session audit when both are selected. `manual` means
@@ -311,6 +314,14 @@ A successful stop occurs when:
 - every build-plan leaf is checked, or
 - `continuous.maxFeatures` successful features were completed.
 
+At a successful stop with `qualityGates.continuous.demo` set to
+`when-available`, run `/check demo` before the final report for each feature
+completed this run, in order, passing its archive path so the demo uses its
+archived `## Try it now` section. Skip features without one. Never demo on a
+blocked stop; the blocker comes first. Those features are already merged
+locally, so record any mismatch a demo shows in the report for the user to look
+at and repair nothing automatically. A demo is never verification evidence.
+
 A blocked stop occurs immediately for:
 
 - invalid or conflicting Blueprint state
@@ -336,6 +347,7 @@ On any stop, report:
 - exact checks and quality gates run per feature
 - generated try-guide archive locations
 - generated `## Try it now` sections, or recorded non-testable skip reasons
+- demos run at a successful stop, why any was skipped, and any mismatch shown
 - audit findings and repairs
 - current build-plan progress and next unchecked item
 - why the loop stopped
@@ -352,7 +364,7 @@ On any stop, report:
 - `workflow.checkpointCommits` controls step checkpoints, not the required
   feature-level local history.
 - Continuous quality gates control automatic audit, independent-review, check,
-  and try-guide work.
+  try-guide, and demo work.
   They never weaken Verify, testing, UI evidence, or P0/P1 blockers.
 - Explicit Continuous invocation authorizes only the local Git lifecycle
   described here.

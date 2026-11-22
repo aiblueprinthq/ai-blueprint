@@ -202,6 +202,7 @@ non-interactive runs.
 | "I know the bug or small change we need." | `/fix` |
 | "Show that this feature works." | `/check` |
 | "Tell me how to test it myself." | `/check guide` |
+| "Show me it working, live." | `/check demo` |
 | "Review the implementation for defects." | `/audit current` |
 | "Where did we leave off?" | `/blueprint-status` |
 | "Is Blueprint set up correctly?" | `/blueprint-doctor` |
@@ -212,8 +213,10 @@ project code. Verify runs the project's repeatable automated gate. Check
 exercises behavior against the spec. Check guide produces one small Try It Now
 demonstration when the work is testable and can provide a deeper walkthrough on
 request. It never runs checks, writes activity state, records acceptance, or
-marks work verified. Audit reviews the code and records findings; a clean review
-does not prove the application works.
+marks work verified. Check demo runs that Try It Now path live in a browser you
+can watch, narrating each step. It is a demo, not a check: it never marks work
+verified or counts as your acceptance. Audit reviews the code and records
+findings; a clean review does not prove the application works.
 
 ## Command map
 
@@ -227,7 +230,7 @@ matching `$` form in Codex.
 | --- | --- |
 | **/feature** | Turn one build-plan item into a spec for your approval. |
 | **/implement** | Build the approved spec, then offer a code walkthrough. |
-| **/check** | Verify real behavior against the spec. Use `/check guide` for a read-only manual walkthrough, or `/check guide latest` for completed work. |
+| **/check** | Verify real behavior against the spec. Use `/check guide` for a read-only manual walkthrough, `/check guide latest` for completed work, or `/check demo` to watch it run live in a browser. |
 | **/complete** | Run final gates, archive the work, and request approval for local merge or pull-request landing. |
 
 ### Understand and review
@@ -330,7 +333,10 @@ are not. Setting a workflow's independent review policy to `manual` disables
 automatic selection; an explicit `/audit independent current` still uses the
 configured execution method. The spec check defaults to `manual` and runs only
 for `/feature <target> --check`; set `specCheck` to `always` to have a fresh
-reviewer check every new feature spec against the repository before approval. A
+reviewer check every new feature spec against the repository before approval.
+The watched demo defaults to `manual` and runs only for `/check demo`; set
+`demo` to `when-available` to have Complete and Continuous run one whenever a
+browser you can see and a web UI Try It Now path are available. A
 missing file uses built-in defaults; an invalid file is reported by status and
 blocks mutating workflow skills until `/blueprint-doctor` identifies the repair.
 Configuration never grants permission to

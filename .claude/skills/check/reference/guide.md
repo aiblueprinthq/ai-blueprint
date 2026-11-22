@@ -102,7 +102,8 @@ state signal, use that. If no direct signal exists, say so and omit Try It Now.
 - Read-only only. Do not edit, commit, merge, push, install, or delete.
 - Do not run the app or verification commands in guide mode. If the user asks
   you to try it for them, leave guide mode and explicitly route to `/check`
-  verification, following its activity and authorization rules.
+  verification when they want proof, or to `/check demo` when they want to
+  watch it run, following that mode's activity and authorization rules.
 - Do not pretend a path is known when the spec does not say it. Give the best
   supported path and label any remaining uncertainty. Do not emit Try It Now
   when the uncertainty would make the command or expected result speculative.
