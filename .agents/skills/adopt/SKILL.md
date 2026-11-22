@@ -121,6 +121,13 @@ it rather than inherit a wrong guess.
 - **`AGENTS.md` Commands section** - fill in the real dev / build / test / lint
   commands you found, so the rest of the workflow (and the testing gate) uses the
   project's actual scripts. Include `Verify` when a real combined command exists.
+  Remove the shipped `<!-- blueprint:onboarding-required -->` marker and the
+  `For a standard Next.js project` instruction when replacing the placeholder
+  commands. Status and doctor use that marker to report incomplete setup, so
+  leaving it sends the user to `/onboard` after adoption.
+- **`CLAUDE.md` title** - if `CLAUDE.md` exists and still has the placeholder
+  `# Project Name`, replace it with the project name. Keep `@AGENTS.md` and any
+  other existing lines.
 
 Do not write `project-overview.md`; that's `/overview`'s job, downstream of these.
 

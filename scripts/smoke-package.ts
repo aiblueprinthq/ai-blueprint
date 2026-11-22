@@ -254,7 +254,10 @@ async function main(): Promise<void> {
       }
 
       if (
-        !installResult.stdout.includes("\nNext: run onboard\n") ||
+        !installResult.stdout.includes("\nNext: run onboard for a new or early app\n") ||
+        !installResult.stdout.includes(
+          "\nFor an existing app with shipped features, run adopt instead\n"
+        ) ||
         !installResult.stdout.trimEnd().endsWith(
           "If a different skill loads, tell the agent to follow the local Blueprint skill file directly."
         )
@@ -274,6 +277,7 @@ async function main(): Promise<void> {
       if (
         mode === "copilot" &&
         (!installResult.stdout.includes("Ask Copilot to run the onboard skill.") ||
+          !installResult.stdout.includes("Ask Copilot to run the adopt skill.") ||
           installResult.stdout.includes("Claude Code:"))
       ) {
         throw new Error("copilot install did not print Copilot-specific guidance");
@@ -281,14 +285,16 @@ async function main(): Promise<void> {
 
       if (
         mode === "opencode" &&
-        !installResult.stdout.includes("Ask OpenCode to run the onboard skill.")
+        (!installResult.stdout.includes("Ask OpenCode to run the onboard skill.") ||
+          !installResult.stdout.includes("Ask OpenCode to run the adopt skill."))
       ) {
         throw new Error("opencode install did not print OpenCode-specific guidance");
       }
 
       if (
         mode === "antigravity" &&
-        (!installResult.stdout.includes("Next: run onboard\n/onboard") ||
+        (!installResult.stdout.includes("Next: run onboard for a new or early app\n/onboard\n") ||
+          !installResult.stdout.includes("run adopt instead\n/adopt\n") ||
           installResult.stdout.includes("Claude Code:"))
       ) {
         throw new Error("antigravity install did not print Antigravity-specific guidance");
@@ -304,7 +310,10 @@ async function main(): Promise<void> {
           !installResult.stdout.includes(
             "- OpenCode: Ask OpenCode to run the onboard skill."
           ) ||
-          !installResult.stdout.includes("- Google Antigravity: /onboard"))
+          !installResult.stdout.includes("- Google Antigravity: /onboard") ||
+          !installResult.stdout.includes("- Codex: $adopt") ||
+          !installResult.stdout.includes("- Claude Code: /adopt") ||
+          !installResult.stdout.includes("- Google Antigravity: /adopt"))
       ) {
         throw new Error(`${mode} install did not print all-adapter guidance`);
       }

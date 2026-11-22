@@ -50,8 +50,10 @@ state.
    runs it only when `/feature --check` asks. Demo defaults to `manual`, which
    runs a watched demo only when `/check demo` asks.
    Before recommending `/overview`, check whether `AGENTS.md` still contains
-   the shipped `For a standard Next.js project` command marker. When it does,
-   onboarding is incomplete and `/onboard` is the next action.
+   the shipped `<!-- blueprint:onboarding-required -->` marker or the older
+   `For a standard Next.js project` command sentence. When it does, onboarding
+   is incomplete. The next action is `/onboard` for a new or early app, or
+   `/adopt` when the app already has shipped features.
 2. **Build plan** - `blueprint/build-plan.md`. Count checked vs unchecked leaf
    items. Name the next unchecked leaf, the same target `/feature` would pick,
    and note if a parent item was split into sub-items (`4a`, `4b`, ...).

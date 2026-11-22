@@ -286,6 +286,17 @@ test("clean and forced installs preserve untouched links and support parent dire
   }
 });
 
+test("install names adopt next to onboard for an existing app", async () => {
+  const { target } = await createTarget();
+  const result = runInstaller(target, "--codex", "--claude");
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(
+    result.stdout,
+    /Next: run onboard for a new or early app\n- Codex: \$onboard\n- Claude Code: \/onboard\nFor an existing app with shipped features, run adopt instead\n- Codex: \$adopt\n- Claude Code: \/adopt\n/
+  );
+  assert.match(result.stdout, /so \/onboard and \/adopt appear\./);
+});
+
 async function createTarget(): Promise<{ root: string; target: string }> {
   const root = await fs.mkdtemp(path.join(workspace, "scenario-"));
   const target = path.join(root, "project");

@@ -505,7 +505,8 @@ For a standard Next.js project. Change or remove if you're using something else.
   assert.equal(status.onboarding.state, "needed");
   assert.deepEqual(status.nextAction, {
     command: "/onboard",
-    reason: "Tune Blueprint for this project before generating project context."
+    reason:
+      "Tune Blueprint for a new or early app before generating project context. For an existing app with shipped features, run /adopt instead."
   });
   assert.ok(
     status.warnings.some((warning) => warning.code === "onboarding_incomplete")

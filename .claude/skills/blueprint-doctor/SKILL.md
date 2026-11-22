@@ -96,7 +96,7 @@ Gather these, then summarize. Do not dump file contents.
    - If only one tool is used, mention the unused adapter can be deleted. Do not
      treat extra adapters as an error.
    - If `CLAUDE.md` exists and still starts with `# Project Name`, flag that
-     `/onboard` probably has not finished.
+     `/onboard` or `/adopt` probably has not finished.
    - When Claude Code is installed, report its startup-context shape. Confirm
      `CLAUDE.md` imports `AGENTS.md` and lets skills load the overview, active
      spec, coding standards, and interaction guide on demand. If it directly
@@ -258,7 +258,9 @@ Choose the repair order in this priority:
   for `project-overview.md`, `current-feature.md`, `coding-standards.md`, and
   `ai-interaction.md` that are present in `CLAUDE.md`, then rerun `/blueprint-doctor`. The
   files stay in the project and workflow skills still read them on demand.
-- Onboarding incomplete -> run `/onboard`.
+- Onboarding incomplete -> run `/onboard` for a new or early app, or `/adopt`
+  when the app already has shipped features. A fresh scaffold also has a
+  manifest and source files, so judge by the features the code already ships.
 - Proportional-engineering guidance missing or incomplete -> review the current
   Blueprint template's `AGENTS.md` Proportional engineering section and manually
   merge only the missing guidance into the project's `AGENTS.md`. Preserve

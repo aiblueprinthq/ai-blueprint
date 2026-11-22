@@ -26,6 +26,13 @@ published `create-ai-blueprint` package.
   checkpoint. It no longer contradicts the per-step checkpoint choice.
 - Feature now writes checkpoint commits into the spec's Build loop as a
   per-step choice the user picks in `/implement`, never as an automatic step.
+- The installer, `blueprint status`, the dashboard, Blueprint Status, and
+  Blueprint Doctor no longer send an existing app to `/onboard` alone. They
+  name `/onboard` for a new or early app and `/adopt` for an existing app with
+  shipped features.
+- Adopt now removes the onboarding marker from `AGENTS.md` and fills the
+  `CLAUDE.md` title placeholder, so status and doctor stop recommending
+  `/onboard` after an adoption.
 
 ## [1.16.1] - 2026-11-13
 

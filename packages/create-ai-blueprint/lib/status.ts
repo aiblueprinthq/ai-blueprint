@@ -804,7 +804,8 @@ function selectNextAction(
   if (onboarding.state === "needed") {
     return {
       command: "/onboard",
-      reason: "Tune Blueprint for this project before generating project context."
+      reason:
+        "Tune Blueprint for a new or early app before generating project context. For an existing app with shipped features, run /adopt instead."
     };
   }
 
