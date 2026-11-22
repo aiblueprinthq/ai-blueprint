@@ -831,13 +831,19 @@ function printOnboardingNextSteps(
     console.log(styleInstall(rule, "34"));
     console.log(styleInstall("NEXT: AI chat command", "1;36"));
     console.log("Open this project in your AI tool.");
-    console.log("Then send this in its chat:");
+    console.log("New or early app? Send this in its chat:");
     console.log("");
-    console.log(styleInstall(getNextCommand(adapters, true), "1"));
+    console.log(styleInstall(getNextCommand(adapters, "onboard", true), "1"));
+    console.log("");
+    console.log("Existing app with shipped features? Send this instead:");
+    console.log("");
+    console.log(styleInstall(getNextCommand(adapters, "adopt", true), "1"));
     console.log(styleInstall(rule, "34"));
   } else {
-    console.log("Next: run onboard");
-    console.log(getNextCommand(adapters));
+    console.log("Next: run onboard for a new or early app");
+    console.log(getNextCommand(adapters, "onboard"));
+    console.log("For an existing app with shipped features, run adopt instead");
+    console.log(getNextCommand(adapters, "adopt"));
   }
   printClaudeRestartNote(adapters);
   console.log(
@@ -876,21 +882,25 @@ function printUpdateSuccess(prepared: PreparedUpdate, result: UpdateResult): voi
   printClaudeRestartNote(prepared.addedAdapters);
 }
 
-function getNextCommand(adapters: readonly Adapter[], includeLabels = false): string {
+function getNextCommand(
+  adapters: readonly Adapter[],
+  skill: "onboard" | "adopt",
+  includeLabels = false
+): string {
   const instructions: Record<Adapter, { label: string; command: string }> = {
-    codex: { label: "Codex", command: "$onboard" },
-    claude: { label: "Claude Code", command: "/onboard" },
+    codex: { label: "Codex", command: `$${skill}` },
+    claude: { label: "Claude Code", command: `/${skill}` },
     copilot: {
       label: "GitHub Copilot",
-      command: "Ask Copilot to run the onboard skill."
+      command: `Ask Copilot to run the ${skill} skill.`
     },
     opencode: {
       label: "OpenCode",
-      command: "Ask OpenCode to run the onboard skill."
+      command: `Ask OpenCode to run the ${skill} skill.`
     },
     antigravity: {
       label: "Google Antigravity",
-      command: "/onboard"
+      command: `/${skill}`
     }
   };
   const selected = ALL_ADAPTERS
@@ -912,7 +922,7 @@ function printClaudeRestartNote(adapters: readonly Adapter[]): void {
   }
 
   console.log(
-    "Claude Code: if this project was already open, restart Claude Code in this folder so /onboard appears."
+    "Claude Code: if this project was already open, restart Claude Code in this folder so /onboard and /adopt appear."
   );
 }
 

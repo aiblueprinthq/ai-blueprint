@@ -440,7 +440,9 @@ async function validateVerificationContract(): Promise<void> {
       ".agents/skills/adopt/SKILL.md",
       [
         "Run /ci or $ci when you want automatic GitHub checks.",
-        "Follow and preserve the proportional-engineering contract in `AGENTS.md`"
+        "Follow and preserve the proportional-engineering contract in `AGENTS.md`",
+        "Remove the shipped `<!-- blueprint:onboarding-required -->` marker",
+        "`# Project Name`, replace it with the project name"
       ]
     ],
     [
@@ -550,7 +552,8 @@ async function validateVerificationContract(): Promise<void> {
         "matching legacy exact-byte hash",
         "Do not use filesystem timestamps",
         "independent review defaults to `when-sensitive`",
-        "execution defaults to `automatic`"
+        "execution defaults to `automatic`",
+        "`/adopt` when the app already has shipped features."
       ]
     ],
     [
@@ -769,6 +772,7 @@ async function validateVerificationContract(): Promise<void> {
       ".agents/skills/blueprint-doctor/SKILL.md",
       [
         "missing `Verify` command or GitHub workflow is informational",
+        "- Onboarding incomplete -> run `/onboard` for a new or early app, or `/adopt`",
         "At or above 20,000 bytes, call it oversized",
         "lets skills load the overview, active",
         "Claude uses legacy direct context imports",
