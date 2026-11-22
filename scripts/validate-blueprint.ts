@@ -461,7 +461,32 @@ async function validateVerificationContract(): Promise<void> {
         "reference/verify.md",
         "Load only the selected reference",
         "Guide generation never satisfies a verification gate",
-        "`qualityGates.regular.tryGuide` and `qualityGates.continuous.tryGuide`"
+        "`qualityGates.regular.tryGuide` and `qualityGates.continuous.tryGuide`",
+        "`/check demo` or `$check demo`",
+        "reference/demo.md",
+        "A demo is not verification either",
+        "`qualityGates.regular.demo` and `qualityGates.continuous.demo`",
+        "Guide and demo modes must skip this"
+      ]
+    ],
+    [
+      ".agents/skills/check/reference/demo.md",
+      [
+        "A demo is not verification.",
+        "Demo screenshots never go into receipts",
+        "Demo mode writes no files and no activity state",
+        "../../check/reference/try-it-now.md",
+        "**Web UI path.**",
+        "**A browser the user can see right now.**",
+        "**Local development only.**",
+        "**Nothing real at stake.**",
+        "fall back: print the written `## Try it now` section",
+        "**Before acting,**",
+        "**After acting,**",
+        "use only a documented way to move time",
+        "Never say a step passed, was verified,",
+        "Never fix or debug from demo mode",
+        "this was a demo, not a check"
       ]
     ],
     [
@@ -693,7 +718,11 @@ async function validateVerificationContract(): Promise<void> {
         "NN-name--build-N.md",
         "12-build-2/F-03",
         "`when-testable` generates `## Try it now`",
-        "Finish with the generated `## Try it now` section"
+        "Finish with the generated `## Try it now` section",
+        "**Demo (`qualityGates.regular.demo`):**",
+        "A demo never counts as Check, UI evidence, or the user's approval",
+        "A mismatch a demo shows is a",
+        "`/check demo latest`"
       ]
     ],
     [
@@ -797,7 +826,10 @@ async function validateVerificationContract(): Promise<void> {
         "Use the exact `**Branch:**` frozen in the spec",
         "follow only `../check/reference/try-it-now.md`",
         "`when-testable` runs after Verify",
-        "generated `## Try it now` sections"
+        "generated `## Try it now` sections",
+        "**Demo (`qualityGates.continuous.demo`):** Continuous never pauses a feature",
+        "Never demo on a",
+        "A demo is never verification evidence"
       ]
     ],
     [
@@ -832,7 +864,9 @@ async function validateVerificationContract(): Promise<void> {
         "Try guide defaults to `when-testable`",
         "run that exact command as the final automated gate",
         "the same approval can finalize the local baseline",
-        "Try It Now is a user demonstration"
+        "Try It Now is a user demonstration",
+        "`check demo` modes also never write activity state",
+        "A demo is never verification evidence or the user's"
       ]
     ],
     [

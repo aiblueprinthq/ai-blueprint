@@ -1042,7 +1042,8 @@ const DASHBOARD_HTML: string = `<!doctype html>
       return "audit " + gates.audit + ", independent review " + gates.independentReview +
         ", check " + gates.check +
         ", try guide " + gates.tryGuide +
-        ", spec check " + gates.specCheck;
+        ", spec check " + gates.specCheck +
+        ", demo " + gates.demo;
     }
 
     function renderActivity(activity, configuration, nextAction) {

@@ -33,6 +33,15 @@ The other conditional modes are `when-sensitive` for audit, `when-behavioral`
 for check, and `when-user-facing` for try guides. Existing `manual`, `always`,
 and `when-user-facing` try-guide policies remain supported.
 
+`demo` in each quality-gate set selects `/check demo`, a watched demo that runs
+the Try It Now path live in a browser the user can see, narrating each step. It
+defaults to `manual`, which runs a demo only on request. `when-available` runs
+one in Complete before the commit and landing questions, and in Continuous at a
+successful stop, whenever demo mode can run live: a web UI path, a browser the
+user can see, a local development server, and nothing real at stake. Otherwise
+it skips with one line. A demo is never verification evidence or the user's
+acceptance.
+
 `specCheck` in each quality-gate set controls the optional spec check: after
 `/feature` writes a spec, a fresh reviewer reads it against the repository and
 reports mismatches, finished or unneeded parts, missing needs, and risky
@@ -123,7 +132,9 @@ If `AGENTS.md` declares a `Verify` command, run that exact command as the final
 automated gate. It wraps only the checks the project actually has. If no Verify
 command exists, run the documented build command and the test command when
 configured. `/check` proves behavior from the agent side; Try It Now is a user
-demonstration and never replaces tests, Verify, or Check.
+demonstration and never replaces tests, Verify, or Check. `/check demo` shows
+that path running live; it is not verification and never stands in for the
+user's acceptance.
 
 Progress lives in files, not the chat: `current-feature.md` holds the spec with
 each step checked off as it's done, and Git holds the code. After a context
@@ -143,8 +154,9 @@ Core skills:
 
 - `feature` - turn a build-plan item into a spec, or propose a reviewed plan addition for a genuinely new feature
 - `implement` - build the current spec one small, reviewed step at a time
-- `check` - prove the current spec against the running app, or use `check guide`
-  for a read-only manual review guide: where to go, what to click, what to expect
+- `check` - prove the current spec against the running app, use `check guide`
+  for a read-only manual review guide: where to go, what to click, what to
+  expect, or use `check demo` to watch the Try It Now path run live in a browser
 - `complete` - run the final safety pass, log features or fixes under `blueprint/history/`, then request approval for the configured local merge or pull-request landing
 
 ### Understand and review
@@ -211,8 +223,8 @@ state directory exists: `onboard`, `adopt`, `discovery`, `overview`, `feature`,
 `autopilot`, `continuous`, and `complete`. Short orientation commands such as
 `explore`, `brief`, `blueprint-status`, and `blueprint-doctor` do not write
 activity state. The
-`check guide` mode also never writes activity state; select the Check mode
-before any activity call. Doctor's optional approved reset removes malformed
+`check guide` and `check demo` modes also never write activity state; select
+the Check mode before any activity call. Doctor's optional approved reset removes malformed
 activity instead of recording another run.
 
 Writing the initial activity record is the first action of a tracked command,

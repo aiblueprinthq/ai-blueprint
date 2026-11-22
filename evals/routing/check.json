@@ -32,6 +32,18 @@
     {
       "prompt": "Run $check guide for step 2",
       "top_k": 1
+    },
+    {
+      "prompt": "Run /check demo",
+      "top_k": 1
+    },
+    {
+      "prompt": "Run /check demo latest",
+      "top_k": 1
+    },
+    {
+      "prompt": "Walk me through the feature live in the browser so I can watch it run",
+      "top_k": 3
     }
   ],
   "negative": [

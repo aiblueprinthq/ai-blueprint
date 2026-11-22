@@ -41,12 +41,13 @@ state.
    obsolete `git.rollbackBranchPrefix` or `continuous.finalIntegrationAudit` is
    ignored, not invalid. Report the
    effective regular and Continuous audit, independent-review, check,
-   try-guide, and spec-check policies, plus `review.independentExecution`. Explain that
+   try-guide, spec-check, and demo policies, plus `review.independentExecution`. Explain that
    independent review defaults to `when-sensitive` for both workflows and
    execution defaults to `automatic`, which uses an isolated reviewer only when
    the current adapter supports it. Audit and check default to `manual`; try
    guide defaults to `when-testable`. Spec check defaults to `manual`, which
-   runs it only when `/feature --check` asks.
+   runs it only when `/feature --check` asks. Demo defaults to `manual`, which
+   runs a watched demo only when `/check demo` asks.
    Before recommending `/overview`, check whether `AGENTS.md` still contains
    the shipped `For a standard Next.js project` command marker. When it does,
    onboarding is incomplete and `/onboard` is the next action.

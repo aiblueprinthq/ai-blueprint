@@ -93,14 +93,22 @@ Use `qualityGates.regular` for this work item:
   meaningful direct observation for UI, CLI, library, API, file-generation,
   configuration, or data behavior, and skips without fabricating one otherwise;
   `always` generates one for every work item.
+- **Demo (`qualityGates.regular.demo`):** use `/check demo`. `manual` runs only
+  when explicitly requested; `when-available` runs it when the Try It Now path
+  is a web UI path, a browser the user can see is available, and demo mode's
+  other live conditions hold, and otherwise skips with one line. Skip it when a
+  demo already ran for this work item in this session.
 
-Apply automatic gates in this order: `/check`, review, then `/check guide`. When
-independent review is selected, follow the independent execution flow below and
-continue only after a fresh reviewer writes a current passing receipt. Otherwise
-run `/audit current` when Audit is selected.
+Apply automatic gates in this order: `/check`, review, `/check guide`, then
+`/check demo`. When independent review is selected, follow the independent
+execution flow below and continue only after a fresh reviewer writes a current
+passing receipt. Otherwise run `/audit current` when Audit is selected.
 Reuse adequate evidence produced during the current work item instead of
 repeating it. A required gate that cannot run is a blocker. `/check guide` only
-generates instructions for human review; never claim the user performed them. P0 and P1
+generates instructions for human review; never claim the user performed them.
+A demo never counts as Check, UI evidence, or the user's approval, so every
+commit and landing question below is still asked. A mismatch a demo shows is a
+blocker: stop before logging and point to `/debug` or `/implement`. P0 and P1
 finding blockers remain enforced regardless of these settings.
 
 ### Independent review execution
@@ -366,7 +374,8 @@ Finish with the generated `## Try it now` section when one exists. If there is
 no safe direct observation, omit the
 section and say so plainly. For an optional deeper walkthrough, point to
 `/check guide latest`; that command can read the archived feature after
-`current-feature.md` is reset.
+`current-feature.md` is reset. When no demo ran and the path is a web UI path,
+also point to `/check demo latest` to watch it run live.
 
 ## Rules
 

@@ -372,7 +372,8 @@ function formatQualityGates(gates: QualityGatePolicy): string {
     `independent review ${gates.independentReview}`,
     `check ${gates.check}`,
     `try guide ${gates.tryGuide}`,
-    `spec check ${gates.specCheck}`
+    `spec check ${gates.specCheck}`,
+    `demo ${gates.demo}`
   ].join(", ");
 }
 

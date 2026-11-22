@@ -18,7 +18,8 @@ test("default config reviews sensitive work and guides testable work automatical
     independentReview: "when-sensitive",
     check: "manual",
     tryGuide: "when-testable",
-    specCheck: "manual"
+    specCheck: "manual",
+    demo: "manual"
   };
 
   assert.deepEqual(defaults.qualityGates.regular, defaultGates);
@@ -193,6 +194,26 @@ test("spec check policies accept manual and always and reject other values", () 
       qualityGates: { regular: { specCheck: "when-sensitive" } }
     }),
     /qualityGates\.regular\.specCheck must be one of/
+  );
+});
+
+test("demo policies accept manual and when-available and reject other values", () => {
+  for (const demo of ["manual", "when-available"] as const) {
+    const config = parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: { regular: { demo }, continuous: { demo } }
+    });
+
+    assert.equal(config.qualityGates.regular.demo, demo);
+    assert.equal(config.qualityGates.continuous.demo, demo);
+  }
+
+  assert.throws(
+    () => parseProjectConfig({
+      schemaVersion: 1,
+      qualityGates: { continuous: { demo: "always" } }
+    }),
+    /qualityGates\.continuous\.demo must be one of/
   );
 });
 

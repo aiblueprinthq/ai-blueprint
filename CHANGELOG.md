@@ -5,6 +5,20 @@ published `create-ai-blueprint` package.
 
 ## [Unreleased]
 
+### Added
+
+- Watched demo mode for Check. `/check demo` runs the work's Try It Now path
+  live in a browser you can see, saying what it will do before each step and
+  what happened after, with screenshots. It runs only against a local
+  development server with a throwaway account and fake data, and stops on
+  anything that doesn't match. It is not verification: it never marks work
+  verified, counts as UI evidence, or stands in for your acceptance, and the
+  written `## Try it now` section stays in the archive as the path to repeat
+  alone. Without a web UI path or a visible browser, it prints the written
+  section instead. Off by default: set `qualityGates.regular.demo` or
+  `qualityGates.continuous.demo` to `when-available` to have Complete run one
+  before its commit and landing questions, and Continuous at a successful stop.
+
 ### Fixed
 
 - Implement's closing commit rule now names both commits it may make: an
